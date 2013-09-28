@@ -1,15 +1,59 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.xenei.junit.contract;
 
-import org.junit.Before;
+import org.junit.After;
 
+/**
+ * Concrete example of AT implementation.
+ * 
+ */
 public class ATImpl extends AT {
 
-  @Before
-  public final void setupATImpl() {
-    this.setA( new A(){
-			public String getAName() {
-				return "aname";
-			}});
+	// our producer
+	IProducer<A> producer = new IProducer<A>() {
+
+		@Override
+		public A newInstance() {
+			System.out.println("ATImpl.producer: newInstance was called");
+			return new A() {
+				@Override
+				public String getAName() {
+					return "aname";
+				}
+			};
+		}
+
+		@Override
+		public void cleanUp() {
+			System.out.println("ATImpl.producer: cleanUp was called");
+		}
+
+	};
+
+	@Override
+	protected IProducer<A> getProducer() {
+		return producer;
 	}
-	
+
+	@After
+	public final void cleanupATImpl() {
+		producer.cleanUp();
+	}
 }

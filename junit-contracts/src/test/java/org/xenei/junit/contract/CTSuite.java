@@ -18,22 +18,13 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
- * Example of Contract test for C interface.
+ * Example of ContractSuite for C interface using the CTImpl
  * 
  */
-@Contract(C.class)
-public abstract class CT {
-
-	@Contract.Inject
-	protected abstract IProducer<C> getProducer();
-
-	@Test
-	public void testGetCName() {
-		System.out.println("testGetCName: "
-				+ getProducer().newInstance().getCName());
-	}
+@RunWith(ContractSuite.class)
+public class CTSuite extends CTImpl {
 
 }

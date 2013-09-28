@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.xenei.junit.contract;
 
 import java.io.File;
@@ -14,15 +32,19 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Package of class path searching utilities
+ * 
+ */
 public class ClassPathUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClassPathUtils.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ClassPathUtils.class);
 
 	/**
 	 * Recursive method used to find all classes in a given directory and
-	 * subdirs.
-	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
-	 * support use of JAR files
+	 * subdirs. Adapted from http://snippets.dzone.com/posts/show/4831 and
+	 * extended to support use of JAR files
 	 * 
 	 * @param directory
 	 *            The base directory
@@ -32,20 +54,16 @@ public class ClassPathUtils {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static Set<String> findClasses( final String directory,
-			final String packageName ) throws IOException
-	{
+	public static Set<String> findClasses(final String directory,
+			final String packageName) throws IOException {
 		final Set<String> classes = new HashSet<String>();
-		if (directory.startsWith("file:") && directory.contains("!"))
-		{
+		if (directory.startsWith("file:") && directory.contains("!")) {
 			final String[] split = directory.split("!");
 			final URL jar = new URL(split[0]);
 			final ZipInputStream zip = new ZipInputStream(jar.openStream());
 			ZipEntry entry = null;
-			while ((entry = zip.getNextEntry()) != null)
-			{
-				if (entry.getName().endsWith(".class"))
-				{
+			while ((entry = zip.getNextEntry()) != null) {
+				if (entry.getName().endsWith(".class")) {
 					final String className = entry.getName()
 							.replaceAll("[$].*", "").replaceAll("[.]class", "")
 							.replace('/', '.');
@@ -54,21 +72,17 @@ public class ClassPathUtils {
 			}
 		}
 		final File dir = new File(directory);
-		if (!dir.exists())
-		{
+		if (!dir.exists()) {
 			return classes;
 		}
 		final File[] files = dir.listFiles();
-		for (final File file : files)
-		{
-			if (file.isDirectory())
-			{
+		for (final File file : files) {
+			if (file.isDirectory()) {
 				assert !file.getName().contains(".");
-				String newPkgName = String.format( "%s%s%s", packageName, (packageName.length()>0?".":""), file.getName());
+				String newPkgName = String.format("%s%s%s", packageName,
+						(packageName.length() > 0 ? "." : ""), file.getName());
 				classes.addAll(findClasses(file.getAbsolutePath(), newPkgName));
-			}
-			else if (file.getName().endsWith(".class"))
-			{
+			} else if (file.getName().endsWith(".class")) {
 				classes.add(packageName
 						+ '.'
 						+ file.getName().substring(0,
@@ -80,9 +94,9 @@ public class ClassPathUtils {
 
 	/**
 	 * Scans all classes accessible from the context class loader which belong
-	 * to the given package and subpackages.
-	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
-	 * support use of JAR files
+	 * to the given package and subpackages. Adapted from
+	 * http://snippets.dzone.com/posts/show/4831 and extended to support use of
+	 * JAR files
 	 * 
 	 * @param packageName
 	 *            The base package or class name
@@ -90,71 +104,60 @@ public class ClassPathUtils {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static Collection<Class<?>> getClasses( final String packageName )
-	{
+	public static Collection<Class<?>> getClasses(final String packageName) {
 		final ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
 		assert classLoader != null;
 		final String path = packageName.replace('.', '/');
 		Enumeration<URL> resources;
-		try
-		{
+		try {
 			resources = classLoader.getResources(path);
-		}
-		catch (final IOException e1)
-		{
+		} catch (final IOException e1) {
 			LOG.error(e1.toString());
 			return Collections.emptyList();
 		}
 		final Set<Class<?>> classes = new HashSet<Class<?>>();
-		if (resources.hasMoreElements())
-		{
-			while (resources.hasMoreElements())
-			{
+		if (resources.hasMoreElements()) {
+			while (resources.hasMoreElements()) {
 				final URL resource = resources.nextElement();
-				try
-				{
+				try {
 					for (final String clazz : findClasses(resource.getFile(),
-							packageName))
-					{
-						try
-						{
+							packageName)) {
+						try {
 							classes.add(Class.forName(clazz));
-						}
-						catch (final ClassNotFoundException e)
-						{
+						} catch (final ClassNotFoundException e) {
 							LOG.warn(e.toString());
 						}
 					}
-				}
-				catch (final IOException e)
-				{
+				} catch (final IOException e) {
 					LOG.warn(e.toString());
 				}
 			}
-		}
-		else
-		{
+		} else {
 			// there are no resources at that path so see if it is a class
-			try
-			{
+			try {
 				classes.add(Class.forName(packageName));
-			}
-			catch (final ClassNotFoundException e)
-			{
-				LOG.warn(
-						"{} was neither a package name nor a class name",
+			} catch (final ClassNotFoundException e) {
+				LOG.warn("{} was neither a package name nor a class name",
 						packageName);
 			}
 		}
 		return classes;
 	}
-	
-	public static String[] getClassPathElements()
-	{
-		String splitter = String.format( "/Q%s/E", System.getProperty( "path.separator"));
-		String[] classPath = System.getProperty( "java.class.path" ).split( splitter );
-        return classPath;
+
+	/**
+	 * Get the array of class path elements.
+	 * 
+	 * These are strings separated by java.class.path property
+	 * 
+	 * @return Array of class path elements
+	 */
+	public static String[] getClassPathElements() {
+		String splitter = String.format("/Q%s/E",
+				System.getProperty("path.separator"));
+		String[] classPath = System.getProperty("java.class.path").split(
+				splitter);
+		return classPath;
 	}
 
 }
