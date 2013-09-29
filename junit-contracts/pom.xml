@@ -151,6 +151,20 @@ https://oss.sonatype.org/service/local/staging/deploy/maven2/
 							<goal>jar</goal>
 						</goals>
 					</execution>
+					<execution>
+                        <id>attach-examples</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <skipSource>true</skipSource>
+                           <classifier>examples</classifier>
+                            <includes>
+                                <include>${basedir}/src/examples</include>
+                            </includes>
+                            <attach>true</attach>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
