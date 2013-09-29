@@ -17,6 +17,14 @@ Introduces one interface
 
 * Producer - defines a producer that creates new instances of the object under test and can clean up after the test is run.
 
+Maven Repository Info
+---------------------
+
+     Group Id: org.xenei
+     Artifact Id: junit-contracts
+     Version: 0.0.1-SNAPSHOT
+
+
 Contract Tests
 ==============
 
