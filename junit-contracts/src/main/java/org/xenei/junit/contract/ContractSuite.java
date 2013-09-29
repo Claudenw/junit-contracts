@@ -72,17 +72,18 @@ public class ContractSuite extends ParentRunner<Runner> {
 	private final List<Runner> fRunners;
 
 	/*
-	 * arguments for the classCode 1 - contractInfo.getPackageName(), 2 -
+	 * arguments for the classCode 1 - klass.getPackageName(), 2 -
 	 * klass.getSimpleName(), 3 - contractInfo.getSimpleContractName() 4 -
 	 * contractInfo.getTestName() 5 - contractInfo.getContractName() 6 -
 	 * testInfo.getMethod().getName());
 	 */
 	private static final String CLASS_CODE = "package %1$s;%n"
 			+ "import org.junit.After;%n"
+			+ "import org.xenei.junit.contract.IProducer;%n"
 			+ "public class _wrapped_%2$s_%3$s extends %4$s {%n"
 			+ "   private IProducer<%5$s> p;%n"
 			+ "   public _wrapped_%2$s_%3$s(IProducer<%5$s> p){this.p=p;}%n"
-			+ "   public IProducer<%5$s> %6$s(){%n  return p;%n }%n"
+			+ "   public IProducer<%5$s> %6$s(){return p;}%n"
 			+ "   @After public final void cleanup_wrapped_%2$s_%3$s() {p.cleanUp();}%n"
 			+ "}";
 
@@ -164,8 +165,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 						addPath(tempDir);
 					}
 					// compile the class and load it with the class loader
-					Class<?> wrapperClass = wrapClass(klass, cti, compiler,
-							manager, testInfo);
+					Class<?> wrapperClass = wrapClass(klass, cti, compiler, manager);
 					// add it to the test suite.
 					r.add(new ContractTestRunner(wrapperClass, cti.getMethod()
 							.getDeclaringClass(), baseObj, testInfo.getMethod()));
@@ -206,17 +206,17 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 */
 	private static Class<?> wrapClass(Class<?> klass,
 			ContractTestInfo contractInfo, JavaCompiler compiler,
-			StandardJavaFileManager manager, ContractTestInfo testInfo)
+			StandardJavaFileManager manager )
 			throws ClassNotFoundException, IOException {
 
 		String fqName = String.format("%s._wrapped_%s_%s", klass.getPackage()
 				.getName(), klass.getSimpleName(), contractInfo
 				.getSimpleContractName());
 		String source = String.format(CLASS_CODE,
-				contractInfo.getPackageName(), klass.getSimpleName(),
+				klass.getPackage().getName(), klass.getSimpleName(),
 				contractInfo.getSimpleContractName(),
 				contractInfo.getTestName(), contractInfo.getContractName(),
-				testInfo.getMethod().getName());
+				contractInfo.getMethod().getName());
 
 		JavaSourceFromString[] compList = { new JavaSourceFromString(fqName,
 				source) };
@@ -227,11 +227,28 @@ public class ContractSuite extends ParentRunner<Runner> {
 		Boolean result = task.call();
 		// log any errors if they occured
 		if (!result) {
-			for (Object d : listener.getDiagnostics()) {
-				LOG.warn(d.toString());
-				// uncomment this if logging is disabled System.out.println(
-				// d.toString() );
-			}
+			if (LOG.isWarnEnabled())
+			{
+				LOG.warn( source );
+				for (Object d : listener.getDiagnostics()) {
+					LOG.warn(d.toString());
+				}
+				LOG.warn( "Class Path");
+				for (String pth : ClassPathUtils.getClassPathElements())
+				{
+					LOG.warn( pth );
+				}
+			} 
+				System.out.println( source );
+				for (Object d : listener.getDiagnostics()) {
+					System.out.println(d.toString() );
+				}
+				System.out.println( "Class Path");
+				for (String pth : ClassPathUtils.getClassPathElements())
+				{
+					System.out.println( pth );
+				}
+			throw new IllegalStateException( "Could not compile wrapped code for "+fqName );
 		}
 		return result ? Class.forName(fqName) : null;
 
@@ -453,7 +470,6 @@ public class ContractSuite extends ParentRunner<Runner> {
 						"Classes annotated with @Contract ("
 								+ contractTest
 								+ ") must include a @Contract.Inject annotation on an abstract declared getter method");
-
 			}
 		}
 

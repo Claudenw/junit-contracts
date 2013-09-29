@@ -153,7 +153,7 @@ public class ClassPathUtils {
 	 * @return Array of class path elements
 	 */
 	public static String[] getClassPathElements() {
-		String splitter = String.format("/Q%s/E",
+		String splitter = String.format("\\%s",
 				System.getProperty("path.separator"));
 		String[] classPath = System.getProperty("java.class.path").split(
 				splitter);
