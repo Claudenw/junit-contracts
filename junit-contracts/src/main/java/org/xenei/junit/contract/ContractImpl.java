@@ -18,20 +18,28 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.runner.JUnitCore;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * A simple class to run tests using the JUnitCore program.
+ * Annotation to declare a test suite is the suite test for an implementation.
+ * <p>
+ * For example <code><pre>
+ * 
+ * @ContractImpl( AImpl.class ) public class ATSuite {...} </pre></code>
+ *                Declares <code>ATImpl</code> as the implementation that the
+ *                contract suite should be built for.
+ * 
  * 
  */
-public class TestRun extends JUnitCore {
-
-	public TestRun() {
-
-	}
-
-	public static void main(String[] args) {
-		JUnitCore.main("org.xenei.junit.contract.CTSuite");
-	}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ContractImpl {
+	/**
+	 * The class that the annotated class is the contract test for.
+	 */
+	Class<?> value();
 
 }

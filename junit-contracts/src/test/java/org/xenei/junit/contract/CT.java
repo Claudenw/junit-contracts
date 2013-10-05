@@ -32,8 +32,7 @@ public abstract class CT {
 
 	@Test
 	public void testGetCName() {
-		System.out.println("testGetCName: "
-				+ getProducer().newInstance().getCName());
+		Listener.add(getProducer().newInstance().getCName());
 	}
 
 }

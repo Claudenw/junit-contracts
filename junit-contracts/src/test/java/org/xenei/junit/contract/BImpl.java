@@ -18,57 +18,15 @@
 
 package org.xenei.junit.contract;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-
 /**
  * concrete example of BT implementation
  * 
  */
-public class BTImpl extends BT {
-
-	private IProducer<B> producer = new IProducer<B>() {
-
-		@Override
-		public B newInstance() {
-			Listener.add("BTImpl.producer.newInstance()");
-			return new BImpl();
-		}
-
-		@Override
-		public void cleanUp() {
-			Listener.add("BTImpl.producer.cleanUp()");
-		}
-
-	};
+public class BImpl implements B {
 
 	@Override
-	protected IProducer<B> getProducer() {
-		return producer;
+	public String getBName() {
+		return "bname";
 	}
 
-	@After
-	public final void cleanupBTImpl() {
-		producer.cleanUp();
-	}
-
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
-
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "BTImpl.producer.newInstance()", "bname",
-				"BTImpl.producer.cleanUp()" };
-
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
-
-	}
 }

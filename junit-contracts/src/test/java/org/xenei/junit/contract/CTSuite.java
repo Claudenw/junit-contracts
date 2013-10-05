@@ -18,6 +18,12 @@
 
 package org.xenei.junit.contract;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
@@ -25,6 +31,41 @@ import org.junit.runner.RunWith;
  * 
  */
 @RunWith(ContractSuite.class)
-public class CTSuite extends CTImpl {
+@ContractImpl(CImpl.class)
+public class CTSuite {
+	private IProducer<C> producer = new IProducer<C>() {
+		@Override
+		public C newInstance() {
+			Listener.add("CTSuite.producer.newInstance()");
+			return new CImpl();
+		}
 
+		@Override
+		public void cleanUp() {
+			Listener.add("CTSuite.producer.cleanUp()");
+		}
+	};
+
+	@Contract.Inject
+	public IProducer<C> getProducer() {
+		return producer;
+	}
+
+	@BeforeClass
+	public static void beforeClass() {
+		Listener.clear();
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		String[] expected = { "CTSuite.producer.newInstance()", "cname",
+				"CTSuite.producer.cleanUp()", "CTSuite.producer.newInstance()",
+				"cname version of aname", "CTSuite.producer.cleanUp()",
+				"CTSuite.producer.newInstance()", "cname version of bname",
+				"CTSuite.producer.cleanUp()" };
+
+		List<String> l = Listener.get();
+		Assert.assertEquals(l, Arrays.asList(expected));
+
+	}
 }

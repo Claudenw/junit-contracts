@@ -18,7 +18,13 @@
 
 package org.xenei.junit.contract;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,29 +36,13 @@ public class CTImpl extends CT {
 	private IProducer<C> producer = new IProducer<C>() {
 		@Override
 		public C newInstance() {
-			System.out.println("CTImpl.producer: newInstance was called");
-			return new C() {
-				@Override
-				public String getCName() {
-					return "cname";
-				}
-
-				@Override
-				public String getAName() {
-					return "cname version of aname";
-				}
-
-				@Override
-				public String getBName() {
-					return "cname version of bname";
-				}
-
-			};
+			Listener.add("CTImpl.producer.newInstance()");
+			return new CImpl();
 		}
 
 		@Override
 		public void cleanUp() {
-			System.out.println("CTImpl.producer: cleanUp was called");
+			Listener.add("CTImpl.producer.cleanUp()");
 		}
 	};
 
@@ -68,8 +58,21 @@ public class CTImpl extends CT {
 
 	@Test
 	public void additionalTest() {
-		System.out
-				.println("Additional test ran (no producer.newInstance() not called)");
+		Listener.add("CTImpl.additionalTest()");
 	}
 
+	@BeforeClass
+	public static void beforeClass() {
+		Listener.clear();
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		String[] expected = { "CTImpl.additionalTest()",
+				"CTImpl.producer.cleanUp()", "CTImpl.producer.newInstance()",
+				"cname", "CTImpl.producer.cleanUp()" };
+
+		List<String> l = Listener.get();
+		Assert.assertEquals(l, Arrays.asList(expected));
+	}
 }

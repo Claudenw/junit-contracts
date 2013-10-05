@@ -18,20 +18,23 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.runner.JUnitCore;
-
 /**
- * A simple class to run tests using the JUnitCore program.
+ * concrete example of CT implementation
  * 
  */
-public class TestRun extends JUnitCore {
-
-	public TestRun() {
-
+public class CImpl implements C {
+	@Override
+	public String getCName() {
+		return "cname";
 	}
 
-	public static void main(String[] args) {
-		JUnitCore.main("org.xenei.junit.contract.CTSuite");
+	@Override
+	public String getAName() {
+		return "cname version of aname";
 	}
 
+	@Override
+	public String getBName() {
+		return "cname version of bname";
+	}
 }

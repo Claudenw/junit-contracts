@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,11 +44,19 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import javax.tools.JavaCompiler.CompilationTask;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
+import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,46 +122,44 @@ public class ContractSuite extends ParentRunner<Runner> {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager manager = compiler.getStandardFileManager(null,
 				null, null);
-		Class<?> workingClass = klass;
+
 		try {
+
+			ContractImpl impl = klass.getAnnotation(ContractImpl.class);
+			if (impl == null) {
+				throw new IllegalArgumentException(
+						"Classes annotated as @RunWith( ContractSuite ) ["
+								+ klass
+								+ "] must also be annotated with @ContractImpl");
+			}
+
 			// we have a RunWith annotated class: Klass
 			// see if it is in the annotatedClasses
-			ContractTestInfo testInfo = contractTestMap
-					.getInfoByTestClass(workingClass);
+			ContractTestInfo testInfo = contractTestMap.getInfoByTestClass(impl
+					.getClass());
 			if (testInfo == null) {
-				// we use this class to pick up any extra tests that we want to
-				// run
-				Class<?> parentClass = workingClass.getSuperclass();
-
-				// klass is not the annotated class so try to find it from a
-				// super class
-				workingClass = workingClass.getSuperclass();
-				while (testInfo == null && workingClass != Object.class) {
-					testInfo = contractTestMap.getInfoByTestClass(workingClass);
-					workingClass = workingClass.getSuperclass();
-				}
-				if (testInfo == null) {
-					// if we got here the class hierarchy is wrong.
-					throw new IllegalArgumentException(
-							"Classes annotated as @RunWith( ContractSuite ) ["
-									+ klass
-									+ "] must be derived from an @Contract annotated class");
-				}
-				// create the test info with the parent class.
-				testInfo = contractTestMap
-						.createTestInfo(testInfo, parentClass);
+				testInfo = new ContractTestInfo(klass, impl);
+				contractTestMap.add(testInfo);
 			}
+
 			// this is the instance object that we will use to get the producer
 			// instance
 			Object baseObj = klass.newInstance();
 			// this is the list of all the JUnit runners in the suite.
 			List<Runner> r = new ArrayList<Runner>();
+			BaseClassRunner bcr = new BaseClassRunner(klass);
+			if (bcr.computeTestMethods().size() > 0) {
+				r.add(bcr);
+			}
+
+			// this is our list of runners.
 
 			// get all the annotated classes that test interfaces that klass
 			// implements.
 			// and iterate over them
 			for (ContractTestInfo cti : contractTestMap
-					.getAnnotatedClasses(testInfo)) {
+					.getAnnotatedClasses(impl.value())) {
+
 				// if the test is abstract create a concrete version
 				if (cti.isAbstract()) {
 
@@ -165,7 +171,8 @@ public class ContractSuite extends ParentRunner<Runner> {
 						addPath(tempDir);
 					}
 					// compile the class and load it with the class loader
-					Class<?> wrapperClass = wrapClass(klass, cti, compiler, manager);
+					Class<?> wrapperClass = wrapClass(klass, cti, compiler,
+							manager);
 					// add it to the test suite.
 					r.add(new ContractTestRunner(wrapperClass, cti.getMethod()
 							.getDeclaringClass(), baseObj, testInfo.getMethod()));
@@ -174,7 +181,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 					r.add(builder.runnerForClass(cti.getTestClass()));
 				}
 			}
-			// this is our list of runners.
+
 			fRunners = Collections.unmodifiableList(r);
 
 		} finally {
@@ -206,15 +213,14 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 */
 	private static Class<?> wrapClass(Class<?> klass,
 			ContractTestInfo contractInfo, JavaCompiler compiler,
-			StandardJavaFileManager manager )
-			throws ClassNotFoundException, IOException {
+			StandardJavaFileManager manager) throws ClassNotFoundException,
+			IOException {
 
 		String fqName = String.format("%s._wrapped_%s_%s", klass.getPackage()
 				.getName(), klass.getSimpleName(), contractInfo
 				.getSimpleContractName());
-		String source = String.format(CLASS_CODE,
-				klass.getPackage().getName(), klass.getSimpleName(),
-				contractInfo.getSimpleContractName(),
+		String source = String.format(CLASS_CODE, klass.getPackage().getName(),
+				klass.getSimpleName(), contractInfo.getSimpleContractName(),
 				contractInfo.getTestName(), contractInfo.getContractName(),
 				contractInfo.getMethod().getName());
 
@@ -227,28 +233,26 @@ public class ContractSuite extends ParentRunner<Runner> {
 		Boolean result = task.call();
 		// log any errors if they occured
 		if (!result) {
-			if (LOG.isWarnEnabled())
-			{
-				LOG.warn( source );
+			if (LOG.isWarnEnabled()) {
+				LOG.warn(source);
 				for (Object d : listener.getDiagnostics()) {
 					LOG.warn(d.toString());
 				}
-				LOG.warn( "Class Path");
-				for (String pth : ClassPathUtils.getClassPathElements())
-				{
-					LOG.warn( pth );
+				LOG.warn("Class Path");
+				for (String pth : ClassPathUtils.getClassPathElements()) {
+					LOG.warn(pth);
 				}
-			} 
-				System.out.println( source );
-				for (Object d : listener.getDiagnostics()) {
-					System.out.println(d.toString() );
-				}
-				System.out.println( "Class Path");
-				for (String pth : ClassPathUtils.getClassPathElements())
-				{
-					System.out.println( pth );
-				}
-			throw new IllegalStateException( "Could not compile wrapped code for "+fqName );
+			}
+			System.out.println(source);
+			for (Object d : listener.getDiagnostics()) {
+				System.out.println(d.toString());
+			}
+			System.out.println("Class Path");
+			for (String pth : ClassPathUtils.getClassPathElements()) {
+				System.out.println(pth);
+			}
+			throw new IllegalStateException(
+					"Could not compile wrapped code for " + fqName);
 		}
 		return result ? Class.forName(fqName) : null;
 
@@ -397,6 +401,23 @@ public class ContractSuite extends ParentRunner<Runner> {
 			return retval;
 		}
 
+		private void getAllInterfaces(Set<Class<?>> set, Class<?> c) {
+			for (Class<?> i : c.getClasses()) {
+				if (i.isInterface()) {
+					if (!set.contains(i)) {
+						set.add(i);
+						getAllInterfaces(set, i);
+					}
+				}
+			}
+			for (Class<?> i : c.getInterfaces()) {
+				if (!set.contains(i)) {
+					set.add(i);
+					getAllInterfaces(set, i);
+				}
+			}
+		}
+
 		/**
 		 * 
 		 * @param cti
@@ -405,18 +426,15 @@ public class ContractSuite extends ParentRunner<Runner> {
 		 * @return the set of ContractTestInfo objects that represent the
 		 *         complete suite of contract tests for the cti object.
 		 */
-		public Set<ContractTestInfo> getAnnotatedClasses(ContractTestInfo cti) {
+		public Set<ContractTestInfo> getAnnotatedClasses(Class<?> classUnderTest) {
 
 			// list of test classes
-			Set<ContractTestInfo> testClasses = new HashSet<ContractTestInfo>();
-			testClasses.add(cti);
+			Set<ContractTestInfo> testClasses = new LinkedHashSet<ContractTestInfo>();
 
 			// list of implementation classes
-			Set<Class<?>> implClasses = new HashSet<Class<?>>();
-			implClasses.addAll(Arrays.asList(cti.getContractClass()
-					.getClasses()));
-			implClasses.addAll(Arrays.asList(cti.getContractClass()
-					.getInterfaces()));
+			Set<Class<?>> implClasses = new LinkedHashSet<Class<?>>();
+			getAllInterfaces(implClasses, classUnderTest);
+
 			Iterator<Class<?>> iter = implClasses.iterator();
 			while (iter.hasNext()) {
 				ContractTestInfo testInfo = getInfoByContractClass(iter.next());
@@ -446,6 +464,35 @@ public class ContractSuite extends ParentRunner<Runner> {
 		/**
 		 * Constructor
 		 * 
+		 * @param testSuite
+		 *            the test suite definition class.
+		 */
+		public ContractTestInfo(Class<?> testSuite, ContractImpl impl) {
+
+			this.contractTest = testSuite;
+			this.contractClass = impl.value();
+
+			// find the source injected value
+			for (Method m : contractTest.getDeclaredMethods()) {
+				if (m.getAnnotation(Contract.Inject.class) != null) {
+					if (!m.getReturnType().equals(Void.TYPE)
+							&& !Modifier.isAbstract(m.getModifiers())) {
+						method = m;
+						break;
+					}
+				}
+			}
+			if (method == null) {
+				throw new IllegalStateException(
+						"Classes annotated with @RunWith(ContractSuite.class) ("
+								+ contractTest
+								+ ") must include a @Contract.Inject annotation on a concrete declared getter method");
+			}
+		}
+
+		/**
+		 * Constructor
+		 * 
 		 * @param contractTest
 		 *            The contract under test.
 		 * @param c
@@ -454,7 +501,6 @@ public class ContractSuite extends ParentRunner<Runner> {
 		public ContractTestInfo(Class<?> contractTest, Contract c) {
 			this.contractTest = contractTest;
 			this.contractClass = c.value();
-
 			// find the source injected value
 			for (Method m : contractTest.getDeclaredMethods()) {
 				if (m.getAnnotation(Contract.Inject.class) != null) {
@@ -540,6 +586,51 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 		public Method getMethod() {
 			return method;
+		}
+	}
+
+	private class BaseClassRunner extends BlockJUnit4ClassRunner {
+
+		public BaseClassRunner(Class<?> klass) throws InitializationError {
+			super(klass);
+		}
+
+		public Statement getSuperWithAfterClasses(Statement statement) {
+			return super.withAfterClasses(statement);
+		}
+
+		@Override
+		protected Statement withAfterClasses(Statement statement) {
+			return statement;
+		}
+
+		public Statement getSuperWithBeforeClasses(Statement statement) {
+			return super.withBeforeClasses(statement);
+		}
+
+		@Override
+		protected Statement withBeforeClasses(Statement statement) {
+			return statement;
+		}
+
+		@Override
+		protected void validateInstanceMethods(List<Throwable> errors) {
+			validatePublicVoidNoArgMethods(After.class, false, errors);
+			validatePublicVoidNoArgMethods(Before.class, false, errors);
+			validateTestMethods(errors);
+		}
+
+		@Override
+		protected List<FrameworkMethod> computeTestMethods() {
+			List<FrameworkMethod> retval = new ArrayList<FrameworkMethod>();
+			for (FrameworkMethod mthd : super.getTestClass()
+					.getAnnotatedMethods(Test.class)) {
+				if (mthd.getMethod().getDeclaringClass()
+						.getAnnotation(Contract.class) == null) {
+					retval.add(mthd);
+				}
+			}
+			return retval;
 		}
 	}
 }

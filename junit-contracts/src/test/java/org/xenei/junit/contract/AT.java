@@ -32,8 +32,7 @@ public abstract class AT {
 
 	@Test
 	public void testGetAName() {
-		System.out.println("testGetAName: "
-				+ getProducer().newInstance().getAName());
+		Listener.add(getProducer().newInstance().getAName());
 	}
 
 }

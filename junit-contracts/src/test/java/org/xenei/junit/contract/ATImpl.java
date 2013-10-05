@@ -18,7 +18,13 @@
 
 package org.xenei.junit.contract;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
  * Concrete example of AT implementation.
@@ -31,18 +37,13 @@ public class ATImpl extends AT {
 
 		@Override
 		public A newInstance() {
-			System.out.println("ATImpl.producer: newInstance was called");
-			return new A() {
-				@Override
-				public String getAName() {
-					return "aname";
-				}
-			};
+			Listener.add("ATImpl.producer.newInstance()");
+			return new AImpl();
 		}
 
 		@Override
 		public void cleanUp() {
-			System.out.println("ATImpl.producer: cleanUp was called");
+			Listener.add("ATImpl.producer.cleanUp()");
 		}
 
 	};
@@ -55,5 +56,20 @@ public class ATImpl extends AT {
 	@After
 	public final void cleanupATImpl() {
 		producer.cleanUp();
+	}
+
+	@BeforeClass
+	public static void beforeClass() {
+		Listener.clear();
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		String[] expected = { "ATImpl.producer.newInstance()", "aname",
+				"ATImpl.producer.cleanUp()" };
+
+		List<String> l = Listener.get();
+		Assert.assertEquals(l, Arrays.asList(expected));
+
 	}
 }

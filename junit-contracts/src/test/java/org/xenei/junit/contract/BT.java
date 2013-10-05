@@ -31,8 +31,7 @@ public abstract class BT {
 
 	@Test
 	public void testGetBName() {
-		System.out.println("testGetBName: "
-				+ getProducer().newInstance().getBName());
+		Listener.add(getProducer().newInstance().getBName());
 	}
 
 }
