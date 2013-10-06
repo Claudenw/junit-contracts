@@ -35,7 +35,7 @@ public interface IProducer<T> {
 	/**
 	 * Return a new instance of T. May be called more than once.
 	 */
-	public <X extends T> X newInstance();
+	public T newInstance();
 
 	/**
 	 * All allocated instances may now be cleaned up. May be called more than

@@ -89,9 +89,9 @@ public class ContractSuite extends ParentRunner<Runner> {
 			+ "import org.junit.After;%n"
 			+ "import org.xenei.junit.contract.IProducer;%n"
 			+ "public class _wrapped_%2$s_%3$s extends %4$s {%n"
-			+ "   private IProducer<%5$s> p;%n"
-			+ "   public _wrapped_%2$s_%3$s(IProducer<%5$s> p){this.p=p;}%n"
-			+ "   public IProducer<%5$s> %6$s(){return p;}%n"
+			+ "   private %5$s p;%n"
+			+ "   public _wrapped_%2$s_%3$s(%5$s p){this.p=p;}%n"
+			+ "   public %5$s %6$s(){return p;}%n"
 			+ "   @After public final void cleanup_wrapped_%2$s_%3$s() {p.cleanUp();}%n"
 			+ "}";
 
@@ -133,13 +133,13 @@ public class ContractSuite extends ParentRunner<Runner> {
 								+ "] must also be annotated with @ContractImpl");
 			}
 
+			Set<ContractTestInfo> testClasses = new LinkedHashSet<ContractTestInfo>();
 			// we have a RunWith annotated class: Klass
 			// see if it is in the annotatedClasses
-			ContractTestInfo testInfo = contractTestMap.getInfoByTestClass(impl
-					.getClass());
+			ContractTestInfo testInfo = contractTestMap.getInfoByTestClass(impl.value());
 			if (testInfo == null) {
-				testInfo = new ContractTestInfo(klass, impl);
-				contractTestMap.add(testInfo);
+					testInfo = new ContractTestInfo(klass, impl);
+					contractTestMap.add(testInfo);
 			}
 
 			// this is the instance object that we will use to get the producer
@@ -151,14 +151,14 @@ public class ContractSuite extends ParentRunner<Runner> {
 			if (bcr.computeTestMethods().size() > 0) {
 				r.add(bcr);
 			}
-
+		
 			// this is our list of runners.
 
 			// get all the annotated classes that test interfaces that klass
 			// implements.
 			// and iterate over them
 			for (ContractTestInfo cti : contractTestMap
-					.getAnnotatedClasses(impl.value())) {
+					.getAnnotatedClasses(testClasses, testInfo.getContractClass())) {
 
 				// if the test is abstract create a concrete version
 				if (cti.isAbstract()) {
@@ -219,9 +219,10 @@ public class ContractSuite extends ParentRunner<Runner> {
 		String fqName = String.format("%s._wrapped_%s_%s", klass.getPackage()
 				.getName(), klass.getSimpleName(), contractInfo
 				.getSimpleContractName());
+		
 		String source = String.format(CLASS_CODE, klass.getPackage().getName(),
 				klass.getSimpleName(), contractInfo.getSimpleContractName(),
-				contractInfo.getTestName(), contractInfo.getContractName(),
+				contractInfo.getTestName(), contractInfo.getProducerName(),
 				contractInfo.getMethod().getName());
 
 		JavaSourceFromString[] compList = { new JavaSourceFromString(fqName,
@@ -384,24 +385,11 @@ public class ContractSuite extends ParentRunner<Runner> {
 			return testToInfoMap.get(contract);
 		}
 
-		/**
-		 * Create a new ContractTestInfo from an existing base instance and a
-		 * new test class.
-		 * 
-		 * @param base
-		 *            the base ContractTestInfo
-		 * @param testClass
-		 *            The new testClass
-		 * @return A new ContractTestInfo for the testClass.
-		 */
-		public ContractTestInfo createTestInfo(ContractTestInfo base,
-				Class<?> testClass) {
-			ContractTestInfo retval = new ContractTestInfo(base, testClass);
-			add(retval);
-			return retval;
-		}
-
 		private void getAllInterfaces(Set<Class<?>> set, Class<?> c) {
+			if (c == null || c == Object.class)
+			{
+				return;
+			}
 			for (Class<?> i : c.getClasses()) {
 				if (i.isInterface()) {
 					if (!set.contains(i)) {
@@ -416,6 +404,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 					getAllInterfaces(set, i);
 				}
 			}
+			getAllInterfaces( set, c.getSuperclass() );
 		}
 
 		/**
@@ -426,18 +415,17 @@ public class ContractSuite extends ParentRunner<Runner> {
 		 * @return the set of ContractTestInfo objects that represent the
 		 *         complete suite of contract tests for the cti object.
 		 */
-		public Set<ContractTestInfo> getAnnotatedClasses(Class<?> classUnderTest) {
+		public Set<ContractTestInfo> getAnnotatedClasses(Set<ContractTestInfo> testClasses, Class<?> contractClass ) {
+			
 
 			// list of test classes
-			Set<ContractTestInfo> testClasses = new LinkedHashSet<ContractTestInfo>();
-
 			// list of implementation classes
 			Set<Class<?>> implClasses = new LinkedHashSet<Class<?>>();
-			getAllInterfaces(implClasses, classUnderTest);
+			getAllInterfaces(implClasses, contractClass);
 
-			Iterator<Class<?>> iter = implClasses.iterator();
-			while (iter.hasNext()) {
-				ContractTestInfo testInfo = getInfoByContractClass(iter.next());
+			for (Class<?> clazz : implClasses) {
+				LOG.info( "Checking "+clazz );
+				ContractTestInfo testInfo = getInfoByContractClass(clazz);
 				if (testInfo != null) {
 					testClasses.add(testInfo);
 				}
@@ -460,6 +448,8 @@ public class ContractSuite extends ParentRunner<Runner> {
 		private Class<?> contractClass;
 		// the method to retrieve the producer implementation
 		private Method method;
+		// the format string for the producer name.
+		private String producerNameFmt;
 
 		/**
 		 * Constructor
@@ -477,7 +467,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 				if (m.getAnnotation(Contract.Inject.class) != null) {
 					if (!m.getReturnType().equals(Void.TYPE)
 							&& !Modifier.isAbstract(m.getModifiers())) {
-						method = m;
+						setMethod( m );
 						break;
 					}
 				}
@@ -490,6 +480,12 @@ public class ContractSuite extends ParentRunner<Runner> {
 			}
 		}
 
+		private void setMethod(Method m)
+		{
+			method = m;
+			producerNameFmt = m.getAnnotation(Contract.Inject.class).value();
+		}
+		
 		/**
 		 * Constructor
 		 * 
@@ -506,45 +502,12 @@ public class ContractSuite extends ParentRunner<Runner> {
 				if (m.getAnnotation(Contract.Inject.class) != null) {
 					if (!m.getReturnType().equals(Void.TYPE)
 							&& Modifier.isAbstract(m.getModifiers())) {
-						method = m;
+						setMethod( m );
 						break;
 					}
 				}
 			}
 			if (method == null) {
-				throw new IllegalStateException(
-						"Classes annotated with @Contract ("
-								+ contractTest
-								+ ") must include a @Contract.Inject annotation on an abstract declared getter method");
-			}
-		}
-
-		/**
-		 * Create a contract test from an existing base instance and a new test
-		 * class.
-		 * 
-		 * @param base
-		 *            The existing instance
-		 * @param contractTest
-		 *            The new test class.
-		 */
-		public ContractTestInfo(ContractTestInfo base, Class<?> contractTest) {
-			this.contractTest = contractTest;
-			this.contractClass = base.contractClass;
-
-			Class<?> workingClass = contractTest;
-			while (this.method == null && workingClass != Object.class) {
-				try {
-					this.method = workingClass.getDeclaredMethod(base.method
-							.getName());
-				} catch (NoSuchMethodException e) {
-					// do nothing
-				}
-				if (this.method == null) {
-					workingClass = workingClass.getSuperclass();
-				}
-			}
-			if (this.method == null) {
 				throw new IllegalStateException(
 						"Classes annotated with @Contract ("
 								+ contractTest
@@ -587,6 +550,16 @@ public class ContractSuite extends ParentRunner<Runner> {
 		public Method getMethod() {
 			return method;
 		}
+		
+		public String getProducerName()
+		{
+			return String.format( producerNameFmt, getContractName() );
+		}
+		
+		@Override
+		public String toString() {
+			return String.format( "[%s testing %s]", getSimpleTestName(), getSimpleContractName() );
+		}
 	}
 
 	private class BaseClassRunner extends BlockJUnit4ClassRunner {
@@ -595,17 +568,9 @@ public class ContractSuite extends ParentRunner<Runner> {
 			super(klass);
 		}
 
-		public Statement getSuperWithAfterClasses(Statement statement) {
-			return super.withAfterClasses(statement);
-		}
-
 		@Override
 		protected Statement withAfterClasses(Statement statement) {
 			return statement;
-		}
-
-		public Statement getSuperWithBeforeClasses(Statement statement) {
-			return super.withBeforeClasses(statement);
 		}
 
 		@Override

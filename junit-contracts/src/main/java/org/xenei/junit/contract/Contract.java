@@ -49,5 +49,6 @@ public @interface Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public @interface Inject {
+		String value() default "IProducer<%s>";
 	}
 }
