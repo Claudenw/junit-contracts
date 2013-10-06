@@ -8,6 +8,7 @@ Introduces two annotations:
 
 * @Contract - To map contract tests to the interfaces they test.
 * @Contract.Inject - To identify the producer of the object under test. 
+* @ContractImpl - To identify the class under test in some ContractSuites.
 
 Introduces one class
 
@@ -34,7 +35,7 @@ A more extreme case is java.io.Serializable where there are no methods to test b
 serializable objects must contain only serializable objects or implement three private methods with very specific 
 signatures (2 methods if before Java 1.4).  The user of the Serializable interface means that all classes derived 
 from Serializable classes are themselves serializable.  See the Serializable javadoc for details.  (An example contract
-test for the Serializable interface is provided in the examples for JUnit-contract.)
+test for the Serializable interface is provided in the examples for junit-contract.)
 
 The basic argument for the use of contract tests is that you can prove code correctness.  That is, if every object
 interface is defined as an interface, every interface has a contract test that covers all methods and their expected
