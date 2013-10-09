@@ -24,11 +24,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to declare a test suite is the suite test for an implementation.
+ * Annotation to declare the type the ContractSuite is testing.
  * <p>
  * For example <code><pre>
  * 
+ * @RunWith( ContractSuite.class )
  * @ContractImpl( AImpl.class ) public class ATSuite {...} </pre></code>
+ * 
  *                Declares <code>ATImpl</code> as the implementation that the
  *                contract suite should be built for.
  * 

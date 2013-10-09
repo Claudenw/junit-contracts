@@ -20,6 +20,7 @@ package org.xenei.junit.contract;
 
 import org.junit.Test;
 
+
 /**
  * Example of Contract test for B interface.
  */
