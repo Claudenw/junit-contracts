@@ -101,6 +101,6 @@ contract test.  If the contract test changes, the class test will use the new co
 Samples and Examples
 ====================
 
-The test code contains a number of examples and is well [src/test/java/org/xenei/junit/contract/README.md]documented for use as such.
+The test code contains a number of examples and is well [documented](tree/master/src/test/java/org/xenei/junit/contract/README.md) for use as such.
 
 The sample code tree includes a sample for the Serializable contract test.
