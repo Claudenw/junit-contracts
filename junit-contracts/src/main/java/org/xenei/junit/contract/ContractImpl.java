@@ -29,9 +29,9 @@ import java.lang.annotation.Target;
  * For example <code><pre>
  * 
  * @RunWith( ContractSuite.class )
- * @ContractImpl( AImpl.class ) public class ATSuite {...} </pre></code>
+ * @ContractImpl( FooImpl.class ) public class ATSuite {...} </pre></code>
  * 
- *                Declares <code>ATImpl</code> as the implementation that the
+ *                Declares <code>FooT_Test</code> as the implementation that the
  *                contract suite should be built for.
  * 
  * 

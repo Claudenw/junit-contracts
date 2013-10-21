@@ -21,7 +21,7 @@ package org.xenei.junit.contract;
 /**
  * C interface for example.
  * 
- * Extends A and B.
+ * Extends Foo and B.
  * 
  */
 public interface C extends A, B {

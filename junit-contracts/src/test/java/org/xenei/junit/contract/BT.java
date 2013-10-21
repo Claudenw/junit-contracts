@@ -18,6 +18,8 @@
 
 package org.xenei.junit.contract;
 
+import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -25,14 +27,46 @@ import org.junit.Test;
  * Example of Contract test for B interface.
  */
 @Contract(B.class)
-public abstract class BT {
+public class BT {
 
+	private IProducer<B> producer;
+	
+	public BT()
+	{
+		this.producer = new IProducer<B>() {
+
+			@Override
+			public B newInstance() {
+				Listener.add("BT.producer.newInstance()");
+				return new BImpl();
+			}
+
+			@Override
+			public void cleanUp() {
+				Listener.add("BT.producer.cleanUp()");
+			}
+
+		};
+	}
+	
 	@Contract.Inject
-	protected abstract IProducer<B> getProducer();
+	public final void setProducer(IProducer<B> producer)
+	{
+		this.producer = producer;
+	}
+	
+	protected final IProducer<B> getProducer() {
+		return producer;
+	}
 
 	@Test
 	public void testGetBName() {
 		Listener.add(getProducer().newInstance().getBName());
+	}
+	
+	@After
+	public final void cleanupBT() {
+		getProducer().cleanUp();
 	}
 
 }

@@ -19,7 +19,7 @@
 package org.xenei.junit.contract;
 
 /**
- * Concrete example of AT implementation.
+ * Concrete example of FooT implementation.
  * 
  */
 public class AImpl implements A {

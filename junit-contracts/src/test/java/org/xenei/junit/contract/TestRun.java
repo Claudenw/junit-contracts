@@ -21,7 +21,7 @@ package org.xenei.junit.contract;
 import org.junit.runner.JUnitCore;
 
 /**
- * A simple class to run tests using the JUnitCore program.
+ * Foo simple class to run tests using the JUnitCore program.
  * 
  */
 public class TestRun extends JUnitCore {

@@ -27,35 +27,14 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Concrete example of AT implementation.
+ * Show that FooT executes as expected
  * 
  */
-public class ATImpl extends AT {
+public class AT_Test extends AT {
 
-	// our producer
-	IProducer<A> producer = new IProducer<A>() {
-
-		@Override
-		public A newInstance() {
-			Listener.add("ATImpl.producer.newInstance()");
-			return new AImpl();
-		}
-
-		@Override
-		public void cleanUp() {
-			Listener.add("ATImpl.producer.cleanUp()");
-		}
-
-	};
-
-	@Override
-	protected IProducer<A> getProducer() {
-		return producer;
-	}
-
-	@After
-	public final void cleanupATImpl() {
-		producer.cleanUp();
+	
+	public AT_Test()
+	{
 	}
 
 	@BeforeClass
@@ -65,8 +44,8 @@ public class ATImpl extends AT {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "ATImpl.producer.newInstance()", "aname",
-				"ATImpl.producer.cleanUp()" };
+		String[] expected = { "FooT.producer.newInstance()", "aname",
+				"FooT.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

@@ -44,10 +44,37 @@ import org.xenei.junit.contract.IProducer;
  * 
  */
 @Contract(Serializable.class)
-public abstract class SerializableContractTest {
+public class SerializableContractTest {
+	
+	private IProducer<Serializable> producer;
+	
+	public SerializableContractTest() {
+		producer = new IProducer<Serializable>(){
 
+			@Override
+			public Serializable newInstance() {
+				return new Integer(5);
+			}
+
+			@Override
+			public void cleanUp() {
+				// TODO Auto-generated method stub
+				
+			}};
+	}
+	
+	
+	
 	@Contract.Inject
-	protected abstract IProducer<Serializable> getProducer();
+	public final void setProducer(IProducer<Serializable> producer)
+	{
+		this.producer = producer;
+	}
+	
+	protected final IProducer<Serializable> getProducer()
+	{
+		return producer;
+	}
 
 	
 	/**

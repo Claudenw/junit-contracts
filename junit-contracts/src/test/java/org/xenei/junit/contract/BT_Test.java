@@ -27,36 +27,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * concrete example of BT implementation
+ * Show that FooT executes as expected
  * 
  */
-public class BTImpl extends BT {
-
-	private IProducer<B> producer = new IProducer<B>() {
-
-		@Override
-		public B newInstance() {
-			Listener.add("BTImpl.producer.newInstance()");
-			return new BImpl();
-		}
-
-		@Override
-		public void cleanUp() {
-			Listener.add("BTImpl.producer.cleanUp()");
-		}
-
-	};
-
-	@Override
-	protected IProducer<B> getProducer() {
-		return producer;
-	}
-
-	@After
-	public final void cleanupBTImpl() {
-		producer.cleanUp();
-	}
-
+public class BT_Test extends BT {
+	
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
@@ -64,8 +39,8 @@ public class BTImpl extends BT {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "BTImpl.producer.newInstance()", "bname",
-				"BTImpl.producer.cleanUp()" };
+		String[] expected = { "BT.producer.newInstance()", "bname",
+				"BT.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

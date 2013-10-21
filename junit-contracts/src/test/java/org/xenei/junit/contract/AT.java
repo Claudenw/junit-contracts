@@ -18,21 +18,55 @@
 
 package org.xenei.junit.contract;
 
+import org.junit.After;
 import org.junit.Test;
 
 /**
- * example Contract test for A interface.
+ * example Contract test for Foo interface.
  * 
  */
 @Contract(A.class)
-public abstract class AT {
+public class AT {
 
+	private IProducer<A> producer;
+	
+	public AT()
+	{
+		this.producer=new IProducer<A>() {
+
+			@Override
+			public A newInstance() {
+				Listener.add("FooT.producer.newInstance()");
+				return new AImpl();
+			}
+
+			@Override
+			public void cleanUp() {
+				Listener.add("FooT.producer.cleanUp()");
+			}
+
+		};
+	}
+	
 	@Contract.Inject
-	protected abstract IProducer<A> getProducer();
+	public final void setProducer(IProducer<A> producer)
+	{
+		this.producer = producer;
+	}
+	
+	protected final IProducer<A> getProducer() {
+		return producer;
+	}
+
+	@After
+	public final void cleanupAT() {
+		getProducer().cleanUp();
+	}
 
 	@Test
 	public void testGetAName() {
 		Listener.add(getProducer().newInstance().getAName());
 	}
-
+	
+	
 }

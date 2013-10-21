@@ -18,6 +18,7 @@
 
 package org.xenei.junit.contract;
 
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -25,10 +26,42 @@ import org.junit.Test;
  * 
  */
 @Contract(C.class)
-public abstract class CT {
+public class CT {
 
+	private IProducer<C> producer;
+	
+	public CT()
+	{
+		this.producer = new IProducer<C>() {
+			
+			@Override
+			public C newInstance() {
+				Listener.add("CT.producer.newInstance()");
+				return new CImpl();
+			}
+
+			@Override
+			public void cleanUp() {
+				Listener.add("CT.producer.cleanUp()");
+			}
+		};
+	}
+	
 	@Contract.Inject
-	protected abstract IProducer<C> getProducer();
+	public final void setProducer( IProducer<C> producer )
+	{
+		this.producer = producer;
+	}
+	
+	protected final IProducer<C> getProducer()
+	{
+		return producer;
+	}
+	
+	@After
+	public final void cleanupCT() {
+		producer.cleanUp();
+	}
 
 	@Test
 	public void testGetCName() {

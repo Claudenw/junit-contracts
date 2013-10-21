@@ -23,18 +23,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.junit.Ignore;
+
 /**
  * Annotation to declare a test is the contract test for an interface.
  * <p>
  * For example <code><pre>
  * 
- * @Contract( A.class ) public class AT {...} </pre></code> Declares
- *            <code>AT</code> as a contract test for <code>A</code>
+ * @Contract( Foo.class ) public class FooT {...} </pre></code> Declares
+ *            <code>FooT</code> as a contract test for <code>Foo</code>
  * 
  * 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Ignore
 public @interface Contract {
 	/**
 	 * The class that the annotated class is the contract test for.
@@ -54,16 +57,5 @@ public @interface Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public @interface Inject {
-		/**
-		 * The class name that will be returned. This is a string that names the
-		 * class that should be created for the return type. The default is
-		 * "org.xenei.junit.contract.IProducer&lt;%s&gt;"
-		 * 
-		 * The %s is replaced with the value of the @ContractImpl annotation.
-		 * 
-		 * @return a string representing the class that will be returned.
-		 * 
-		 */
-		String value() default "IProducer<%s>";
 	}
 }

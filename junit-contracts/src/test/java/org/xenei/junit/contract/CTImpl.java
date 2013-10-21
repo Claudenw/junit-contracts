@@ -33,28 +33,6 @@ import org.junit.Test;
  */
 public class CTImpl extends CT {
 
-	private IProducer<C> producer = new IProducer<C>() {
-		@Override
-		public C newInstance() {
-			Listener.add("CTImpl.producer.newInstance()");
-			return new CImpl();
-		}
-
-		@Override
-		public void cleanUp() {
-			Listener.add("CTImpl.producer.cleanUp()");
-		}
-	};
-
-	@Override
-	protected IProducer<C> getProducer() {
-		return producer;
-	}
-
-	@After
-	public final void cleanupCTImpl() {
-		producer.cleanUp();
-	}
 
 	@Test
 	public void additionalTest() {
@@ -69,8 +47,8 @@ public class CTImpl extends CT {
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "CTImpl.additionalTest()",
-				"CTImpl.producer.cleanUp()", "CTImpl.producer.newInstance()",
-				"cname", "CTImpl.producer.cleanUp()" };
+				"CT.producer.cleanUp()", "CT.producer.newInstance()",
+				"cname", "CT.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

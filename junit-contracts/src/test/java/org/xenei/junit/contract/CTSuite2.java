@@ -33,9 +33,9 @@ import org.junit.runner.RunWith;
 @RunWith(ContractSuite.class)
 @ContractImpl(CImpl.class)
 public class CTSuite2 extends CTImpl {
-	@Override
+
 	@Contract.Inject
-	public IProducer<C> getProducer() {
+	public IProducer<C> getInjected() {
 		return super.getProducer();
 	}
 
@@ -47,11 +47,11 @@ public class CTSuite2 extends CTImpl {
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "CTImpl.additionalTest()",
-				"CTImpl.producer.cleanUp()", "CTImpl.producer.newInstance()",
-				"cname", "CTImpl.producer.cleanUp()",
-				"CTImpl.producer.newInstance()", "cname version of aname",
-				"CTImpl.producer.cleanUp()", "CTImpl.producer.newInstance()",
-				"cname version of bname", "CTImpl.producer.cleanUp()" };
+				"CT.producer.cleanUp()", "CT.producer.newInstance()",
+				"cname", "CT.producer.cleanUp()",
+				"CT.producer.newInstance()", "cname version of aname",
+				"CT.producer.cleanUp()", "CT.producer.newInstance()",
+				"cname version of bname", "CT.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));
