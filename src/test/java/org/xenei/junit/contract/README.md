@@ -76,7 +76,7 @@ This results in a pattern like:
     }
 
 	
-
+ 
 
 The DTImplSuite test case implements this pattern.
 
