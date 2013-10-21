@@ -21,37 +21,42 @@ package org.xenei.junit.contract;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Show that AT executes as expected when running
- * as a concrete extension of AT
+ * Show that AT executes correctly as a concrete implementation.
+ * 
+ * This will only run the tests defined in AT without running any other
+ * interface tests. Compare this to AImplContractTest
+ * 
+ * The use of the Listener interface in the before and after methods are to
+ * track that the tests are run correctly and in the proper order. This would
+ * not be used in a production test but are part of our testing of
+ * junit-contracts.
  * 
  */
 public class AImplTest extends AT<AImpl> {
 
-	
-	public AImplTest()
-	{
+	public AImplTest() {
+		// set the producer
 		setProducer(new IProducer<AImpl>() {
 
 			@Override
 			public AImpl newInstance() {
-				Listener.add("AT_Test.producer.newInstance()");
+				Listener.add("AImplTest.producer.newInstance()");
 				return new AImpl();
 			}
 
 			@Override
 			public void cleanUp() {
-				Listener.add("AT_Test.producer.cleanUp()");
+				Listener.add("AImplTest.producer.cleanUp()");
 			}
 
 		});
 	}
-	
+
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
@@ -59,8 +64,8 @@ public class AImplTest extends AT<AImpl> {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "AT_Test.producer.newInstance()", "aname",
-				"AT_Test.producer.cleanUp()" };
+		String[] expected = { "AImplTest.producer.newInstance()", "aname",
+				"AImplTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

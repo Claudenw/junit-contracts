@@ -19,19 +19,31 @@
 package org.xenei.junit.contract;
 
 /**
- * Concrete implementation o A
+ * Aconcrete implementation of C with an extra method to test
  * 
  */
-public class AImpl implements A {
+public class CImpl2 implements C {
+	@Override
+	public String getCName() {
+		return "cname";
+	}
 
 	@Override
 	public String getAName() {
-		return "aname";
+		return "cname version of aname";
+	}
+
+	@Override
+	public String getBName() {
+		return "cname version of bname";
 	}
 
 	@Override
 	public String toString() {
-		return "AImpl";
+		return "CImpl2";
 	}
 
+	public String extraMethod() {
+		return "called Extra Method";
+	}
 }

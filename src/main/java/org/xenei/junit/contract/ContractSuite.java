@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -55,12 +54,25 @@ import org.xenei.junit.contract.info.TestInfo;
  * classes on the class path to find all the test implementations that should be
  * run by this test suite.
  * <p>
- * It must extend a test annotated with (or derived from a super class that is
- * annotated with) <code>@Contract</code> and that implementation must include a
- * method with the <code>@Contract.Inject</code> annotation that returns an
- * instance of the Producer interface that will create an instance of the class
- * under test.
- * 
+ * Tests annotated with <code>@RunWith( ContractSuite.class )</code> must:
+ * <ol>
+ * <li>Have a <code>ContractImpl</code> annotation specifying the implementation being
+ * tested</li>
+ * <li>Include a <code>@Contract.Injeect</code> annotated getter that returns
+ * an IProducer<x> where "x" is the class specified in the ContractImpl</li>
+ * </ol>
+ * <p>
+ * The ContractSuite will:
+ * <ol>
+ * <li>Instantiate the class annotated with <code>@RunWith( ContractSuite.class )</code></li>
+ * <li>Find all the Contract tests for the class specified by ContractImpl and add them to the
+ * test suite</li>
+ * <li>execute all of the tests</li>
+ * </ol>
+ * </p><p>
+ * <b>NOTE:</b>If the class annotated with <code>@RunWith( ContractSuite.class )</code> implements
+ * Dynamic the above requirements change.  See Dynamic for more information.
+ * </p>
  */
 public class ContractSuite extends ParentRunner<Runner> {
 	private static final Logger LOG = LoggerFactory

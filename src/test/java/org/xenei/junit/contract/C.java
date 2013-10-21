@@ -19,9 +19,10 @@
 package org.xenei.junit.contract;
 
 /**
- * C interface for example.
+ * "C" interface for example and testing.
  * 
- * Extends Foo and B.
+ * Note that this interface extends A and B. The contract test for C should
+ * therefore execute the A and B tests as well.
  * 
  */
 public interface C extends A, B {

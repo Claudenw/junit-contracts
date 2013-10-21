@@ -33,11 +33,13 @@ import org.junit.Ignore;
  * @Contract( Foo.class ) public class FooT {...} </pre></code> Declares
  *            <code>FooT</code> as a contract test for <code>Foo</code>
  * 
+ * When using this annotation it is recommended to add the @Ignore annotation
+ * as well to prevent some test runners from attempting to run the tests 
+ * outside of the ContractSuite runner.
  * 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Ignore
 public @interface Contract {
 	/**
 	 * The class that the annotated class is the contract test for.
@@ -48,8 +50,7 @@ public @interface Contract {
 	 * The <code>Contract.Inject</code> annotation specifies the method to be
 	 * called to retrieve an instance of a producer for the class under test.
 	 * 
-	 * By default the method must producer an IProducer with the same type as
-	 * the ContractImpl.
+	 * The method must produce an instance of IProducer.
 	 * 
 	 * instance of the Producer interface (@see IProducer} that will generate
 	 * and instance the object under test.

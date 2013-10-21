@@ -30,8 +30,7 @@ public class BImpl implements B {
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "BImpl";
 	}
 }

@@ -18,47 +18,56 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
- * An example Contract test for B interface.
+ * Show that CT executes correctly as a concrete implementation.
  * 
- * Defining BT as a generic class with the type extending the type we are
- * testing (e.g. BT&lt;T extends B&gt;) ensures that there are no issues with
- * using derived classes in the tests.
+ * This will only run the tests defined in CT without running any other
+ * interface tests. Compare this to CImplContractTest
  * 
  * The use of the Listener interface in the before and after methods are to
  * track that the tests are run correctly and in the proper order. This would
  * not be used in a production test but are part of our testing of
  * junit-contracts.
+ * 
  */
-@Ignore("Is a contract test definition")
-// without "ignore" this some test runners will attempt to run this test.
-@Contract(B.class)
-// Define this as the contract test for the B interface
-public class BT<T extends B> {
+public class CImplTest extends CT<CImpl> {
 
-	private IProducer<T> producer;
+	public CImplTest() {
+		setProducer(new IProducer<CImpl>() {
 
-	@Contract.Inject
-	public final void setProducer(IProducer<T> producer) {
-		this.producer = producer;
+			@Override
+			public CImpl newInstance() {
+				Listener.add("CImplTest.producer.newInstance()");
+				return new CImpl();
+			}
+
+			@Override
+			public void cleanUp() {
+				Listener.add("CImplTest.producer.cleanUp()");
+			}
+
+		});
 	}
 
-	protected final IProducer<T> getProducer() {
-		return producer;
+	@BeforeClass
+	public static void beforeClass() {
+		Listener.clear();
 	}
 
-	@Test
-	public void testGetBName() {
-		Listener.add(getProducer().newInstance().getBName());
-	}
+	@AfterClass
+	public static void afterClass() {
+		String[] expected = { "CImplTest.producer.newInstance()", "cname",
+				"CImplTest.producer.cleanUp()" };
 
-	@After
-	public final void cleanupBT() {
-		getProducer().cleanUp();
-	}
+		List<String> l = Listener.get();
+		Assert.assertEquals(l, Arrays.asList(expected));
 
+	}
 }

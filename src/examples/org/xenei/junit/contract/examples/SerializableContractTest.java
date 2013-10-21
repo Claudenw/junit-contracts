@@ -43,16 +43,17 @@ import org.xenei.junit.contract.IProducer;
  * throws ObjectStreamException;
  * 
  */
+@Ignore
 @Contract(Serializable.class)
-public class SerializableContractTest {
+public class SerializableContractTest<T extends Serializable> {
 	
-	private IProducer<Serializable> producer;
+	private IProducer<T> producer;
 	
 	public SerializableContractTest() {
-		producer = new IProducer<Serializable>(){
+		producer = new IProducer<T>(){
 
 			@Override
-			public Serializable newInstance() {
+			public T newInstance() {
 				return new Integer(5);
 			}
 
@@ -66,12 +67,12 @@ public class SerializableContractTest {
 	
 	
 	@Contract.Inject
-	public final void setProducer(IProducer<Serializable> producer)
+	public final void setProducer(IProducer<T> producer)
 	{
 		this.producer = producer;
 	}
 	
-	protected final IProducer<Serializable> getProducer()
+	protected final IProducer<T> getProducer()
 	{
 		return producer;
 	}

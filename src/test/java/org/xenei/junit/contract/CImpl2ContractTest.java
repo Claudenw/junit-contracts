@@ -21,19 +21,22 @@ package org.xenei.junit.contract;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Run the C tests using the contract suite runner.
+ * Run the C tests using the contract suite runner on CImpl2. This test includes
+ * calling the extra method on CImpl2.
  * 
  * This will run the tests defined in CT as well as AT (A contract tests) and BT
  * (B contract tests). Compare this to CImplTest.
  * 
  * Note that producer used for the AT and BT classes will be the
- * IProducer&lt;CImpl$gt; from this class.
+ * IProducer&lt;CImpl2$gt; from this class.
  * 
  * The use of the Listener interface in the before and after methods are to
  * track that the tests are run correctly and in the proper order. This would
@@ -43,28 +46,45 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ContractSuite.class)
 // run as a contract test
-@ContractImpl(CImpl.class)
-// testing the CImpl class.
-public class CImplContractTest {
+@ContractImpl(CImpl2.class)
+// testing the CImpl2 class.
+public class CImpl2ContractTest {
 	// the producer to use for all the tests
-	private IProducer<CImpl> producer = new IProducer<CImpl>() {
+	private IProducer<CImpl2> producer = new IProducer<CImpl2>() {
 		@Override
-		public CImpl newInstance() {
-			Listener.add("CImplContractTest.producer.newInstance()");
-			return new CImpl();
+		public CImpl2 newInstance() {
+			Listener.add("CImpl2ContractTest.producer.newInstance()");
+			return new CImpl2();
 		}
 
 		@Override
 		public void cleanUp() {
-			Listener.add("CImplContractTest.producer.cleanUp()");
+			Listener.add("CImpl2ContractTest.producer.cleanUp()");
 		}
 	};
+
+	/**
+	 * Test to test the extra method of the CImpl2 class not defined by the C
+	 * interface.
+	 */
+	@Test
+	public void testExtraMethod() {
+		Listener.add(producer.newInstance().extraMethod());
+	}
+
+	/**
+	 * Method to cleanup after the above test.
+	 */
+	@After
+	public final void afterCImpl2ContractTest() {
+		producer.cleanUp();
+	}
 
 	/**
 	 * The method to inject the producer into the test classes.
 	 */
 	@Contract.Inject
-	public IProducer<CImpl> getProducer() {
+	public IProducer<CImpl2> getProducer() {
 		return producer;
 	}
 
@@ -75,14 +95,16 @@ public class CImplContractTest {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CImplContractTest.producer.newInstance()",
-				"cname", "CImplContractTest.producer.cleanUp()",
-				"CImplContractTest.producer.newInstance()",
+		String[] expected = { "CImpl2ContractTest.producer.newInstance()",
+				"called Extra Method", "CImpl2ContractTest.producer.cleanUp()",
+				"CImpl2ContractTest.producer.newInstance()", "cname",
+				"CImpl2ContractTest.producer.cleanUp()",
+				"CImpl2ContractTest.producer.newInstance()",
 				"cname version of aname",
-				"CImplContractTest.producer.cleanUp()",
-				"CImplContractTest.producer.newInstance()",
+				"CImpl2ContractTest.producer.cleanUp()",
+				"CImpl2ContractTest.producer.newInstance()",
 				"cname version of bname",
-				"CImplContractTest.producer.cleanUp()" };
+				"CImpl2ContractTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

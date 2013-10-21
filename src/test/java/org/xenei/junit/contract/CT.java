@@ -23,27 +23,37 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Example of Contract test for C interface.
- * @param <T>
+ * An example Contract test for C interface.
  * 
+ * Defining CT as a generic class with the type extending the type we are
+ * testing (e.g. CT&lt;T extends C&gt;) ensures that there are no issues with
+ * using derived classes in the tests.
+ * 
+ * The use of the Listener interface in the before and after methods are to
+ * track that the tests are run correctly and in the proper order. This would
+ * not be used in a production test but are part of our testing of
+ * junit-contracts.
  */
-@Ignore
+@Ignore("Is a contract test definition")
+// without "ignore" this some test runners will attempt to run this test.
 @Contract(C.class)
+// Define this as the contract test for the C interface
 public class CT<T extends C> {
 
 	private IProducer<T> producer;
-	
+
+	/**
+	 * The method used to inject the producer into the test.
+	 */
 	@Contract.Inject
-	public final void setProducer( IProducer<T> producer )
-	{
+	public final void setProducer(IProducer<T> producer) {
 		this.producer = producer;
 	}
-	
-	protected final IProducer<T> getProducer()
-	{
+
+	protected final IProducer<T> getProducer() {
 		return producer;
 	}
-	
+
 	@After
 	public final void cleanupCT() {
 		producer.cleanUp();

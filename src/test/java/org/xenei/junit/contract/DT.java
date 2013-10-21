@@ -23,10 +23,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * An example Contract test for B interface.
+ * An example Contract test for D interface.
  * 
- * Defining BT as a generic class with the type extending the type we are
- * testing (e.g. BT&lt;T extends B&gt;) ensures that there are no issues with
+ * Defining DT as a generic class with the type extending the type we are
+ * testing (e.g. DT&lt;T extends D&gt;) ensures that there are no issues with
  * using derived classes in the tests.
  * 
  * The use of the Listener interface in the before and after methods are to
@@ -36,10 +36,11 @@ import org.junit.Test;
  */
 @Ignore("Is a contract test definition")
 // without "ignore" this some test runners will attempt to run this test.
-@Contract(B.class)
-// Define this as the contract test for the B interface
-public class BT<T extends B> {
+@Contract(D.class)
+// Define this as the contract test for the D interface
+public class DT<T extends D> {
 
+	// the producer for the tests
 	private IProducer<T> producer;
 
 	@Contract.Inject
@@ -51,14 +52,23 @@ public class BT<T extends B> {
 		return producer;
 	}
 
-	@Test
-	public void testGetBName() {
-		Listener.add(getProducer().newInstance().getBName());
-	}
-
 	@After
-	public final void cleanupBT() {
-		getProducer().cleanUp();
+	public final void cleanupCT() {
+		producer.cleanUp();
 	}
 
+	@Test
+	public void testGetDName() {
+		Listener.add(getProducer().newInstance().getDName());
+	}
+
+	@Test
+	public void testGetA() {
+		Listener.add(getProducer().newInstance().getA().toString());
+	}
+
+	@Test
+	public void testGetB() {
+		Listener.add(getProducer().newInstance().getB().toString());
+	}
 }

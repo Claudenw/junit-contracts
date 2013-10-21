@@ -23,34 +23,44 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * example Contract test for Foo interface.
+ * An example Contract test for A interface.
  * 
+ * Defining AT as a generic class with the type extending the type we are
+ * testing (e.g. AT&lt;T extends A&gt;) ensures that there are no issues with
+ * using derived classes in the tests.
+ * 
+ * The use of the Listener interface in the before and after methods are to
+ * track that the tests are run correctly and in the proper order. This would
+ * not be used in a production test but are part of our testing of
+ * junit-contracts.
  */
-@Ignore
+@Ignore("Is a contract test definition")
+// without "ignore" this some test runners will attempt to run this test.
 @Contract(A.class)
+// Define this as the contract test for the A interface
 public class AT<T extends A> {
 
+	// the producer we will user
 	private IProducer<T> producer;
-	
+
 	@Contract.Inject
-	public final void setProducer(IProducer<T> producer)
-	{
+	// define the method to set producer.
+	public final void setProducer(IProducer<T> producer) {
 		this.producer = producer;
 	}
-	
+
 	protected final IProducer<T> getProducer() {
 		return producer;
 	}
 
 	@After
 	public final void cleanupAT() {
-		getProducer().cleanUp();
+		getProducer().cleanUp(); // clean up the producer for the next run
 	}
 
 	@Test
 	public void testGetAName() {
 		Listener.add(getProducer().newInstance().getAName());
 	}
-	
-	
+
 }

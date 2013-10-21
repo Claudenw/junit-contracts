@@ -21,22 +21,39 @@ package org.xenei.junit.contract;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
- * concrete example of CT implementation
+ * Show that DT executes correctly as a concrete implementation.
+ * 
+ * This will only run the tests defined in DT without running any other
+ * interface tests. Compare this to DImplContractTest
+ * 
+ * The use of the Listener interface in the before and after methods are to
+ * track that the tests are run correctly and in the proper order. This would
+ * not be used in a production test but are part of our testing of
+ * junit-contracts.
  * 
  */
-public class CTImpl extends CT {
+public class DImplTest extends DT<DImpl> {
 
+	public DImplTest() {
+		setProducer(new IProducer<DImpl>() {
 
-	@Test
-	public void additionalTest() {
-		Listener.add("CTImpl.additionalTest()");
+			@Override
+			public DImpl newInstance() {
+				Listener.add("DImplTest.producer.newInstance()");
+				return new DImpl();
+			}
+
+			@Override
+			public void cleanUp() {
+				Listener.add("DImplTest.producer.cleanUp()");
+			}
+
+		});
 	}
 
 	@BeforeClass
@@ -46,11 +63,15 @@ public class CTImpl extends CT {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CTImpl.additionalTest()",
-				"CT.producer.cleanUp()", "CT.producer.newInstance()",
-				"cname", "CT.producer.cleanUp()" };
+		String[] expected = { "DImplTest.producer.newInstance()", "dname",
+				"DImplTest.producer.cleanUp()",
+				"DImplTest.producer.newInstance()", "AImpl",
+				"DImplTest.producer.cleanUp()",
+				"DImplTest.producer.newInstance()", "BImpl",
+				"DImplTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));
+
 	}
 }

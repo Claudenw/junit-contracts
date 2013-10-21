@@ -19,7 +19,7 @@
 package org.xenei.junit.contract;
 
 /**
- * Foo interface for example
+ * "A" interface for example and testing
  * 
  */
 public interface A {

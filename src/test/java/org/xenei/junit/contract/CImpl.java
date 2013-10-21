@@ -19,7 +19,7 @@
 package org.xenei.junit.contract;
 
 /**
- * concrete example of CT implementation
+ * concrete implementation of C
  * 
  */
 public class CImpl implements C {
@@ -37,10 +37,9 @@ public class CImpl implements C {
 	public String getBName() {
 		return "cname version of bname";
 	}
-	
+
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "CImpl";
 	}
 }

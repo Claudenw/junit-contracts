@@ -21,20 +21,27 @@ package org.xenei.junit.contract;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Show that BT_Test executes as expected
+ * Show that BT executes correctly as a concrete implementation.
+ * 
+ * This will only run the tests defined in BT without running any other
+ * interface tests. Compare this to BImplContractTest
+ * 
+ * The use of the Listener interface in the before and after methods are to
+ * track that the tests are run correctly and in the proper order. This would
+ * not be used in a production test but are part of our testing of
+ * junit-contracts.
  * 
  */
 public class BImplTest extends BT<BImpl> {
-	
-	public BImplTest()
-	{
-		setProducer( new IProducer<BImpl>() {
+
+	public BImplTest() {
+		// set the producer
+		setProducer(new IProducer<BImpl>() {
 
 			@Override
 			public BImpl newInstance() {
@@ -49,7 +56,7 @@ public class BImplTest extends BT<BImpl> {
 
 		});
 	}
-	
+
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
