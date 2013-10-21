@@ -1,5 +1,5 @@
-junit-contracts: A contract test suite runner 
-=============================================
+junit-contracts tests: A series of examples
+===========================================
 
 A suite runner for use with JUnit @RunWith annotation to run contract tests for interfaces.  Handles merging multiple tests from individual
 contract tests into a single test suite for concrete implementations of one or more interfaces.
@@ -101,6 +101,6 @@ contract test.  If the contract test changes, the class test will use the new co
 Samples and Examples
 ====================
 
-The test code contains a number of examples and is well [src/test/java/org/xenei/junit/contract/README.md]documented for use as such.
+The test code contains a number of examples and is well documented for use as such.
 
 The sample code tree includes a sample for the Serializable contract test.
