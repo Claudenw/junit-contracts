@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collection;
 
 /**
  * Interface that defines a test suite as being dynamic.
@@ -16,7 +17,7 @@ import java.lang.annotation.Target;
  */
 public interface Dynamic {
 
-	public Iterable<Class<?>> getSuiteClasses();
+	public Collection<Class<?>> getSuiteClasses();
 
 	/**
 	 * The <code>Dynamic.Inject</code> annotation specifies the getter to be

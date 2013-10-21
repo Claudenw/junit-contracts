@@ -111,8 +111,8 @@ https://oss.sonatype.org/service/local/staging/deploy/maven2/
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -152,19 +152,19 @@ https://oss.sonatype.org/service/local/staging/deploy/maven2/
 						</goals>
 					</execution>
 					<execution>
-                        <id>attach-examples</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <skipSource>true</skipSource>
-                           <classifier>examples</classifier>
-                            <includes>
-                                <include>${basedir}/src/examples</include>
-                            </includes>
-                            <attach>true</attach>
-                        </configuration>
-                    </execution>
+						<id>attach-examples</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<skipSource>true</skipSource>
+							<classifier>examples</classifier>
+							<includes>
+								<include>${basedir}/src/examples</include>
+							</includes>
+							<attach>true</attach>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

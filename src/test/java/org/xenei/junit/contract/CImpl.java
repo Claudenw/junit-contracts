@@ -19,14 +19,28 @@
 package org.xenei.junit.contract;
 
 /**
- * concrete example of BT implementation
+ * concrete example of CT implementation
  * 
  */
-public class BImpl implements B {
+public class CImpl implements C {
+	@Override
+	public String getCName() {
+		return "cname";
+	}
+
+	@Override
+	public String getAName() {
+		return "cname version of aname";
+	}
 
 	@Override
 	public String getBName() {
-		return "bname";
+		return "cname version of bname";
 	}
-
+	
+	@Override
+	public String toString()
+	{
+		return "CImpl";
+	}
 }

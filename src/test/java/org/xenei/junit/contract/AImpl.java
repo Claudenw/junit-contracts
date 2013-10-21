@@ -28,5 +28,11 @@ public class AImpl implements A {
 	public String getAName() {
 		return "aname";
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "AImpl";
+	}
 
 }

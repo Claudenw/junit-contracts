@@ -19,6 +19,7 @@
 package org.xenei.junit.contract;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -149,26 +150,34 @@ public class ContractSuite extends ParentRunner<Runner> {
 			errors.add(e);
 			return r;
 		}
-
-		for (Class<?> test : dynamic.getSuiteClasses()) {
-			RunWith runwith = test.getAnnotation(RunWith.class);
-			if (runwith != null && runwith.value().equals(ContractSuite.class)) {
-				impl = getContractImpl(test, errors);
-				if (impl != null) {
-					try {
-						DynamicTestInfo parentTestInfo = new DynamicTestInfo(
-								test, impl, dynamicSuiteInfo);
-						addSpecifiedClasses(r, test, builder, errors,
-								contractTestMap, dynamic, parentTestInfo);
-					} catch (IllegalStateException e) {
-						errors.add(e);
+		
+		Collection<Class<?>> tests = dynamic.getSuiteClasses();
+		if (tests == null || tests.size() == 0)
+		{
+			errors.add( new IllegalStateException("Dynamic suite did not return a list of classes to execute"));
+		}
+		else
+		{
+			for (Class<?> test : tests) {
+				RunWith runwith = test.getAnnotation(RunWith.class);
+				if (runwith != null && runwith.value().equals(ContractSuite.class)) {
+					impl = getContractImpl(test, errors);
+					if (impl != null) {
+						try {
+							DynamicTestInfo parentTestInfo = new DynamicTestInfo(
+									test, impl, dynamicSuiteInfo);
+							addSpecifiedClasses(r, test, builder, errors,
+									contractTestMap, dynamic, parentTestInfo);
+						} catch (IllegalStateException e) {
+							errors.add(e);
+						}
 					}
-				}
-			} else {
-				try {
-					r.add(builder.runnerForClass(test));
-				} catch (Throwable t) {
-					errors.add(t);
+				} else {
+					try {
+						r.add(builder.runnerForClass(test));
+					} catch (Throwable t) {
+						errors.add(t);
+					}
 				}
 			}
 		}

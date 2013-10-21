@@ -21,36 +21,35 @@ package org.xenei.junit.contract;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 /**
- * Example of ContractSuite for C interface using the CTImpl
+ * Show that BT_Test executes as expected
  * 
  */
-@RunWith(ContractSuite.class)
-@ContractImpl(CImpl.class)
-public class CTSuite {
-	private IProducer<C> producer = new IProducer<C>() {
-		@Override
-		public C newInstance() {
-			Listener.add("CTSuite.producer.newInstance()");
-			return new CImpl();
-		}
+public class BImplTest extends BT<BImpl> {
+	
+	public BImplTest()
+	{
+		setProducer( new IProducer<BImpl>() {
 
-		@Override
-		public void cleanUp() {
-			Listener.add("CTSuite.producer.cleanUp()");
-		}
-	};
+			@Override
+			public BImpl newInstance() {
+				Listener.add("BImplTest.producer.newInstance()");
+				return new BImpl();
+			}
 
-	@Contract.Inject
-	public IProducer<C> getProducer() {
-		return producer;
+			@Override
+			public void cleanUp() {
+				Listener.add("BImplTest.producer.cleanUp()");
+			}
+
+		});
 	}
-
+	
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
@@ -58,11 +57,8 @@ public class CTSuite {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CTSuite.producer.newInstance()", "cname",
-				"CTSuite.producer.cleanUp()", "CTSuite.producer.newInstance()",
-				"cname version of aname", "CTSuite.producer.cleanUp()",
-				"CTSuite.producer.newInstance()", "cname version of bname",
-				"CTSuite.producer.cleanUp()" };
+		String[] expected = { "BImplTest.producer.newInstance()", "bname",
+				"BImplTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

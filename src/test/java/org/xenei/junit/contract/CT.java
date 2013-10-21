@@ -19,41 +19,27 @@
 package org.xenei.junit.contract;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Example of Contract test for C interface.
+ * @param <T>
  * 
  */
+@Ignore
 @Contract(C.class)
-public class CT {
+public class CT<T extends C> {
 
-	private IProducer<C> producer;
-	
-	public CT()
-	{
-		this.producer = new IProducer<C>() {
-			
-			@Override
-			public C newInstance() {
-				Listener.add("CT.producer.newInstance()");
-				return new CImpl();
-			}
-
-			@Override
-			public void cleanUp() {
-				Listener.add("CT.producer.cleanUp()");
-			}
-		};
-	}
+	private IProducer<T> producer;
 	
 	@Contract.Inject
-	public final void setProducer( IProducer<C> producer )
+	public final void setProducer( IProducer<T> producer )
 	{
 		this.producer = producer;
 	}
 	
-	protected final IProducer<C> getProducer()
+	protected final IProducer<T> getProducer()
 	{
 		return producer;
 	}

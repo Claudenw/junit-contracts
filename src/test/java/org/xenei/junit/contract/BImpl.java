@@ -18,55 +18,20 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.After;
-import org.junit.Test;
-
 /**
- * example Contract test for Foo interface.
+ * concrete example of BT implementation
  * 
  */
-@Contract(A.class)
-public class AT {
+public class BImpl implements B {
 
-	private IProducer<A> producer;
-	
-	public AT()
+	@Override
+	public String getBName() {
+		return "bname";
+	}
+
+	@Override
+	public String toString()
 	{
-		this.producer=new IProducer<A>() {
-
-			@Override
-			public A newInstance() {
-				Listener.add("FooT.producer.newInstance()");
-				return new AImpl();
-			}
-
-			@Override
-			public void cleanUp() {
-				Listener.add("FooT.producer.cleanUp()");
-			}
-
-		};
+		return "BImpl";
 	}
-	
-	@Contract.Inject
-	public final void setProducer(IProducer<A> producer)
-	{
-		this.producer = producer;
-	}
-	
-	protected final IProducer<A> getProducer() {
-		return producer;
-	}
-
-	@After
-	public final void cleanupAT() {
-		getProducer().cleanUp();
-	}
-
-	@Test
-	public void testGetAName() {
-		Listener.add(getProducer().newInstance().getAName());
-	}
-	
-	
 }

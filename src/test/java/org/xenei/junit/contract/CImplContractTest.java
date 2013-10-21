@@ -32,11 +32,23 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ContractSuite.class)
 @ContractImpl(CImpl.class)
-public class CTSuite2 extends CTImpl {
+public class CImplContractTest {
+	private IProducer<CImpl> producer = new IProducer<CImpl>() {
+		@Override
+		public CImpl newInstance() {
+			Listener.add("CImplContractTest.producer.newInstance()");
+			return new CImpl();
+		}
+
+		@Override
+		public void cleanUp() {
+			Listener.add("CImplContractTest.producer.cleanUp()");
+		}
+	};
 
 	@Contract.Inject
-	public IProducer<C> getInjected() {
-		return super.getProducer();
+	public IProducer<CImpl> getProducer() {
+		return producer;
 	}
 
 	@BeforeClass
@@ -46,12 +58,11 @@ public class CTSuite2 extends CTImpl {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CTImpl.additionalTest()",
-				"CT.producer.cleanUp()", "CT.producer.newInstance()",
-				"cname", "CT.producer.cleanUp()",
-				"CT.producer.newInstance()", "cname version of aname",
-				"CT.producer.cleanUp()", "CT.producer.newInstance()",
-				"cname version of bname", "CT.producer.cleanUp()" };
+		String[] expected = { "CImplContractTest.producer.newInstance()", "cname",
+				"CImplContractTest.producer.cleanUp()", "CImplContractTest.producer.newInstance()",
+				"cname version of aname", "CImplContractTest.producer.cleanUp()",
+				"CImplContractTest.producer.newInstance()", "cname version of bname",
+				"CImplContractTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

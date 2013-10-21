@@ -18,55 +18,52 @@
 
 package org.xenei.junit.contract;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
- * Example of Contract test for B interface.
+ * Show that AT executes as expected when running
+ * as a concrete extension of AT
+ * 
  */
-@Contract(B.class)
-public class BT {
+public class AImplTest extends AT<AImpl> {
 
-	private IProducer<B> producer;
 	
-	public BT()
+	public AImplTest()
 	{
-		this.producer = new IProducer<B>() {
+		setProducer(new IProducer<AImpl>() {
 
 			@Override
-			public B newInstance() {
-				Listener.add("BT.producer.newInstance()");
-				return new BImpl();
+			public AImpl newInstance() {
+				Listener.add("AT_Test.producer.newInstance()");
+				return new AImpl();
 			}
 
 			@Override
 			public void cleanUp() {
-				Listener.add("BT.producer.cleanUp()");
+				Listener.add("AT_Test.producer.cleanUp()");
 			}
 
-		};
+		});
 	}
 	
-	@Contract.Inject
-	public final void setProducer(IProducer<B> producer)
-	{
-		this.producer = producer;
-	}
-	
-	protected final IProducer<B> getProducer() {
-		return producer;
+	@BeforeClass
+	public static void beforeClass() {
+		Listener.clear();
 	}
 
-	@Test
-	public void testGetBName() {
-		Listener.add(getProducer().newInstance().getBName());
-	}
-	
-	@After
-	public final void cleanupBT() {
-		getProducer().cleanUp();
-	}
+	@AfterClass
+	public static void afterClass() {
+		String[] expected = { "AT_Test.producer.newInstance()", "aname",
+				"AT_Test.producer.cleanUp()" };
 
+		List<String> l = Listener.get();
+		Assert.assertEquals(l, Arrays.asList(expected));
+
+	}
 }

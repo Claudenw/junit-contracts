@@ -18,32 +18,38 @@
 
 package org.xenei.junit.contract;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 /**
- * Show that FooT executes as expected
- * 
+ * Example of Contract test for B interface.
  */
-public class BT_Test extends BT {
+@Ignore
+@Contract(B.class)
+public class BT<T extends B> {
+
+	private IProducer<T> producer;
 	
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
+	@Contract.Inject
+	public final void setProducer(IProducer<T> producer)
+	{
+		this.producer = producer;
+	}
+	
+	protected final IProducer<T> getProducer() {
+		return producer;
 	}
 
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "BT.producer.newInstance()", "bname",
-				"BT.producer.cleanUp()" };
-
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
-
+	@Test
+	public void testGetBName() {
+		Listener.add(getProducer().newInstance().getBName());
 	}
+	
+	@After
+	public final void cleanupBT() {
+		getProducer().cleanUp();
+	}
+
 }
