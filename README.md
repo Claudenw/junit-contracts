@@ -27,6 +27,9 @@ Maven Repository Info
      Artifact Id: junit-contracts 
      Version: 0.0.2-SNAPSHOT
 
+Snapshot versions are hosted at:
+
+     https://oss.sonatype.org/content/repositories/snapshots/
 
 Contract Tests 
 ==============
