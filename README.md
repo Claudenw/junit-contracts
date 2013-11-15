@@ -23,9 +23,11 @@ Introduces two interfaces
 Maven Repository Info 
 ---------------------
 
+Release version
+
      Group Id: org.xenei 
      Artifact Id: junit-contracts 
-     Version: 0.0.2-SNAPSHOT
+     Version: 0.0.2
 
 Snapshot versions are hosted at:
 
