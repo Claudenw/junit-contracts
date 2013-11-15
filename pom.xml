@@ -14,9 +14,9 @@
 		<name>XENEI.com</name>
 	</organization>
 	<scm>
-		<url>scm:git:git@github.com:Claudenw/junit-contracts.git</url>
 		<developerConnection>https://github.com/Claudenw/junit-contracts</developerConnection>
-		<connection>https://github.com/Claudenw/junit-contracts</connection>
+		<connection>scm:git:git@github.com:Claudenw/junit-contracts.git</connection>
+		<url>https://github.com/Claudenw/junit-contracts</url>
 	</scm>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -118,6 +118,7 @@ https://oss.sonatype.org/service/local/staging/deploy/maven2/
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
 				<configuration>
 					<keyname>Xenei.com</keyname>
 				</configuration>
