@@ -17,8 +17,6 @@
 		<url>scm:git:git@github.com:Claudenw/junit-contracts.git</url>
 		<connection>scm:git:git@github.com:Claudenw/junit-contracts.git</connection>
 		<developerConnection>scm:git:git@github.com:Claudenw/junit-contracts.git</developerConnection>
-		<!-- <url>https://github.com/Claudenw/junit-contracts</url> 
-		<developerConnection>https://github.com/Claudenw/junit-contracts</developerConnection>-->
 	</scm>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
