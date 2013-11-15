@@ -14,9 +14,11 @@
 		<name>XENEI.com</name>
 	</organization>
 	<scm>
-		<developerConnection>https://github.com/Claudenw/junit-contracts</developerConnection>
+		<url>scm:git:git@github.com:Claudenw/junit-contracts.git</url>
 		<connection>scm:git:git@github.com:Claudenw/junit-contracts.git</connection>
-		<url>https://github.com/Claudenw/junit-contracts</url>
+		<developerConnection>scm:git:git@github.com:Claudenw/junit-contracts.git</developerConnection>
+		<!-- <url>https://github.com/Claudenw/junit-contracts</url> 
+		<developerConnection>https://github.com/Claudenw/junit-contracts</developerConnection>-->
 	</scm>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
