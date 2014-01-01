@@ -31,7 +31,7 @@ public class TestRun extends JUnitCore {
 	}
 
 	public static void main(String[] args) {
-		JUnitCore.main("org.xenei.junit.contract.CTSuite");
+		JUnitCore.main("org.xenei.junit.contract.CImplContractTest");
 	}
 
 }

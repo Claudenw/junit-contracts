@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that records informatin so that the test cases can ensure that the
+ * A class that records information so that the test cases can ensure that the
  * proper methods were called in the proper order.
  * <p>
  * This class creates a thread local version of itself so that the static

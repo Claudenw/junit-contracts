@@ -30,7 +30,8 @@ import org.xenei.junit.contract.info.DynamicTestInfo;
 import org.xenei.junit.contract.info.TestInfo;
 
 /**
- * Class to run the Contract annotated tests in a suite.
+ * Class to run the Contract annotated tests in a suite or stand alone
+ * 
  * 
  */
 public class ContractTestRunner extends BlockJUnit4ClassRunner {
@@ -44,7 +45,7 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	private final Method getter;
 
 	/**
-	 * Create a test runner
+	 * Create a test runner within the ContractTestSuite
 	 * 
 	 * @param wrapper
 	 *            The concerte wrapper on the abstract class that we are
@@ -66,29 +67,57 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 		this.getterObj = getterObj;
 		this.getter = parentTestInfo.getMethod();
 	}
+	
+	/**
+	 * Create a test runner for stand alone test
+	 * 
+	 * @param wrapper
+	 *            The concerte wrapper on the abstract class that we are
+	 *            running.
+	 * @param setterClass
+	 *            The class that has the setter method.
+	 * @param getterObj
+	 *            The instance of the class that has the producer interface.
+	 * @param getter
+	 *            The method on the getterObj that returns the producer
+	 *            interface..
+	 * @throws InitializationError
+	 */
+	public ContractTestRunner(Class<?> testClass) throws InitializationError  {
+		super(testClass );
+		this.parentTestInfo = null;
+		this.testInfo =null;	
+		this.getterObj =null;
+		this.getter = null;
+	}
 
 	/**
 	 * Create the concrete class passing it the producer instance from the
 	 * getter class.
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * 
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
 	@Override
-	protected Object createTest() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException   
-	{
+	protected Object createTest() throws InstantiationException,
+			IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
 		Object retval = getTestClass().getOnlyConstructor().newInstance();
-		if (parentTestInfo instanceof DynamicTestInfo) {
-			DynamicTestInfo dti = (DynamicTestInfo) parentTestInfo;
-
-			Object baseProducer = dti.getDynamicInjector().invoke(getterObj);
-			testInfo.getMethod().invoke(retval, dti.getProducer(baseProducer));
-		} else {
-			testInfo.getMethod().invoke(retval, getter.invoke(getterObj));
+		if (parentTestInfo != null)
+		{
+			if (parentTestInfo instanceof DynamicTestInfo) {
+				DynamicTestInfo dti = (DynamicTestInfo) parentTestInfo;
+	
+				Object baseProducer = dti.getDynamicInjector().invoke(getterObj);
+				testInfo.getMethod().invoke(retval, dti.getProducer(baseProducer));
+			} else {
+				testInfo.getMethod().invoke(retval, getter.invoke(getterObj));
+			}
 		}
 		return retval;
-		
+
 	}
 
 	/**
@@ -106,13 +135,23 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 */
 	@Override
 	protected String getName() {
-		return testInfo.getTestClass().getName();
+		return testInfo==null?super.getName():testInfo.getTestClass().getName();
 	}
 
 	@Override
 	protected Description describeChild(FrameworkMethod method) {
-		return Description.createTestDescription(testInfo.getTestClass(),
+		return testInfo==null?super.describeChild(method):Description.createTestDescription(testInfo.getTestClass(),
 				testName(method), method.getAnnotations());
+	}
+
+	/**
+	 * Returns the methods that run tests. Default implementation returns all
+	 * methods annotated with {@code @Test} on this class and superclasses that
+	 * are not overridden.
+	 */
+	@Override
+	protected List<FrameworkMethod> computeTestMethods() {
+		return getTestClass().getAnnotatedMethods(ContractTest.class);
 	}
 
 }

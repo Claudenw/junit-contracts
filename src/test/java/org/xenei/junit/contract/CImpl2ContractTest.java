@@ -44,10 +44,10 @@ import org.junit.runner.RunWith;
  * junit-contracts.
  * 
  */
-@RunWith(ContractSuite.class)
 // run as a contract test
-@ContractImpl(CImpl2.class)
+@RunWith(ContractSuite.class)
 // testing the CImpl2 class.
+@ContractImpl(CImpl2.class)
 public class CImpl2ContractTest {
 	// the producer to use for all the tests
 	private IProducer<CImpl2> producer = new IProducer<CImpl2>() {
@@ -67,7 +67,7 @@ public class CImpl2ContractTest {
 	 * Test to test the extra method of the CImpl2 class not defined by the C
 	 * interface.
 	 */
-	@Test
+	@ContractTest
 	public void testExtraMethod() {
 		Listener.add(producer.newInstance().extraMethod());
 	}
@@ -107,7 +107,7 @@ public class CImpl2ContractTest {
 				"CImpl2ContractTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+		Assert.assertEquals( Arrays.asList(expected), l);
 
 	}
 }

@@ -38,10 +38,10 @@ import org.junit.runner.RunWith;
  * junit-contracts.
  * 
  */
-@RunWith(ContractSuite.class)
 // run with contract suite
-@ContractImpl(AImpl.class)
+@RunWith(ContractSuite.class)
 // testing AImpl
+@ContractImpl(AImpl.class)
 public class AImplContractTest {
 
 	// create the producer to inject

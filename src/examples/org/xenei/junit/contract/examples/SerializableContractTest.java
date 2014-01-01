@@ -43,7 +43,6 @@ import org.xenei.junit.contract.IProducer;
  * throws ObjectStreamException;
  * 
  */
-@Ignore
 @Contract(Serializable.class)
 public class SerializableContractTest<T extends Serializable> {
 	
@@ -85,7 +84,7 @@ public class SerializableContractTest<T extends Serializable> {
 	 * contract test complexity.  However, it does meet the 
 	 * serializable contract.
 	 */
-	@Test
+	@ContractTest
 	public void testSerializableContract() {
 		Serializable s = getProducer().newInstance();
 		Class<?> clz = s.getClass();

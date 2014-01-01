@@ -38,10 +38,10 @@ import org.junit.runner.RunWith;
  * junit-contracts.
  * 
  */
-@RunWith(ContractSuite.class)
 // run as a contract test
-@ContractImpl(BImpl.class)
+@RunWith(ContractSuite.class)
 // testing the BImpl class.
+@ContractImpl(BImpl.class)
 public class BImplContractTest {
 
 	// the producer we will use

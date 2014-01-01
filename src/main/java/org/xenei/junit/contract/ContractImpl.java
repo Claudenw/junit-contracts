@@ -29,33 +29,41 @@ import java.lang.annotation.Target;
  * For example <code><pre>
  * 
  * @RunWith( ContractSuite.class )
- * @ContractImpl( FooImpl.class ) 
- * public class Foo_Test {...} </pre></code>
- * <p>
- * Declares <code>FooImpl</code> as the implementation that the
- * contract suite should be built for.
- * </p><p>
- * The value of the annotation (FooImpl.class) in the above example) 
- * defines the class that will be scanned for interfaces.  The set of
- * contract tests are then scanned looking for tests for those 
- * interfaces.  Tests from all matching Contract tests are then added
- * to the current test class.
- * </p><p>
- * <b>NOTE:</b> In some cases only the interface is known, not the
- * implementation.  In these cases a testing interface may be created
- * and that class used in the ContractImpl annotation.  For example assume
- * that you want to test an interface A.  create an interface:
- * <code><pre>interface ATester extends A{};</code><pre>
+ * @ContractImpl( FooImpl.class ) public class Foo_Test {...} </pre></code>
+ *                <p>
+ *                Declares <code>FooImpl</code> as the implementation that the
+ *                contract suite should be built for.
+ *                </p>
+ *                <p>
+ *                The value of the annotation (FooImpl.class) in the above
+ *                example) defines the class that will be scanned for
+ *                interfaces. The set of contract tests are then scanned looking
+ *                for tests for those interfaces. Tests from all matching
+ *                Contract tests are then added to the current test class.
+ *                </p>
+ *                <p>
+ *                <b>NOTE:</b> In some cases only the interface is known, not
+ *                the implementation. In these cases a testing interface may be
+ *                created and that class used in the ContractImpl annotation.
+ *                For example assume that you want to test an interface A.
+ *                create an interface:
+ *                <code><pre>interface ATester extends A{};</code>
+ * 
+ * <pre>
  * and in the ContractImpl annotation use ATester.class
- * </p> 
+ *                </p>
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ContractImpl {
 	/**
-	 * The Implementation class that should be scanned for interfaces 
-	 * that have Contract tests defined.
+	 * The Implementation class that should be scanned for interfaces that have
+	 * Contract tests defined.
 	 */
 	Class<?> value();
-
+	
+	/**
+	 * The list of interface classes whos tests that should be skipped.
+	 */
+	Class<?>[] skip() default {};
 }

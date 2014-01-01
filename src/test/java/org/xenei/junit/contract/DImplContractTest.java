@@ -41,10 +41,10 @@ import org.junit.runner.RunWith;
  * junit-contracts.
  * 
  */
-@RunWith(ContractSuite.class)
 // run as a contract test
-@ContractImpl(DImpl.class)
+@RunWith(ContractSuite.class)
 // testing the DImpl class
+@ContractImpl(DImpl.class)
 public class DImplContractTest {
 	// the producer
 	private IProducer<DImpl> producer = new IProducer<DImpl>() {

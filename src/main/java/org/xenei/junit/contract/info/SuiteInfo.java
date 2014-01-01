@@ -5,15 +5,14 @@ import java.lang.reflect.Method;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.MethodUtils;
-import org.xenei.junit.contract.Contract.Inject;
 
 /**
- * Class that contains the contract test and the class that is the contract
- * as well as the method used to get the producer implementation for the
- * suite tests.
+ * Class that contains the contract test and the class that is the contract as
+ * well as the method used to get the producer implementation for the suite
+ * tests.
  * 
  */
-public class SuiteInfo  extends TestInfo{
+public class SuiteInfo extends TestInfo {
 
 	/**
 	 * Constructor
@@ -22,18 +21,18 @@ public class SuiteInfo  extends TestInfo{
 	 *            the test suite definition class.
 	 */
 	public SuiteInfo(Class<?> testSuite, ContractImpl impl) {
-		super(testSuite, impl.value(), MethodUtils.findAnnotatedGetter(testSuite, Contract.Inject.class));
-		if (this.getMethod() == null)
-		{
+		super(testSuite, impl, MethodUtils.findAnnotatedGetter(
+				testSuite, Contract.Inject.class));
+		if (this.getMethod() == null) {
 			throw new IllegalStateException(
-						"Classes annotated with @RunWith(ContractSuite.class) ("
-								+ getTestClass()
-								+ ") must include a @Contract.Inject annotation on a concrete declared getter method");
-					
+					"Classes annotated with @RunWith(ContractSuite.class) ("
+							+ getTestClass()
+							+ ") must include a @Contract.Inject annotation on a concrete declared getter method");
+
 		}
 	}
-	
-	protected SuiteInfo(Class<?> testSuite, Class<?> impl, Method m) {
-		super(  testSuite, impl, m );			
+
+	protected SuiteInfo(Class<?> testSuite, ContractImpl impl, Method m) {
+		super(testSuite, impl, m);
 	}
 }

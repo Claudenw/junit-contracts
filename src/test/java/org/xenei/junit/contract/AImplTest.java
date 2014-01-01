@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 /**
  * Show that AT executes correctly as a concrete implementation.
@@ -37,6 +38,7 @@ import org.junit.BeforeClass;
  * junit-contracts.
  * 
  */
+@RunWith(ContractTestRunner.class)
 public class AImplTest extends AT<AImpl> {
 
 	public AImplTest() {

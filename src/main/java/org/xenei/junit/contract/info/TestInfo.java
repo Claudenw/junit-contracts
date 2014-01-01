@@ -7,13 +7,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.MethodUtils;
-import org.xenei.junit.contract.Contract.Inject;
 
 /**
- * Class that contains the contract test and the class that is the contract
- * as well as the method used to get the producer implementation for the
- * tests.
+ * Class that contains the contract test and the class that is the contract as
+ * well as the method used to get the producer implementation for the tests.
  * 
  */
 public class TestInfo {
@@ -21,13 +20,27 @@ public class TestInfo {
 	private Class<?> contractTest;
 	// the class under test
 	private Class<?> contractClass;
+	//
+	private Class<?>[] skipTests;
+	
 	// the method to retrieve the producer implementation
 	private Method method;
 
-	protected TestInfo(Class<?> testSuite, Class<?> impl, Method m) {
+	/**
+	 * Constructor
+	 * 
+	 * @param testSuite
+	 *            The contract test this is part of
+	 * @param impl
+	 *            The class under test.
+	 * @param m
+	 *            The method to get the producer
+	 */
+	protected TestInfo(Class<?> testSuite, ContractImpl impl, Method m) {
 		this.contractTest = testSuite;
-		this.contractClass = impl;
-		this.method = m;			
+		this.contractClass = impl.value();
+		this.skipTests = impl.skip();
+		this.method = m;
 	}
 
 	/**
@@ -36,18 +49,20 @@ public class TestInfo {
 	 * @param contractTest
 	 *            The contract under test.
 	 * @param c
-	 *            The Contract annotation for he contractTest
+	 *            The Contract annotation for the contractTest
 	 */
 	public TestInfo(Class<?> contractTest, Contract c) {
-		this( contractTest, c.value(),  MethodUtils.findAnnotatedSetter(contractTest, Contract.Inject.class));
-		if(Modifier.isAbstract(contractTest.getModifiers())) {
-			throw new IllegalStateException( 
-					"Classes annotated with @Contract ("
-							+ contractTest
+		this.contractTest = contractTest;
+		this.contractClass = c.value();
+		this.skipTests = new Class<?>[0];
+		this.method = MethodUtils.findAnnotatedSetter(
+				contractTest, Contract.Inject.class);
+		if (Modifier.isAbstract(contractTest.getModifiers())) {
+			throw new IllegalStateException(
+					"Classes annotated with @Contract (" + contractTest
 							+ ") must not be abstract");
 		}
-		if (method == null)
-		{
+		if (method == null) {
 			throw new IllegalStateException(
 					"Classes annotated with @Contract ("
 							+ contractTest
@@ -56,21 +71,26 @@ public class TestInfo {
 	}
 
 	/**
-	 * Test contract test has a single constructor that takes parameter as
-	 * an argument
+	 * Test contract test has a single constructor that takes parameter as an
+	 * argument
 	 */
 	boolean hasInjection(Class<?> cls) {
 		Constructor<?>[] constructors = contractTest.getConstructors();
 		// not Foo NonStatic InnerClass()
 		boolean retval = !(contractTest.isMemberClass() && !isStatic(contractTest
 				.getModifiers()))
-				// has one constructor
+		// has one constructor
 				&& (constructors.length == 1)
 				// constructor has no argument
 				&& (constructors[0].getParameterTypes().length == 0);
 		return retval;
 	}
 
+	public Class<?>[] getSkipTests()
+	{
+		return skipTests;
+	}
+	
 	public String getPackageName() {
 		return contractClass.getPackage().getName();
 	}

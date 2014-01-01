@@ -27,10 +27,13 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
- * Show that CT executes correctly as a concrete implementation.
+ * Run the C tests using the contract suite runner.
  * 
- * This will only run the tests defined in CT without running any other
- * interface tests. Compare this to CImplContractTest
+ * This will run the tests defined in CT as well as AT (A contract tests) and BT
+ * (B contract tests). Compare this to CImplTest.
+ * 
+ * Note that producer used for the AT and BT classes will be the
+ * IProducer&lt;CImpl$gt; from this class.
  * 
  * The use of the Listener interface in the before and after methods are to
  * track that the tests are run correctly and in the proper order. This would
@@ -38,24 +41,31 @@ import org.junit.runner.RunWith;
  * junit-contracts.
  * 
  */
-@RunWith(ContractTestRunner.class)
-public class CImplTest extends CT<CImpl> {
+// run as a contract test
+@RunWith(ContractSuite.class)
+// testing the CImpl class.
+@ContractImpl(value=CImpl.class, skip={A.class})
+public class CImplContractTestWithSkip {
+	// the producer to use for all the tests
+	private IProducer<CImpl> producer = new IProducer<CImpl>() {
+		@Override
+		public CImpl newInstance() {
+			Listener.add("CImplContractTest.producer.newInstance()");
+			return new CImpl();
+		}
 
-	public CImplTest() {
-		setProducer(new IProducer<CImpl>() {
+		@Override
+		public void cleanUp() {
+			Listener.add("CImplContractTest.producer.cleanUp()");
+		}
+	};
 
-			@Override
-			public CImpl newInstance() {
-				Listener.add("CImplTest.producer.newInstance()");
-				return new CImpl();
-			}
-
-			@Override
-			public void cleanUp() {
-				Listener.add("CImplTest.producer.cleanUp()");
-			}
-
-		});
+	/**
+	 * The method to inject the producer into the test classes.
+	 */
+	@Contract.Inject
+	public IProducer<CImpl> getProducer() {
+		return producer;
 	}
 
 	@BeforeClass
@@ -65,8 +75,11 @@ public class CImplTest extends CT<CImpl> {
 
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CImplTest.producer.newInstance()", "cname",
-				"CImplTest.producer.cleanUp()" };
+		String[] expected = { "CImplContractTest.producer.newInstance()",
+				"cname", "CImplContractTest.producer.cleanUp()",
+				"CImplContractTest.producer.newInstance()",
+				"cname version of bname",
+				"CImplContractTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

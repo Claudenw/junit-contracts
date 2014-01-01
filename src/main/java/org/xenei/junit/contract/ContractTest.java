@@ -24,33 +24,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to declare a test is the contract test for an interface.
+ * Annotation to declare a test method for an interface.
  * <p>
  * For example <code><pre>
  * 
- * @Contract( Foo.class ) public class FooT {...} </pre></code> Declares
- *            <code>FooT</code> as a contract test for <code>Foo</code>
+ * @ContractTest
+ * public void testX() {...} </pre></code> Declares
+ *            <code>testX</code> as a contract test method in the suite
  * 
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Contract {
-	/**
-	 * The class that the annotated class is the contract test for.
-	 */
-	Class<?> value();
-
-	/**
-	 * The <code>Contract.Inject</code> annotation specifies the method to be
-	 * called to retrieve an instance of a producer for the class under test.
-	 * 
-	 * The method must produce an instance of IProducer.
-	 * 
-	 * instance of the Producer interface (@see IProducer} that will generate
-	 * and instance the object under test.
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.METHOD)
-	public @interface Inject {
-	}
+public @interface ContractTest {
 }

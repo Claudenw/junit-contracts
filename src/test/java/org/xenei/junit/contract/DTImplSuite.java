@@ -41,10 +41,10 @@ import org.junit.runner.RunWith;
  * called to get the producer for the associated contract tests.</li>
  * </ol>
  */
-@RunWith(ContractSuite.class)
 // run as a contract test
-@ContractImpl(DImpl.class)
+@RunWith(ContractSuite.class)
 // testing the CImpl class.
+@ContractImpl(DImpl.class)
 public class DTImplSuite implements Dynamic {
 
 	// the producer for DImpl

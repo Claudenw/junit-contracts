@@ -6,13 +6,14 @@ import java.lang.reflect.Modifier;
 
 /**
  * Static methods to find annotated getter and setters.
- *
+ * 
  */
 public class MethodUtils {
 
 	/**
 	 * Find a getter with the specified annotation. getter must be annotated,
-	 * return a value, not be abstract and not take any parameters and is public.
+	 * return a value, not be abstract and not take any parameters and is
+	 * public.
 	 * 
 	 * @param cls
 	 *            Class that declares the method to find.

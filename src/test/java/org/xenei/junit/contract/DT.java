@@ -19,8 +19,6 @@
 package org.xenei.junit.contract;
 
 import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * An example Contract test for D interface.
@@ -34,10 +32,8 @@ import org.junit.Test;
  * not be used in a production test but are part of our testing of
  * junit-contracts.
  */
-@Ignore("Is a contract test definition")
-// without "ignore" this some test runners will attempt to run this test.
-@Contract(D.class)
 // Define this as the contract test for the D interface
+@Contract(D.class)
 public class DT<T extends D> {
 
 	// the producer for the tests
@@ -57,17 +53,17 @@ public class DT<T extends D> {
 		producer.cleanUp();
 	}
 
-	@Test
+	@ContractTest
 	public void testGetDName() {
 		Listener.add(getProducer().newInstance().getDName());
 	}
 
-	@Test
+	@ContractTest
 	public void testGetA() {
 		Listener.add(getProducer().newInstance().getA().toString());
 	}
 
-	@Test
+	@ContractTest
 	public void testGetB() {
 		Listener.add(getProducer().newInstance().getB().toString());
 	}

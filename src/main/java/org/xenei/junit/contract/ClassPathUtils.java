@@ -78,14 +78,17 @@ public class ClassPathUtils {
 		final File[] files = dir.listFiles();
 		for (final File file : files) {
 			if (file.isDirectory()) {
-				// META-INF includes directories with dots in the name.  So we will
-				// just ignore them because there may be other cases where we need 
+				// META-INF includes directories with dots in the name. So we
+				// will
+				// just ignore them because there may be other cases where we
+				// need
 				// to skip them we will not just skip the META-INF dir.
-				if (! file.getName().contains("."))
-				{	
+				if (!file.getName().contains(".")) {
 					String newPkgName = String.format("%s%s%s", packageName,
-						(packageName.length() > 0 ? "." : ""), file.getName());
-					classes.addAll(findClasses(file.getAbsolutePath(), newPkgName));
+							(packageName.length() > 0 ? "." : ""),
+							file.getName());
+					classes.addAll(findClasses(file.getAbsolutePath(),
+							newPkgName));
 				}
 			} else if (file.getName().endsWith(".class")) {
 				classes.add(packageName
@@ -112,9 +115,8 @@ public class ClassPathUtils {
 	public static Collection<Class<?>> getClasses(final String packageName) {
 		final ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
-		if (classLoader == null)
-		{
-			LOG.error( "Class loader may not be null.  No class loader for current thread");
+		if (classLoader == null) {
+			LOG.error("Class loader may not be null.  No class loader for current thread");
 			return Collections.emptyList();
 		}
 		final String path = packageName.replace('.', '/');

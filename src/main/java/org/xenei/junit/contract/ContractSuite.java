@@ -19,6 +19,7 @@
 package org.xenei.junit.contract;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -56,24 +57,28 @@ import org.xenei.junit.contract.info.TestInfo;
  * <p>
  * Tests annotated with <code>@RunWith( ContractSuite.class )</code> must:
  * <ol>
- * <li>Have a <code>ContractImpl</code> annotation specifying the implementation being
- * tested</li>
- * <li>Include a <code>@Contract.Injeect</code> annotated getter that returns
- * an IProducer<x> where "x" is the class specified in the ContractImpl</li>
+ * <li>Have a <code>ContractImpl</code> annotation specifying the implementation
+ * being tested</li>
+ * <li>Include a <code>@Contract.Inject</code> annotated getter that returns an
+ * IProducer<x> where "x" is the class specified in the ContractImpl</li>
  * </ol>
  * <p>
  * The ContractSuite will:
  * <ol>
- * <li>Instantiate the class annotated with <code>@RunWith( ContractSuite.class )</code></li>
- * <li>Find all the Contract tests for the class specified by ContractImpl and add them to the
- * test suite</li>
- * <li>execute all of the tests</li>
+ * <li>Instantiate the class annotated with
+ * <code>@RunWith( ContractSuite.class )</code></li>
+ * <li>Find all the Contract tests for the class specified by ContractImpl and
+ * add them to the test suite</li>
+ * <li>execute all of the @ContractTest annotated tests</li>
  * </ol>
- * </p><p>
- * <b>NOTE:</b>If the class annotated with <code>@RunWith( ContractSuite.class )</code> implements
- * Dynamic the above requirements change.  See Dynamic for more information.
+ * </p>
+ * <p>
+ * <b>NOTE:</b>If the class annotated with
+ * <code>@RunWith( ContractSuite.class )</code> implements Dynamic the above
+ * requirements change. See Dynamic for more information.
  * </p>
  */
+@Ignore( "Not a real test")
 public class ContractSuite extends ParentRunner<Runner> {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractSuite.class);
@@ -162,17 +167,16 @@ public class ContractSuite extends ParentRunner<Runner> {
 			errors.add(e);
 			return r;
 		}
-		
+
 		Collection<Class<?>> tests = dynamic.getSuiteClasses();
-		if (tests == null || tests.size() == 0)
-		{
-			errors.add( new IllegalStateException("Dynamic suite did not return a list of classes to execute"));
-		}
-		else
-		{
+		if (tests == null || tests.size() == 0) {
+			errors.add(new IllegalStateException(
+					"Dynamic suite did not return a list of classes to execute"));
+		} else {
 			for (Class<?> test : tests) {
 				RunWith runwith = test.getAnnotation(RunWith.class);
-				if (runwith != null && runwith.value().equals(ContractSuite.class)) {
+				if (runwith != null
+						&& runwith.value().equals(ContractSuite.class)) {
 					impl = getContractImpl(test, errors);
 					if (impl != null) {
 						try {
@@ -219,7 +223,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 			ContractTestMap contractTestMap, Object baseObj)
 			throws InitializationError {
 		List<Runner> r = new ArrayList<Runner>();
-		ContractImpl impl = getContractImpl( cls, errors );
+		ContractImpl impl = getContractImpl(cls, errors);
 		if (impl != null) {
 			TestInfo testInfo = contractTestMap
 					.getInfoByTestClass(impl.value());
@@ -269,11 +273,11 @@ public class ContractSuite extends ParentRunner<Runner> {
 		// implements.
 		// and iterate over them
 		for (TestInfo testInfo : contractTestMap.getAnnotatedClasses(
-				testClasses, parentTestInfo.getContractClass())) {
+				testClasses, parentTestInfo)) {
 			r.add(new ContractTestRunner(baseObj, parentTestInfo, testInfo));
 		}
 		if (r.size() == 0) {
-			errors.add( new IllegalArgumentException ("No tests for " + cls));
+			errors.add(new IllegalArgumentException("No tests for " + cls));
 		}
 
 	}
@@ -397,18 +401,28 @@ public class ContractSuite extends ParentRunner<Runner> {
 		 *         of contract tests for the cti object.
 		 */
 		public Set<TestInfo> getAnnotatedClasses(Set<TestInfo> testClasses,
-				Class<?> contractClass) {
+				TestInfo contractClassInfo) {
 
 			// list of test classes
 			// list of implementation classes
 			Set<Class<?>> implClasses = new LinkedHashSet<Class<?>>();
-			getAllInterfaces(implClasses, contractClass);
-
+			getAllInterfaces(implClasses, contractClassInfo.getContractClass());
+			List<Class<?>> lst = Arrays.asList( contractClassInfo.getSkipTests() );
 			for (Class<?> clazz : implClasses) {
-				LOG.info("Checking " + clazz);
-				TestInfo testInfo = getInfoByContractClass(clazz);
-				if (testInfo != null) {
-					testClasses.add(testInfo);
+				if (lst.contains(clazz))
+				{
+					LOG.info( String.format( "Skipping %s for %s", clazz, contractClassInfo));
+				}
+				else
+				{
+					TestInfo testInfo = getInfoByContractClass(clazz);
+					if (testInfo != null) {
+						LOG.info(String.format( "Checked %s found %s", clazz, testInfo ));
+						testClasses.add(testInfo);
+					}
+					else {
+						LOG.info(String.format( "Checked %s found nothing", clazz ));
+					}
 				}
 			}
 			return testClasses;
@@ -422,6 +436,8 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 */
 	private class BaseClassRunner extends BlockJUnit4ClassRunner {
 
+		private List<FrameworkMethod> testMethods = null;
+		
 		public BaseClassRunner(Class<?> cls) throws InitializationError {
 			super(cls);
 		}
@@ -445,15 +461,18 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 		@Override
 		protected List<FrameworkMethod> computeTestMethods() {
-			List<FrameworkMethod> retval = new ArrayList<FrameworkMethod>();
+			if (testMethods == null)
+			{
+				testMethods = new ArrayList<FrameworkMethod>();
 			for (FrameworkMethod mthd : super.getTestClass()
-					.getAnnotatedMethods(Test.class)) {
+					.getAnnotatedMethods(ContractTest.class)) {
 				if (mthd.getMethod().getDeclaringClass()
 						.getAnnotation(Contract.class) == null) {
-					retval.add(mthd);
+					testMethods.add(mthd);
 				}
 			}
-			return retval;
+			}
+			return testMethods;
 		}
 	}
 }
