@@ -67,7 +67,10 @@ public class ClassPathUtils {
 					final String className = entry.getName()
 							.replaceAll("[$].*", "").replaceAll("[.]class", "")
 							.replace('/', '.');
-					classes.add(className);
+					if (className.startsWith( packageName ))
+					{
+						classes.add(className);
+					}
 				}
 			}
 		}

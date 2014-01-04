@@ -140,9 +140,28 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 
 	@Override
 	protected Description describeChild(FrameworkMethod method) {
-		return testInfo==null?super.describeChild(method):Description.createTestDescription(testInfo.getTestClass(),
-				testName(method), method.getAnnotations());
+		if (testInfo == null)
+		{
+			return super.describeChild( method );
+		}
+		if (parentTestInfo == null)
+		{
+			return Description.createTestDescription(testInfo.getTestClass(),
+					testName(method), method.getAnnotations());
+		}
+		String name = String.format("%s(%s)", testName(method), testInfo.getTestClass().getSimpleName());
+		return Description.createTestDescription(parentTestInfo.getTestClass(),
+				name, method.getAnnotations());
 	}
+	
+//	/**
+//     * Returns the name that describes {@code method} for {@link Description}s.
+//     * Default implementation is the method's name
+//     */
+//    protected String testName(FrameworkMethod method) {
+//    	return testInfo==null?super.testName(method):
+//    		String.format("%s(%s)", name, className);
+//    }
 
 	/**
 	 * Returns the methods that run tests. Default implementation returns all
