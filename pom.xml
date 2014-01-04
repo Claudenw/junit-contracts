@@ -124,7 +124,7 @@ https://oss.sonatype.org/service/local/staging/deploy/maven2/
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
-						<phase>verify</phase>
+						<phase>deploy</phase>
 						<goals>
 							<goal>sign</goal>
 						</goals>
