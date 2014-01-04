@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.xenei</groupId>
 	<artifactId>junit-contracts</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.4</version>
 	<name>Xenei JUnit Contract Test Suite</name>
 	<description>Code to create test suites that run suites of contract tests based on 
   class hierarchy</description>
