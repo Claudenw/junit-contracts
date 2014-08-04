@@ -138,7 +138,7 @@ public class ClassPathUtils {
 					for (final String clazz : findClasses(resource.getFile(),
 							packageName)) {
 						try {
-							classes.add(Class.forName(clazz));
+							classes.add(Class.forName(clazz,false,ClassPathUtils.class.getClassLoader()));
 						} catch (final ClassNotFoundException e) {
 							LOG.warn(e.toString());
 						}
