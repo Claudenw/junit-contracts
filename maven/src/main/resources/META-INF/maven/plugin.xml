@@ -1,0 +1,72 @@
+<plugin>
+  <name>Xenei Junit Contract Test Maven Plugin</name>
+  <description>A plugin to check the Xenei Junit Contract Test configuration</description>
+  <groupId>org.xenei</groupId>
+  <artifactId>contract-test-maven-plugin</artifactId>
+  <version>0.0.6-SNAPSHOT</version>
+<!--   <goalPrefix/> -->
+  <isolatedRealm>false</isolatedRealm>
+  <inheritedByDefault>true</inheritedByDefault>
+
+  <mojos>
+    <mojo>
+      <goal>contract-test</goal>
+      <description>Generate the report text files</description>
+      <implementation>org.xenei.contracts.maven.ContractMojo</implementation>
+      <language>java</language>
+      <phase>test</phase>
+      <executePhase/>
+      <executeGoal/>
+      <executeLifecycle>test</executeLifecycle>
+      <requiresDependencyResolution>test</requiresDependencyResolution>
+      <requiresDependencyCollection>test</requiresDependencyCollection>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <requiresOnline>false</requiresOnline>
+      <aggregator>false</aggregator>
+      <inheritedByDefault>true</inheritedByDefault>
+      <threadSafe>false</threadSafe>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <since>0.0.6-SNAPSHOT</since>
+<!--       <deprecated/> -->
+<!--       <configurator/> -->
+<!--       <composer/> -->
+
+<!--       <parameters> -->
+<!--         <parameter> -->
+<!--           <name/> -->
+<!--           <alias/> -->
+<!--           <type/> -->
+<!--           <required/> -->
+<!--           <editable/> -->
+<!--           <implementation/> -->
+<!--           <description/> -->
+<!--           <since/> -->
+<!--           <deprecated/> -->
+<!--         </parameter> -->
+<!--       </parameters> -->
+<!--       <configuration> -->
+<!--         <paramName implementation=.. default-value=.. /> -->
+<!--       </configuration> -->
+
+<!--       <requirements> -->
+<!--         <requirement> -->
+<!--           <role/> -->
+<!--           <role-hint/> -->
+<!--           <field-name/> -->
+<!--         </requirement> -->
+<!--       </requirements> -->
+    </mojo>
+  </mojos>
+
+<!--   <dependencies> -->
+<!--     <dependency> -->
+<!--       <groupId/> -->
+<!--       <artifactId/> -->
+<!--       <version/> -->
+<!--       <type/> -->
+<!--     </dependency> -->
+<!--   </dependencies> -->
+</plugin>
