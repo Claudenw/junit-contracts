@@ -28,7 +28,6 @@ Release version
 
      Group Id: org.xenei 
      Artifact Id: junit-contracts 
-     Version: 0.0.2
 
 Snapshot versions are hosted at:
 
@@ -110,3 +109,19 @@ The test code contains a number of examples and is well [documented]
 (https://github.com/Claudenw/junit-contracts/blob/master/src/test/java/org/xenei/junit/contract/README.md) for use as such.
 
 The sample code tree includes a sample for the Serializable contract test.
+
+Removing Bad Tests
+==================
+
+Known bad contract tests can be removed from consideration by adding 
+
+     -Dcontracts.skipClasses=test1,test2
+     
+to the Java VM arguments.
+
+For example our test code (as defined in the pom.xml) adds
+
+    -Dcontracts.skipClasses=org.xenei.junit.bad.BadAbstrtact,org.xenei.junit.bad.BadNoInject
+
+to skip our known bad tests.  The tests are used elsewhere in the test suite.
+
