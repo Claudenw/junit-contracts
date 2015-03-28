@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xenei.log4j.recording.RecordingAppender;
+import org.xenei.log4j.recording.events.StringEvent;
+import org.xenei.log4j.recording.selector.MessageSelector;
+import org.xenei.log4j.recording.selector.Selector;
 
 public class InterfaceReportTest {
 
@@ -18,6 +26,8 @@ public class InterfaceReportTest {
 	
 	private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 	
+	private static RecordingAppender appender;
+	
 	private Set<String> getClassNames( Set<Class<?>> classes )
 	{
 		TreeSet<String> retval = new TreeSet<String>();
@@ -26,6 +36,28 @@ public class InterfaceReportTest {
 			retval.add( c.getName () );
 		}
 		return retval;
+	}
+	
+	@BeforeClass
+	public static void beforeClass()
+	{
+		appender  = new RecordingAppender();
+		Logger root = Logger.getRootLogger();
+		root.addAppender( appender );
+	}
+	
+	@After
+	public void afterTest()
+	{
+		appender.clear();
+	}
+	
+	@AfterClass
+	public static void afterClass()
+	{
+		Logger root = Logger.getRootLogger();
+		root.removeAppender( appender );
+		appender.close();
 	}
 	
 	@Test
@@ -74,8 +106,9 @@ public class InterfaceReportTest {
 		
 		List<Throwable> errors = interfaceReport.getErrors();
 		assertEquals( 0, errors.size() );
-		//assertEquals( "java.lang.ClassNotFoundException: org.xenei.junit.contract.MissingClass", errors.get(0).toString());
-		fail( "Test for log entry");
+		Selector selector = new MessageSelector();
+		StringEvent event = new StringEvent( "Skip class org.xenei.junit.contract.MissingClass was not found");
+		appender.assertContains(selector, event );
 	}
 
 

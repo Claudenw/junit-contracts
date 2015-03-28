@@ -222,6 +222,12 @@
 				<artifactId>commons-cli</artifactId>
 				<version>1.2</version>
 			</dependency>
+			<dependency>
+				<groupId>org.xenei.logging</groupId>
+				<artifactId>junit-recording-logger</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
