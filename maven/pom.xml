@@ -188,8 +188,11 @@
 					</execution>
 				</executions>
 				<configuration>
-				    <debug>true</debug>
-				    <pom>src/it/pom.xml</pom>
+					<debug>true</debug>
+					<pom>src/it/pom.xml</pom>
+					<goals>
+						<goal>contract-test:contract-test</goal>
+					</goals>
 					<cloneProjectsTo>${project.build.directory}/it-tests</cloneProjectsTo>
 					<localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
 					<settingsFile>src/it/settings.xml</settingsFile>

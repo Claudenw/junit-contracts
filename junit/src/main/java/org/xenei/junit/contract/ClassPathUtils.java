@@ -67,47 +67,51 @@ public class ClassPathUtils {
 			while ((entry = zip.getNextEntry()) != null) {
 				if (entry.getName().endsWith(".class")) {
 					final String className = entry.getName()
-							.replaceAll("[$].*", "").replaceAll("[.]class", "")
+							.replaceAll("\\$.*", "").replaceAll("\\.class", "")
 							.replace('/', '.');
-					if (className.startsWith( packageName ))
-					{
+					if (className.startsWith(packageName)) {
 						classes.add(className);
 					}
 				}
 			}
 		}
-		final File dir = new File(directory);
-		if (!dir.exists()) {
-			return classes;
-		}
-		final File[] files = dir.listFiles();
-		for (final File file : files) {
-			if (file.isDirectory()) {
-				// META-INF includes directories with dots in the name. So we
-				// will
-				// just ignore them because there may be other cases where we
-				// need
-				// to skip them we will not just skip the META-INF dir.
-				if (!file.getName().contains(".")) {
-					String newPkgName = String.format("%s%s%s", packageName,
-							(packageName.length() > 0 ? "." : ""),
-							file.getName());
-					classes.addAll(findClasses(file.getAbsolutePath(),
-							newPkgName));
+		else {
+			final File dir = new File(directory);
+			if (!dir.exists()) {
+				return classes;
+			}
+			final File[] files = dir.listFiles();
+			for (final File file : files) {
+				if (file.isDirectory()) {
+					// META-INF includes directories with dots in the name. So
+					// we
+					// will
+					// just ignore them because there may be other cases where
+					// we
+					// need
+					// to skip them we will not just skip the META-INF dir.
+					if (!file.getName().contains(".")) {
+						String newPkgName = String.format("%s%s%s",
+								packageName, (packageName.length() > 0 ? "."
+										: ""), file.getName());
+						classes.addAll(findClasses(file.getAbsolutePath(),
+								newPkgName));
+					}
 				}
-			} else if (file.getName().endsWith(".class")) {
-				classes.add(packageName
-						+ '.'
-						+ file.getName().substring(0,
-								file.getName().length() - 6));
+				else if (file.getName().endsWith(".class")) {
+					classes.add(packageName
+							+ '.'
+							+ file.getName().substring(0,
+									file.getName().length() - 6));
+				}
 			}
 		}
 		return classes;
 	}
 
 	/**
-	 * Find all classes accessible from the context class loader which belong
-	 * to the given package and subpackages. 
+	 * Find all classes accessible from the context class loader which belong to
+	 * the given package and subpackages.
 	 * 
 	 * An empty or null packageName = all packages.
 	 * 
@@ -122,28 +126,30 @@ public class ClassPathUtils {
 			LOG.error("Class loader may not be null.  No class loader for current thread");
 			return Collections.emptyList();
 		}
-		return getClasses( classLoader, packageName );
+		return getClasses(classLoader, packageName);
 	}
 
 	/**
-	 * Find all classes accessible from the classloader which belong
-	 * to the given package and subpackages. 
+	 * Find all classes accessible from the classloader which belong to the
+	 * given package and subpackages.
 	 * 
-	 * Adapted from
-	 * http://snippets.dzone.com/posts/show/4831 and extended to support use of
-	 * JAR files
+	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
+	 * support use of JAR files
 	 * 
-	 * @param classLoader The classloader to load the classes from.
+	 * @param classLoader
+	 *            The classloader to load the classes from.
 	 * @param packageName
 	 *            The base package or class name
 	 * @return The classes
 	 */
-	public static Collection<Class<?>> getClasses(final ClassLoader classLoader, final String packageName) {
+	public static Collection<Class<?>> getClasses(
+			final ClassLoader classLoader, final String packageName) {
 		if (classLoader == null) {
 			LOG.error("Class loader may not be null.");
 			return Collections.emptyList();
 		}
-		final String path = packageName==null?"":packageName.replace('.', '/');
+		final String path = packageName == null ? "" : packageName.replace('.',
+				'/');
 		Enumeration<URL> resources;
 		try {
 			resources = classLoader.getResources(path);
@@ -159,9 +165,10 @@ public class ClassPathUtils {
 					for (final String clazz : findClasses(resource.getFile(),
 							packageName)) {
 						try {
-							//classes.add(Class.forName(clazz,false,ClassPathUtils.class.getClassLoader()));
-							LOG.debug( "Adding class {}", clazz);
-							classes.add(Class.forName(clazz,false,classLoader));
+							// classes.add(Class.forName(clazz,false,ClassPathUtils.class.getClassLoader()));
+							LOG.debug("Adding class {}", clazz);
+							classes.add(Class
+									.forName(clazz, false, classLoader));
 						} catch (final ClassNotFoundException e) {
 							LOG.warn(e.toString());
 						}
@@ -170,19 +177,20 @@ public class ClassPathUtils {
 					LOG.warn(e.toString());
 				}
 			}
-		} else {
+		}
+		else {
 			// there are no resources at that path so see if it is a class
 			try {
 				classes.add(Class.forName(packageName));
 			} catch (final ClassNotFoundException e) {
-				LOG.warn( String.format( "%s was neither a package name nor a class name",
+				LOG.warn(String.format(
+						"'%s' was neither a package name nor a class name",
 						packageName));
 			}
 		}
 		return classes;
 	}
-	
-	
+
 	/**
 	 * Get the array of class path elements.
 	 * 

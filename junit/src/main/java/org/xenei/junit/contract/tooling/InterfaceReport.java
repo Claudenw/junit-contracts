@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,7 +37,7 @@ public class InterfaceReport {
 	 * interfaces, abstract and concrete implementations.
 	 */
 	private final Collection<Class<?>> packageClasses;
-	
+
 	private final Collection<Class<?>> skipClasses;
 
 	/**
@@ -63,7 +62,6 @@ public class InterfaceReport {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
 
-
 	private static final Comparator<Class<?>> CLASS_NAME_COMPARATOR = new Comparator<Class<?>>() {
 
 		@Override
@@ -72,19 +70,21 @@ public class InterfaceReport {
 		}
 	};
 
-	
-	private boolean isInterestingInterface(Class<?> clazz)
-	{
-		return clazz.isInterface() && 
-				!clazz.isAnnotation() && 
-				null == clazz.getAnnotation(NoContractTest.class) &&
-				! skipClasses.contains(clazz);
+	private boolean isInterestingInterface(final Class<?> clazz) {
+		return clazz.isInterface() && !clazz.isAnnotation()
+				&& (null == clazz.getAnnotation(NoContractTest.class))
+				&& !skipClasses.contains(clazz);
 	}
+	
+	public Collection<InterfaceInfo> getInterfaceInfoCollection() {
+		return getInterfaceInfoMap().values();
+	}
+
 	/**
 	 * Get the interface info map.
-	 * 
+	 *
 	 * All interfaces implemented in the packages that have contract tests.
-	 * 
+	 *
 	 * @return
 	 */
 	private Map<Class<?>, InterfaceInfo> getInterfaceInfoMap() {
@@ -113,61 +113,64 @@ public class InterfaceReport {
 		return interfaceInfoMap;
 	}
 
-	public InterfaceReport(final String[] packages, final String[] skipClasses, ClassLoader classLoader)
-			throws MalformedURLException {
+	public InterfaceReport(final String[] packages, final String[] skipClasses,
+			final ClassLoader classLoader) throws MalformedURLException {
 
 		this.classLoader = classLoader;
-		
+
 		if (packages.length == 0) {
 			throw new IllegalArgumentException(
 					"At least one package must be specified");
 		}
 
 		// find all the contract annotated tests on the class path.
-				// this includes classes not in the specified packages
-				contractTestMap = ContractTestMap.populateInstance(classLoader, packages);
+		// this includes classes not in the specified packages
+		contractTestMap = ContractTestMap.populateInstance(classLoader,
+				packages);
 
 		packageClasses = new HashSet<Class<?>>();
 		for (final String p : packages) {
 			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p));
 		}
-		
+
 		if (packageClasses.size() == 0) {
-			throw new IllegalArgumentException(
-					"No classes found in "+packages );
+			throw new IllegalArgumentException("No classes found in "
+					+ packages);
 		}
-		
+
 		this.skipClasses = new HashSet<Class<?>>();
-		if (skipClasses != null)
-		{
-			for (final String s : skipClasses)
-			{
+		if (skipClasses != null) {
+			for (final String s : skipClasses) {
 				try {
 					this.skipClasses.add(Class.forName(s, false, classLoader));
-				} catch (ClassNotFoundException e) {
-					LOG.warn( "Skip class {} was not found", s);
+				} catch (final ClassNotFoundException e) {
+					LOG.warn("Skip class {} was not found", s);
 				}
 			}
 		}
 		contractImplMap = ContractImplMap.populateInstance(packageClasses);
 	}
+	
+	public Collection<Class<?>> getPackageClasses()
+	{
+		return packageClasses;
+	}
 
 	/**
 	 * Get the set of errors encountered when discovering contract tests.
-	 * 
+	 *
 	 */
 	public List<Throwable> getErrors() {
-		List<Throwable> retval = new ArrayList<Throwable>();
-		for (TestInfo testInfo : contractTestMap.listTestInfo())
-		{
-			retval.addAll( testInfo.getErrors() );
+		final List<Throwable> retval = new ArrayList<Throwable>();
+		for (final TestInfo testInfo : contractTestMap.listTestInfo()) {
+			retval.addAll(testInfo.getErrors());
 		}
 		return retval;
 	}
 
 	/**
 	 * get a set of interfaces that do not have contract tests defined.
-	 * 
+	 *
 	 * @return The list of interfaces that don't have contract tests defined.
 	 */
 	public Set<Class<?>> getUntestedInterfaces() {
@@ -182,67 +185,67 @@ public class InterfaceReport {
 		return retval;
 	}
 
-	private static Set<Class<?>> getAllInterfacesForClass(
-			Map<Class<?>, Set<Class<?>>> map, Class<?> c) {
-		Set<Class<?>> retval = new HashSet<Class<?>>();
-		if (c == null || c == Object.class) {
-			return Collections.emptySet();
-		}
-		for (Class<?> i : c.getClasses()) {
-			if (i.isInterface()) {
-				if (!map.containsKey(i)) {
-					map.put(i, getAllInterfacesForClass(map, i));
-				}
-				retval.addAll(map.get(i));
-			}
-			else {
-				retval.addAll(getAllInterfacesForClass(map, i));
-			}
-		}
-		for (Class<?> i : c.getInterfaces()) {
-			if (!map.containsKey(i)) {
-				map.put(i, getAllInterfacesForClass(map, i));
-			}
-			retval.addAll(map.get(i));
-		}
-		if (!map.containsKey(c.getSuperclass())) {
-			retval.addAll(getAllInterfacesForClass(map, c.getSuperclass()));
-		}
-		return retval;
-	}
+//	private static Set<Class<?>> getAllInterfacesForClass(
+//			final Map<Class<?>, Set<Class<?>>> map, final Class<?> c) {
+//		final Set<Class<?>> retval = new HashSet<Class<?>>();
+//		if ((c == null) || (c == Object.class)) {
+//			return Collections.emptySet();
+//		}
+//		for (final Class<?> i : c.getClasses()) {
+//			if (i.isInterface()) {
+//				if (!map.containsKey(i)) {
+//					map.put(i, getAllInterfacesForClass(map, i));
+//				}
+//				retval.addAll(map.get(i));
+//			}
+//			else {
+//				retval.addAll(getAllInterfacesForClass(map, i));
+//			}
+//		}
+//		for (final Class<?> i : c.getInterfaces()) {
+//			if (!map.containsKey(i)) {
+//				map.put(i, getAllInterfacesForClass(map, i));
+//			}
+//			retval.addAll(map.get(i));
+//		}
+//		if (!map.containsKey(c.getSuperclass())) {
+//			retval.addAll(getAllInterfacesForClass(map, c.getSuperclass()));
+//		}
+//		return retval;
+//	}
 
 	/**
 	 * Search for classes that extend interfaces with contract tests but that
 	 * don't have an implementation of the test producer.
-	 * 
+	 *
 	 * @return
 	 */
 	public Set<Class<?>> getUnImplementedTests() {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
 				CLASS_NAME_COMPARATOR);
 
-		for (Class<?> clazz : packageClasses) {
+		for (final Class<?> clazz : packageClasses) {
 			// only interested in concrete implementations
-			if (!(clazz.isInterface() || 
-					Modifier.isAbstract(clazz.getModifiers()) || 
-					skipClasses.contains(clazz)  )) 
-			{
+			if (!(clazz.isInterface()
+					|| Modifier.isAbstract(clazz.getModifiers()) || skipClasses
+						.contains(clazz))) {
 
 				// we are only interested if there is no contract test for the
 				// class and there parent tests
 				LOG.debug("checking {} for contract tests", clazz);
-				Set<Class<?>> interfaces = ClassPathUtils.getAllInterfaces(clazz);
-				Map<Class<?>, InterfaceInfo > interfaceInfo = getInterfaceInfoMap();
-				
-				interfaces.retainAll( interfaceInfo.keySet());
-				
-				// interfaces contains only contract test interfaces that clazz implements.
-				if (! interfaces.isEmpty())
-				{
-					// not empty so we are need to verify that we have a test for clazz
-					if (!contractImplMap.hasTestFor(clazz))
-					{
-						retval.add( clazz );
+				final Set<Class<?>> interfaces = ClassPathUtils
+						.getAllInterfaces(clazz);
+				final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();
+
+				interfaces.retainAll(interfaceInfo.keySet());
+
+				// interfaces contains only contract test interfaces that clazz
+				// implements.
+				if (!interfaces.isEmpty()) {
+					// not empty so we are need to verify that we have a test
+					// for clazz
+					if (!contractImplMap.hasTestFor(clazz)) {
+						retval.add(clazz);
 					}
 				}
 			}
@@ -251,38 +254,37 @@ public class InterfaceReport {
 	}
 
 	/**
-	 * Run the interface report generation. 
-	 * 
+	 * Run the interface report generation.
+	 *
 	 * use -h argument for help and argument list.
-	 * 
-	 * @param args the command line arguments.  
-	 * @throws ParseException 
-	 * @throws MalformedURLException  
+	 *
+	 * @param args
+	 *            the command line arguments.
+	 * @throws ParseException
+	 * @throws MalformedURLException
 	 */
 	public static void main(final String[] args) throws ParseException,
-			MalformedURLException 
-	{
+	MalformedURLException {
 		final CommandLine commands = new BasicParser()
-				.parse(getOptions(), args);
-		
-		if (commands.hasOption("h"))
-		{
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp( "InterfaceReport", getOptions() );
+		.parse(getOptions(), args);
+
+		if (commands.hasOption("h")) {
+			final HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("InterfaceReport", getOptions());
 			System.exit(0);
 		}
 
 		if (!commands.hasOption("p")) {
-			System.out.println( "At least on package must be specified");
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp( "InterfaceReport", getOptions() );
+			System.out.println("At least on package must be specified");
+			final HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("InterfaceReport", getOptions());
 			System.exit(1);
 		}
 
 		ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
 		if (commands.hasOption("d")) {
-			String[] dirs = commands.getOptionValues("d");
+			final String[] dirs = commands.getOptionValues("d");
 			URL[] urls = null;
 			urls = new URL[dirs.length];
 			for (int i = 0; i < dirs.length; i++) {
@@ -292,7 +294,8 @@ public class InterfaceReport {
 		}
 
 		final InterfaceReport ifReport = new InterfaceReport(
-				commands.getOptionValues("p"), commands.getOptionValues("s"), classLoader);
+				commands.getOptionValues("p"), commands.getOptionValues("s"),
+				classLoader);
 
 		if (commands.hasOption("u")) {
 			System.out.println("Untested Interfaces");
@@ -312,7 +315,7 @@ public class InterfaceReport {
 
 		if (commands.hasOption("e")) {
 			System.out.println("Misconfigured contract test report");
-			for (Throwable t : ifReport.getErrors()) {
+			for (final Throwable t : ifReport.getErrors()) {
 				System.out.println(t.toString());
 			}
 			System.out.println("End of Report");
@@ -333,71 +336,30 @@ public class InterfaceReport {
 				"Produce missing implementation report");
 		retval.addOption("e", "errors", false,
 				"Produce contract test configuration error report");
-		retval.addOption("s", "skipInterfaces", true,
+		retval.addOption(
+				"s",
+				"skipInterfaces",
+				true,
 				"A list of interfaces that should not have tests.  See also @NoContractTest annotation");
 		return retval;
 	}
 
 	/**
-	 * The information about an interface.
-	 * 
-	 * tracks the interface class and the classes that test the interface.
-	 *
-	 */
-	private static class InterfaceInfo {
-		// the interface class
-		private Class<?> name;
-		// the tests that apply to the interface
-		private Set<Class<?>> tests;
-
-		/**
-		 * Constructor
-		 */
-		private InterfaceInfo(final Class<?> name) {
-			this.name = name;
-			this.tests = new HashSet<Class<?>>();
-		}
-
-		/**
-		 * Add a test to the list of tests that apply to the interface.
-		 * @param test The test to add.
-		 */
-		private void add(final Class<?> test) {
-			tests.add(test);
-		}
-
-		/**
-		 * Get the set of tests for the interface.
-		 * @return
-		 */
-		private Set<Class<?>> getTests() {
-			return tests;
-		}
-
-		/**
-		 * Get the interface class
-		 * @return The interface class.
-		 */
-		private Class<?> getName() {
-			return name;
-		}
-	}
-
-	/**
 	 * A mapping of contracts implementations to tests
-	 * 
-	 * contract implementations are classes annotated with <code>@ContaractImpl</code>
-	 * 
-	 * tests are the the contract tests being tested by the implementation.  Tests are annotated
-	 * with <Code>@Contract</code>.
+	 *
+	 * contract implementations are classes annotated with
+	 * <code>@ContaractImpl</code>
+	 *
+	 * tests are the the contract tests being tested by the implementation.
+	 * Tests are annotated with <Code>@Contract</code>.
 	 *
 	 * A test may have more than one implementation.
 	 */
 	private static class ContractImplMap {
 		// the map of the contract tests to their implementations.
-		private Map<Class<?>, Set<Class<?>>> forwardMap;
+		private final Map<Class<?>, Set<Class<?>>> forwardMap;
 		// the map of an implementation to the contract it tests.
-		private Map<Class<?>, Class<?>> reverseMap;
+		private final Map<Class<?>, Class<?>> reverseMap;
 
 		/**
 		 * Constructor.
@@ -409,12 +371,14 @@ public class InterfaceReport {
 
 		/**
 		 * Create the contract map.
-		 * @param classes A list classes annotated with ContractImpl
+		 * 
+		 * @param classes
+		 *            A list classes annotated with ContractImpl
 		 * @return the contract implementation map.
 		 */
 		public static ContractImplMap populateInstance(
-				Collection<Class<?>> classes) {
-			ContractImplMap retval = new ContractImplMap();
+				final Collection<Class<?>> classes) {
+			final ContractImplMap retval = new ContractImplMap();
 			for (final Class<?> c : classes) {
 				final ContractImpl contractImpl = c
 						.getAnnotation(ContractImpl.class);
@@ -427,10 +391,14 @@ public class InterfaceReport {
 
 		/**
 		 * Add a ContractImpl to the map.
-		 * @param contractTestImplClass The class annotated with <code>@ContractImpl</code>
-		 * @param contractImpl The ContractImpl annotation.
+		 * 
+		 * @param contractTestImplClass
+		 *            The class annotated with <code>@ContractImpl</code>
+		 * @param contractImpl
+		 *            The ContractImpl annotation.
 		 */
-		private void add(Class<?> contractTestImplClass, ContractImpl contractImpl) {
+		private void add(final Class<?> contractTestImplClass,
+				final ContractImpl contractImpl) {
 			Set<Class<?>> set = forwardMap.get(contractImpl.value());
 			if (set == null) {
 				set = new HashSet<Class<?>>();
@@ -439,14 +407,16 @@ public class InterfaceReport {
 			set.add(contractTestImplClass);
 			reverseMap.put(contractTestImplClass, contractImpl.value());
 		}
-		
+
 		/**
-		 * Return true if there is a contract test implementation for a specific contract test.
-		 * @param contractTestImplClass The class annotated with <code>@ContractImpl</code>
+		 * Return true if there is a contract test implementation for a specific
+		 * contract test.
+		 * 
+		 * @param contractTestImplClass
+		 *            The class annotated with <code>@ContractImpl</code>
 		 * @return
 		 */
-		public boolean hasTestFor(Class<?> contractTestImplClass)
-		{
+		public boolean hasTestFor(final Class<?> contractTestImplClass) {
 			return forwardMap.containsKey(contractTestImplClass);
 		}
 	}
