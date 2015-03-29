@@ -1,13 +1,14 @@
 package org.xenei.junit.contract.tooling;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,11 +55,6 @@ public class InterfaceReport {
 
 	private final ContractImplMap contractImplMap;
 
-	/**
-	 * The classloader we are using.
-	 */
-	private final ClassLoader classLoader;
-
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
 
@@ -75,7 +71,7 @@ public class InterfaceReport {
 				&& (null == clazz.getAnnotation(NoContractTest.class))
 				&& !skipClasses.contains(clazz);
 	}
-	
+
 	public Collection<InterfaceInfo> getInterfaceInfoCollection() {
 		return getInterfaceInfoMap().values();
 	}
@@ -106,7 +102,7 @@ public class InterfaceReport {
 							interfaceInfoMap.put(contract.value(), ii);
 						}
 						ii.add(c);
-					}
+					} 
 				}
 			}
 		}
@@ -115,8 +111,6 @@ public class InterfaceReport {
 
 	public InterfaceReport(final String[] packages, final String[] skipClasses,
 			final ClassLoader classLoader) throws MalformedURLException {
-
-		this.classLoader = classLoader;
 
 		if (packages.length == 0) {
 			throw new IllegalArgumentException(
@@ -150,9 +144,8 @@ public class InterfaceReport {
 		}
 		contractImplMap = ContractImplMap.populateInstance(packageClasses);
 	}
-	
-	public Collection<Class<?>> getPackageClasses()
-	{
+
+	public Collection<Class<?>> getPackageClasses() {
 		return packageClasses;
 	}
 
@@ -178,41 +171,42 @@ public class InterfaceReport {
 				CLASS_NAME_COMPARATOR);
 
 		for (final InterfaceInfo info : getInterfaceInfoMap().values()) {
-			if (info.getTests().isEmpty()) {
+			// no test and has methods
+			if (info.getTests().isEmpty() && info.getName().getDeclaredMethods().length > 0) {
 				retval.add(info.getName());
 			}
 		}
 		return retval;
 	}
 
-//	private static Set<Class<?>> getAllInterfacesForClass(
-//			final Map<Class<?>, Set<Class<?>>> map, final Class<?> c) {
-//		final Set<Class<?>> retval = new HashSet<Class<?>>();
-//		if ((c == null) || (c == Object.class)) {
-//			return Collections.emptySet();
-//		}
-//		for (final Class<?> i : c.getClasses()) {
-//			if (i.isInterface()) {
-//				if (!map.containsKey(i)) {
-//					map.put(i, getAllInterfacesForClass(map, i));
-//				}
-//				retval.addAll(map.get(i));
-//			}
-//			else {
-//				retval.addAll(getAllInterfacesForClass(map, i));
-//			}
-//		}
-//		for (final Class<?> i : c.getInterfaces()) {
-//			if (!map.containsKey(i)) {
-//				map.put(i, getAllInterfacesForClass(map, i));
-//			}
-//			retval.addAll(map.get(i));
-//		}
-//		if (!map.containsKey(c.getSuperclass())) {
-//			retval.addAll(getAllInterfacesForClass(map, c.getSuperclass()));
-//		}
-//		return retval;
-//	}
+	// private static Set<Class<?>> getAllInterfacesForClass(
+	// final Map<Class<?>, Set<Class<?>>> map, final Class<?> c) {
+	// final Set<Class<?>> retval = new HashSet<Class<?>>();
+	// if ((c == null) || (c == Object.class)) {
+	// return Collections.emptySet();
+	// }
+	// for (final Class<?> i : c.getClasses()) {
+	// if (i.isInterface()) {
+	// if (!map.containsKey(i)) {
+	// map.put(i, getAllInterfacesForClass(map, i));
+	// }
+	// retval.addAll(map.get(i));
+	// }
+	// else {
+	// retval.addAll(getAllInterfacesForClass(map, i));
+	// }
+	// }
+	// for (final Class<?> i : c.getInterfaces()) {
+	// if (!map.containsKey(i)) {
+	// map.put(i, getAllInterfacesForClass(map, i));
+	// }
+	// retval.addAll(map.get(i));
+	// }
+	// if (!map.containsKey(c.getSuperclass())) {
+	// retval.addAll(getAllInterfacesForClass(map, c.getSuperclass()));
+	// }
+	// return retval;
+	// }
 
 	/**
 	 * Search for classes that extend interfaces with contract tests but that
@@ -228,7 +222,7 @@ public class InterfaceReport {
 			// only interested in concrete implementations
 			if (!(clazz.isInterface()
 					|| Modifier.isAbstract(clazz.getModifiers()) || skipClasses
-						.contains(clazz))) {
+					.contains(clazz))) {
 
 				// we are only interested if there is no contract test for the
 				// class and there parent tests
@@ -264,9 +258,9 @@ public class InterfaceReport {
 	 * @throws MalformedURLException
 	 */
 	public static void main(final String[] args) throws ParseException,
-	MalformedURLException {
+			MalformedURLException {
 		final CommandLine commands = new BasicParser()
-		.parse(getOptions(), args);
+				.parse(getOptions(), args);
 
 		if (commands.hasOption("h")) {
 			final HelpFormatter formatter = new HelpFormatter();
@@ -371,7 +365,7 @@ public class InterfaceReport {
 
 		/**
 		 * Create the contract map.
-		 * 
+		 *
 		 * @param classes
 		 *            A list classes annotated with ContractImpl
 		 * @return the contract implementation map.
@@ -380,8 +374,7 @@ public class InterfaceReport {
 				final Collection<Class<?>> classes) {
 			final ContractImplMap retval = new ContractImplMap();
 			for (final Class<?> c : classes) {
-				final ContractImpl contractImpl = c
-						.getAnnotation(ContractImpl.class);
+				final ContractImpl contractImpl = c.getAnnotation(ContractImpl.class);
 				if (contractImpl != null) {
 					retval.add(c, contractImpl);
 				}
@@ -391,7 +384,7 @@ public class InterfaceReport {
 
 		/**
 		 * Add a ContractImpl to the map.
-		 * 
+		 *
 		 * @param contractTestImplClass
 		 *            The class annotated with <code>@ContractImpl</code>
 		 * @param contractImpl
@@ -411,7 +404,7 @@ public class InterfaceReport {
 		/**
 		 * Return true if there is a contract test implementation for a specific
 		 * contract test.
-		 * 
+		 *
 		 * @param contractTestImplClass
 		 *            The class annotated with <code>@ContractImpl</code>
 		 * @return

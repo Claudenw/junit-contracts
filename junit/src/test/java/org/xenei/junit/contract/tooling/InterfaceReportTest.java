@@ -75,9 +75,7 @@ public class InterfaceReportTest {
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
-		assertEquals( 3, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.DTImplSuite$ForceA"));
-		assertTrue( names.contains( "org.xenei.junit.contract.DTImplSuite$ForceB"));
+		assertEquals( 1, names.size() );
 		assertTrue( names.contains( "org.xenei.junit.contract.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();
@@ -100,8 +98,7 @@ public class InterfaceReportTest {
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
-		assertEquals( 2, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.DTImplSuite$ForceB"));
+		assertEquals( 1, names.size() );
 		assertTrue( names.contains( "org.xenei.junit.contract.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();
@@ -132,8 +129,7 @@ public class InterfaceReportTest {
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
-		assertEquals( 2, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.DTImplSuite$ForceB"));
+		assertEquals( 1, names.size() );
 		assertTrue( names.contains( "org.xenei.junit.contract.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();

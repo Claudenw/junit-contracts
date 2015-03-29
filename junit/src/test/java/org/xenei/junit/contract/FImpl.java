@@ -24,4 +24,10 @@ public class FImpl implements F {
 		return null;
 	}
 
+	@Override
+	public String getFName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

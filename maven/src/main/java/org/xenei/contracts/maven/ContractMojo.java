@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,11 +172,12 @@ public class ContractMojo extends AbstractMojo {
 
 			for (final Class<?> cls : ir.getPackageClasses()) {
 				final String entry = String.format(
-						"Class: %s, contract: %s, impl: %s, flg: %s",
+						"Class: %s, contract: %s, impl: %s, flg: %s, all: %s",
 						cls.getName(),
 						cls.getAnnotation(Contract.class) != null,
 						cls.getAnnotation(ContractImpl.class) != null,
-						cls.getAnnotation(NoContractTest.class) != null);
+						cls.getAnnotation(NoContractTest.class) != null,
+						Arrays.asList(cls.getAnnotations()));
 				if (getLog().isDebugEnabled()) {
 					getLog().debug(entry);
 				}

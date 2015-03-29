@@ -20,9 +20,7 @@ package org.xenei.junit.contract;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -37,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Package of class path searching utilities
- * 
+ *
  */
 public class ClassPathUtils {
 
@@ -48,7 +46,7 @@ public class ClassPathUtils {
 	 * Recursive method used to find all classes in a given directory and
 	 * subdirs. Adapted from http://snippets.dzone.com/posts/show/4831 and
 	 * extended to support use of JAR files
-	 * 
+	 *
 	 * @param directory
 	 *            The base directory
 	 * @param packageName
@@ -83,15 +81,12 @@ public class ClassPathUtils {
 			final File[] files = dir.listFiles();
 			for (final File file : files) {
 				if (file.isDirectory()) {
-					// META-INF includes directories with dots in the name. So
-					// we
-					// will
-					// just ignore them because there may be other cases where
-					// we
-					// need
-					// to skip them we will not just skip the META-INF dir.
+					/* META-INF includes directories with dots in the name. So
+					 * we will just ignore them because there may be other cases where
+					 * we need to skip them we will not just skip the META-INF dir.
+					 */
 					if (!file.getName().contains(".")) {
-						String newPkgName = String.format("%s%s%s",
+						final String newPkgName = String.format("%s%s%s",
 								packageName, (packageName.length() > 0 ? "."
 										: ""), file.getName());
 						classes.addAll(findClasses(file.getAbsolutePath(),
@@ -112,9 +107,9 @@ public class ClassPathUtils {
 	/**
 	 * Find all classes accessible from the context class loader which belong to
 	 * the given package and subpackages.
-	 * 
+	 *
 	 * An empty or null packageName = all packages.
-	 * 
+	 *
 	 * @param packageName
 	 *            The base package or class name.
 	 * @return The classes
@@ -132,10 +127,10 @@ public class ClassPathUtils {
 	/**
 	 * Find all classes accessible from the classloader which belong to the
 	 * given package and subpackages.
-	 * 
+	 *
 	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
 	 * support use of JAR files
-	 * 
+	 *
 	 * @param classLoader
 	 *            The classloader to load the classes from.
 	 * @param packageName
@@ -165,7 +160,6 @@ public class ClassPathUtils {
 					for (final String clazz : findClasses(resource.getFile(),
 							packageName)) {
 						try {
-							// classes.add(Class.forName(clazz,false,ClassPathUtils.class.getClassLoader()));
 							LOG.debug("Adding class {}", clazz);
 							classes.add(Class
 									.forName(clazz, false, classLoader));
@@ -193,29 +187,29 @@ public class ClassPathUtils {
 
 	/**
 	 * Get the array of class path elements.
-	 * 
+	 *
 	 * These are strings separated by java.class.path property
-	 * 
+	 *
 	 * @return Array of class path elements
 	 */
 	public static String[] getClassPathElements() {
-		String splitter = String.format("\\%s",
+		final String splitter = String.format("\\%s",
 				System.getProperty("path.separator"));
-		String[] classPath = System.getProperty("java.class.path").split(
+		final String[] classPath = System.getProperty("java.class.path").split(
 				splitter);
 		return classPath;
 	}
 
 	/**
 	 * Get all the interfaces for the class.
-	 * 
+	 *
 	 * @param clazz
 	 *            The class to find interfaces for.
 	 * @return set of interfaces implemented by clazz.
 	 */
-	public static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
+	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		// set of implementation classes
-		Set<Class<?>> implClasses = new LinkedHashSet<Class<?>>();
+		final Set<Class<?>> implClasses = new LinkedHashSet<Class<?>>();
 		// populate the set of implementation classes
 		ClassPathUtils.getAllInterfaces(implClasses, clazz);
 		return implClasses;
@@ -224,19 +218,20 @@ public class ClassPathUtils {
 	/**
 	 * Get all the interfaces that the class implements. Adds the interfaces to
 	 * the set of classes.
-	 * 
+	 *
 	 * This method calls recursively to find all parent interfaces.
-	 * 
+	 *
 	 * @param set
 	 *            The set off classes to add the interface classes to.
 	 * @param c
 	 *            The class to check.
 	 */
-	public static void getAllInterfaces(Set<Class<?>> set, Class<?> c) {
-		if (c == null || c == Object.class) {
+	public static void getAllInterfaces(final Set<Class<?>> set,
+			final Class<?> c) {
+		if ((c == null) || (c == Object.class)) {
 			return;
 		}
-		for (Class<?> i : c.getClasses()) {
+		for (final Class<?> i : c.getClasses()) {
 			if (i.isInterface()) {
 				if (!set.contains(i)) {
 					set.add(i);
@@ -244,7 +239,7 @@ public class ClassPathUtils {
 				}
 			}
 		}
-		for (Class<?> i : c.getInterfaces()) {
+		for (final Class<?> i : c.getInterfaces()) {
 			if (!set.contains(i)) {
 				set.add(i);
 				getAllInterfaces(set, i);
