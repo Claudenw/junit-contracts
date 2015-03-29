@@ -82,6 +82,18 @@
 					<packages>
 						<package>org.xenei.junit</package>
 					</packages>
+					<untested>
+					   <report>true</report>
+					   <failOnError>false</failOnError>
+					</untested>
+					<unimplemented>
+					   <report>true</report>
+					   <failOnError>false</failOnError>
+					</unimplemented>
+					<errors>
+                       <report>true</report>
+                       <failOnError>false</failOnError>
+                    </errors>
 				</configuration>
 				<executions>
 					<execution>

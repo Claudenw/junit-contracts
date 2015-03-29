@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,17 +38,17 @@ import org.xenei.junit.contract.tooling.InterfaceReport;
 @Mojo(name = "contract-test", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution = ResolutionScope.TEST)
 public class ContractMojo extends AbstractMojo {
 
-	@Parameter(property = "packages")
+	@Parameter
 	private String[] packages;
 
-	@Parameter(property = "untested", defaultValue = "true")
-	private boolean reportUntested;
+	@Parameter
+	private ReportConfig untested;
 
-	@Parameter(property = "unimplemented", defaultValue = "true")
-	private boolean reportUnimplemented;
+	@Parameter
+	private ReportConfig unimplemented;
 
-	@Parameter(property = "showErrors", defaultValue = "true")
-	private boolean reportErrors;
+	@Parameter
+	private ReportConfig errors;
 
 	@Parameter(defaultValue = "${project.build.outputDirectory}", readonly = true)
 	private File classDir;
@@ -73,6 +73,8 @@ public class ContractMojo extends AbstractMojo {
 
 	private File myDir;
 
+	private final StringBuilder failureMessage = new StringBuilder();
+
 	public ContractMojo() {
 	}
 
@@ -80,8 +82,21 @@ public class ContractMojo extends AbstractMojo {
 		this.packages = packages;
 	}
 
+	public void setErrors(final ReportConfig errors) {
+		this.errors = errors;
+	}
+	
+	public void setUntested(ReportConfig untested) {
+		this.untested = untested;
+	}
+
+	public void setUnimplemented(ReportConfig unimplemented) {
+		this.unimplemented = unimplemented;
+	}
+
 	@Override
 	public void execute() throws MojoExecutionException {
+		boolean success = true;
 
 		if ((packages == null) || (packages.length == 0)) {
 			getLog().error("At least one package must be specified");
@@ -109,50 +124,44 @@ public class ContractMojo extends AbstractMojo {
 					"Could not create Interface report class", e1);
 		}
 
-		try {
-			doReportInterfaces(ir);
-		} catch (final IOException e) {
-			throw new MojoExecutionException("Unable to write interface list",
-					e);
-		}
+		doReportInterfaces(ir);
 
-		if (reportUntested) {
-			try {
-				doReportUntested(ir);
-			} catch (final IOException e) {
-				throw new MojoExecutionException(
-						"Unable to write untested report", e);
-			}
-		}
+		success &= doReportUntested(ir.getUntestedInterfaces());
 
-		if (reportUnimplemented) {
-			try {
-				doReportUnimplemented(ir);
-			} catch (final IOException e) {
-				throw new MojoExecutionException(
-						"Unable to write unimplemented report", e);
-			}
-		}
+		success &= doReportUnimplemented(ir.getUnImplementedTests());
 
-		if (reportErrors) {
-			try {
-				doReportErrors(ir);
-			} catch (final IOException e) {
-				throw new MojoExecutionException(
-						"Unable to write error report", e);
-			}
+		success &= doReportErrors(ir.getErrors());
+
+		if (!success) {
+			throw new MojoExecutionException(failureMessage.toString());
 		}
 	}
 
-	private void doReportInterfaces(final InterfaceReport ir)
-			throws IOException {
+	private void addFailureMessage(final String msg) {
+		addFailureMessage(msg, null);
+	}
+
+	private void addFailureMessage(final String msg, final Exception e) {
+		if (failureMessage.length() > 0) {
+			failureMessage.append(System.getProperty("line.separator"));
+		}
+		if (e == null) {
+			getLog().warn(msg);
+		}
+		else {
+			getLog().warn(msg, e);
+		}
+		failureMessage.append(msg);
+	}
+
+	private void doReportInterfaces(final InterfaceReport ir) {
 		BufferedWriter bw = null;
 		try {
 			bw = new BufferedWriter(new FileWriter(new File(myDir,
 					"interfaces.txt")));
-			for (InterfaceInfo ii : ir.getInterfaceInfoCollection()) {
-				String entry = String.format("Interface: %s %s", ii.getName()
-						.getName(), ii.getTests());
+			for (final InterfaceInfo ii : ir.getInterfaceInfoCollection()) {
+				final String entry = String.format("Interface: %s %s", ii
+						.getName().getName(), ii.getTests());
 				if (getLog().isDebugEnabled()) {
 					getLog().debug(entry);
 				}
@@ -160,8 +169,8 @@ public class ContractMojo extends AbstractMojo {
 				bw.newLine();
 			}
 
-			for (Class<?> cls : ir.getPackageClasses()) {
-				String entry = String.format(
+			for (final Class<?> cls : ir.getPackageClasses()) {
+				final String entry = String.format(
 						"Class: %s, contract: %s, impl: %s, flg: %s",
 						cls.getName(),
 						cls.getAnnotation(Contract.class) != null,
@@ -174,52 +183,92 @@ public class ContractMojo extends AbstractMojo {
 				bw.newLine();
 			}
 
+		} catch (final IOException e) {
+			getLog().warn(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 		}
 	}
 
-	private void doReportUntested(final InterfaceReport ir) throws IOException {
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new FileWriter(new File(myDir,
-					"untested.txt")));
-			for (final Class<?> c : ir.getUntestedInterfaces()) {
-				bw.write(c.getName());
-				bw.newLine();
+	private boolean doReportUntested(final Set<Class<?>> untestedInterfaces) {
+
+		if (!untestedInterfaces.isEmpty()) {
+			if (untested.isReporting()) {
+
+				BufferedWriter bw = null;
+				try {
+					bw = new BufferedWriter(new FileWriter(new File(myDir,
+							"untested.txt")));
+					for (final Class<?> c : untestedInterfaces) {
+						bw.write(c.getName());
+						bw.newLine();
+					}
+				} catch (final IOException e) {
+					addFailureMessage("Unable to write untested report", e);
+					return false;
+				} finally {
+					IOUtils.closeQuietly(bw);
+				}
 			}
-		} finally {
-			IOUtils.closeQuietly(bw);
+			if (untested.isFailOnError()) {
+				addFailureMessage("Untested Interfaces Exist");
+				return false;
+			}
 		}
+		return true;
 	}
 
-	private void doReportUnimplemented(final InterfaceReport ir)
-			throws IOException {
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new FileWriter(new File(myDir,
-					"unimplemented.txt")));
-			for (final Class<?> c : ir.getUnImplementedTests()) {
-				bw.write(c.getName());
-				bw.newLine();
+	private boolean doReportUnimplemented(final Set<Class<?>> unimplementedTests) {
+
+		if (!unimplementedTests.isEmpty()) {
+			if (unimplemented.isReporting()) {
+				BufferedWriter bw = null;
+				try {
+					bw = new BufferedWriter(new FileWriter(new File(myDir,
+							"unimplemented.txt")));
+					for (final Class<?> c : unimplementedTests) {
+						bw.write(c.getName());
+						bw.newLine();
+					}
+				} catch (final IOException e) {
+					addFailureMessage("Unable to write unimplemented report", e);
+					return false;
+				} finally {
+					IOUtils.closeQuietly(bw);
+				}
 			}
-		} finally {
-			IOUtils.closeQuietly(bw);
+			if (unimplemented.isFailOnError()) {
+				addFailureMessage("Unimplemented Tests Exist");
+				return false;
+			}
 		}
+		return true;
 	}
 
-	private void doReportErrors(final InterfaceReport ir) throws IOException {
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new FileWriter(
-					new File(myDir, "errors.txt")));
-			for (final Throwable t : ir.getErrors()) {
-				bw.write(t.toString());
-				bw.newLine();
+	private boolean doReportErrors(final List<Throwable> errorLst) {
+		if (!errorLst.isEmpty()) {
+			if (errors.isReporting()) {
+				BufferedWriter bw = null;
+				try {
+					bw = new BufferedWriter(new FileWriter(new File(myDir,
+							"errors.txt")));
+					for (final Throwable t : errorLst) {
+						bw.write(t.toString());
+						bw.newLine();
+					}
+				} catch (final IOException e) {
+					addFailureMessage("Unable to write error report", e);
+					return false;
+				} finally {
+					IOUtils.closeQuietly(bw);
+				}
 			}
-		} finally {
-			IOUtils.closeQuietly(bw);
+			if (errors.isFailOnError()) {
+				addFailureMessage("Contract Test Errors Exist");
+				return false;
+			}
 		}
+		return true;
 	}
 
 	private ClassLoader buildClassLoader() throws MojoExecutionException {
@@ -228,29 +277,34 @@ public class ContractMojo extends AbstractMojo {
 
 		try {
 			realm = world.newRealm("contract", null);
-			
-			// gwt-dev and its transitive dependencies
-			for (Artifact elt : getJunitContractsArtifacts()) {
-				String dir= String.format( "%s!/", elt.getFile().toURI().toURL());
+
+			// add contract test and it's transient dependencies.
+			for (final Artifact elt : getJunitContractsArtifacts()) {
+				final String dir = String.format("%s!/", elt.getFile().toURI()
+						.toURL());
 				if (getLog().isDebugEnabled()) {
 					getLog().debug("Checking for imports from: " + dir);
 				}
 				try {
-					Set<String> classNames = ClassPathUtils.findClasses(dir, "org.xenei.junit.contract");
-					for (String clsName : classNames)
-					{
+					final Set<String> classNames = ClassPathUtils.findClasses(
+							dir, "org.xenei.junit.contract");
+					for (final String clsName : classNames) {
 						if (getLog().isDebugEnabled()) {
-							getLog().debug("Importing from current classloader: " + clsName);
+							getLog().debug(
+									"Importing from current classloader: "
+											+ clsName);
 						}
-						importFromCurrentClassLoader(realm, Class.forName(clsName));
+						importFromCurrentClassLoader(realm,
+								Class.forName(clsName));
 					}
-				} catch (ClassNotFoundException e) {
-					throw new MojoExecutionException( e.toString(), e );
-				} catch (IOException e) {
-					throw new MojoExecutionException( e.toString(), e );
+				} catch (final ClassNotFoundException e) {
+					throw new MojoExecutionException(e.toString(), e);
+				} catch (final IOException e) {
+					throw new MojoExecutionException(e.toString(), e);
 				}
 			}
-			
+
+			// add source dirs
 			for (final String elt : project.getCompileSourceRoots()) {
 				final URL url = new File(elt).toURI().toURL();
 				realm.addURL(url);
@@ -276,15 +330,6 @@ public class ContractMojo extends AbstractMojo {
 					getLog().debug("Test classpath: " + url);
 				}
 			}
-			// // gwt-dev and its transitive dependencies
-			// for (Artifact elt : getGwtDevArtifacts()) {
-			// URL url = elt.getFile().toURI().toURL();
-			// realm.addURL(url);
-			// if (getLog().isDebugEnabled()) {
-			// getLog().debug("Compile classpath: " + url);
-			// }
-			// }
-			// realm.addURL(pluginArtifactMap.get("com.google.gwt:gwt-dev").getFile().toURI().toURL());
 		} catch (final DuplicateRealmException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} catch (final MalformedURLException e) {
@@ -292,17 +337,7 @@ public class ContractMojo extends AbstractMojo {
 		} catch (final DependencyResolutionRequiredException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-		// // Argument to Compiler ctor
-		// importFromCurrentClassLoader(realm, CompilerOptions.class);
-		// // Argument to Compiler#run
-		// importFromCurrentClassLoader(realm, TreeLogger.class);
-		// // Referenced by CompilerOptions; TreeLogger.Type is already imported
-		// via TreeLogger above
-		// importFromCurrentClassLoader(realm, JsOutputOption.class);
-		// // Makes error check easier
-		// importFromCurrentClassLoader(realm, UnableToCompleteException.class);
 		return realm;
-		// Thread.currentThread().setContextClassLoader(realm);
 	}
 
 	private void importFromCurrentClassLoader(final ClassRealm realm,
@@ -322,12 +357,13 @@ public class ContractMojo extends AbstractMojo {
 
 	private Set<Artifact> getJunitContractsArtifacts() {
 		if (junitContractsArtifacts == null) {
-			ArtifactResolutionRequest request = new ArtifactResolutionRequest()
-					.setArtifact(
-							pluginArtifactMap.get("org.xenei:junit-contracts"))
+			final ArtifactResolutionRequest request = new ArtifactResolutionRequest()
+			.setArtifact(
+					pluginArtifactMap.get("org.xenei:junit-contracts"))
 					.setResolveTransitively(true)
 					.setLocalRepository(localRepository);
-			ArtifactResolutionResult result = repositorySystem.resolve(request);
+			final ArtifactResolutionResult result = repositorySystem
+					.resolve(request);
 			junitContractsArtifacts = result.getArtifacts();
 		}
 		return junitContractsArtifacts;
