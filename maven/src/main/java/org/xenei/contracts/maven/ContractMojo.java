@@ -9,15 +9,13 @@ import java.net.MalformedURLException;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.xenei.junit.contract.tooling.InterfaceReport;
 
-@Mojo(name = "contract-test", requiresDependencyResolution = ResolutionScope.TEST)
-@Execute(goal = "contract-test", phase = LifecyclePhase.TEST)
+@Mojo(name = "contract-test", defaultPhase=LifecyclePhase.TEST, requiresDependencyResolution = ResolutionScope.TEST)
 public class ContractMojo extends AbstractMojo {
 
 	@Parameter(property = "packages")
@@ -53,6 +51,12 @@ public class ContractMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException {
 
+		System.out.print( "PACKAGES: ");
+		for (String s : packages)
+		{
+			System.out.println( "PKG: "+s);
+		}
+		
 		if ((packages == null) || (packages.length == 0)) {
 			throw new MojoExecutionException(
 					"At least one package must be specified");

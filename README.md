@@ -1,25 +1,5 @@
-junit-contracts: A contract test suite runner 
-=============================================
-
-A suite runner for use with JUnit @RunWith annotation to run contract tests for interfaces.  Handles merging multiple tests from individual
-contract tests into a single test suite for concrete implementations of one or more interfaces.
-
-Introduces five annotations:
-
-* @Contract - To map contract tests to the interfaces they test. 
-* @Contract.Inject - To identify the producer of the object under test. 
-* @ContractTest - To identify methods in the text. Replaces junit @Test annotation.
-* @ContractImpl - To identify the class under test in some ContractSuites. 
-* @Dynamic.Inject - To identify the master producer for dynamic suites.
-
-Introduces one class
-
-* ContractSuite - used in the JUnit @RunWith to identify a contract testing suite.
-
-Introduces two interfaces
-
-* Producer - defines a producer that creates new instances of the object under test and can clean up after the test is run. 
-* Dynamic - defines a dynamic test suite.  Dynamic test suites produce a list of tests after the suite is instantiated.
+junit-contracts: A suite of tools to make contract testing easier 
+=================================================================
 
 Maven Repository Info 
 ---------------------
@@ -27,8 +7,7 @@ Maven Repository Info
 Release version
 
      Group Id: org.xenei 
-     Artifact Id: junit-contracts 
-     Version: 0.0.2
+     Artifact Id: contracts 
 
 Snapshot versions are hosted at:
 

@@ -11,17 +11,20 @@
 	<organization>
 		<name>XENEI.com</name>
 	</organization>
+
 	<scm>
 		<url>git@github.com:Claudenw/junit-contracts.git</url>
 		<connection>scm:git:git@github.com:Claudenw/junit-contracts.git</connection>
 		<developerConnection>scm:git:git@github.com:Claudenw/junit-contracts.git</developerConnection>
 	</scm>
+
 	<parent>
 		<artifactId>contracts</artifactId>
 		<relativePath>..</relativePath>
 		<version>0.0.6-SNAPSHOT</version>
 		<groupId>org.xenei</groupId>
 	</parent>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -34,6 +37,7 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>sonatype-nexus-snapshots</id>
@@ -46,6 +50,7 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+
 	<profiles>
 		<profile>
 			<id>release-sign-artifacts</id>
@@ -103,6 +108,7 @@
 			</build>
 		</profile>
 	</profiles>
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -114,6 +120,7 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -125,28 +132,23 @@
 			<artifactId>junit-contracts</artifactId>
 			<version>${version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
 			<version>3.3</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-      <groupId>org.apache.maven.plugin-testing</groupId>
-      <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>3.3.0</version>
-      <scope>test</scope>
-    </dependency>
-		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
 			<version>3.2.5</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -162,23 +164,36 @@
 				<version>3.2</version>
 				<configuration>
 					<goalPrefix>contract-test</goalPrefix>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>
 					<execution>
-						<id>default-descriptor</id>
 						<goals>
 							<goal>descriptor</goal>
-						</goals>
-						<phase>process-classes</phase>
-					</execution>
-					<execution>
-						<id>help-descriptor</id>
-						<goals>
 							<goal>helpmojo</goal>
 						</goals>
-						<phase>process-classes</phase>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+				    <debug>true</debug>
+				    <pom>src/it/pom.xml</pom>
+					<cloneProjectsTo>${project.build.directory}/it-tests</cloneProjectsTo>
+					<localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+					<settingsFile>src/it/settings.xml</settingsFile>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -223,7 +238,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>

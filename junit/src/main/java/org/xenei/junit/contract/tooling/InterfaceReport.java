@@ -132,6 +132,11 @@ public class InterfaceReport {
 			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p));
 		}
 		
+		if (packageClasses.size() == 0) {
+			throw new IllegalArgumentException(
+					"No classes found in "+packages );
+		}
+		
 		this.skipClasses = new HashSet<Class<?>>();
 		if (skipClasses != null)
 		{

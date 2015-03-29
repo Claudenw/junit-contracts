@@ -175,8 +175,8 @@ public class ClassPathUtils {
 			try {
 				classes.add(Class.forName(packageName));
 			} catch (final ClassNotFoundException e) {
-				LOG.warn("{} was neither a package name nor a class name",
-						packageName);
+				LOG.warn( String.format( "%s was neither a package name nor a class name",
+						packageName));
 			}
 		}
 		return classes;
