@@ -36,18 +36,40 @@ import org.xenei.junit.contract.NoContractTest;
 import org.xenei.junit.contract.tooling.InterfaceInfo;
 import org.xenei.junit.contract.tooling.InterfaceReport;
 
+/**
+ * Generate contract test reports.
+ *
+ */
 @Mojo(name = "contract-test", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution = ResolutionScope.TEST)
 public class ContractMojo extends AbstractMojo {
 
+	/**
+	 * A list of packages to process.  Includes sub packages.
+	 */
 	@Parameter
 	private String[] packages;
 
+	/**
+	 * Report configuration for untested interfaces.
+	 * Untested interfaces are interfaces that are defined in the list of
+	 * packages but that do not have contract tests and are not annotated 
+	 * with NoContractTest.
+	 */
 	@Parameter
 	private ReportConfig untested;
 
+	/**
+	 * Report configuration for unimplemented tests.
+	 * Unimplemented tests are classes that implement an interface that has
+	 * a Contract test but for which no contract suite test implementation
+	 * is found.
+	 */
 	@Parameter
 	private ReportConfig unimplemented;
 
+	/**
+	 * Report configuration for errors generated during run.
+	 */
 	@Parameter
 	private ReportConfig errors;
 
@@ -65,8 +87,10 @@ public class ContractMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${plugin.artifactMap}", required = true, readonly = true)
 	private Map<String, Artifact> pluginArtifactMap;
+	
 	@Component
 	private RepositorySystem repositorySystem;
+	
 	@Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
 	private ArtifactRepository localRepository;
 

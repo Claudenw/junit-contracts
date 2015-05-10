@@ -13,6 +13,33 @@ Snapshot versions are hosted at:
 
      https://oss.sonatype.org/content/repositories/snapshots/
 
+Modules 
+=======
+
+The contracts project comprises two modules: junit-contracts and maven-contracts.
+
+junits-contracts
+----------------
+
+[junit-contracts|junit/README.html] is the module that encompasses the annotations and junit test
+runners to execute the connection tests.
+
+Release version
+
+     Group Id: org.xenei 
+     Artifact Id: junit-contracts 
+
+maven-contracts
+----------------
+
+[maven-contracts|maven/README.html] is the module that encompasses the maven plugin that will report results and errors from running the tests.
+
+Release version
+
+     Group Id: org.xenei 
+     Artifact Id: junit-contracts 
+
+
 Contract Tests 
 ==============
 
@@ -20,11 +47,6 @@ Contract tests test the contract defined by a Java interface and the associated 
 but the documentation often expands upon that to define the behaviour that the interface is expected to perform. For example, the Map
 interface defines put(), get(), and remove().  But the human readable documentation tells the developer that if you put() an object you must
 be able to get() it unless the remove() has been called.  That last statement defines two tests in the contract test.
-
-A more extreme case is java.io.Serializable where there are no methods to test but the documentation tells us that all serializable objects
-must contain only serializable objects or implement three private methods with very specific signatures (2 methods if before Java 1.4).  The
-user of the Serializable interface means that all classes derived from Serializable classes are themselves serializable.  See the
-Serializable javadoc for details.  (An example contract test for the Serializable interface is provided in the examples for junit-contract.)
 
 The basic argument for the use of contract tests is that you can prove code correctness.  That is, if every object interface is defined as
 an interface, every interface has a contract test that covers all methods and their expected operation, and all objects have tests that mock
@@ -88,4 +110,4 @@ Samples and Examples
 The test code contains a number of examples and is well [documented]
 (https://github.com/Claudenw/junit-contracts/blob/master/src/test/java/org/xenei/junit/contract/README.md) for use as such.
 
-The sample code tree includes a sample for the Serializable contract test.
+The sample code tree includes a sample for a Serializable contract test.

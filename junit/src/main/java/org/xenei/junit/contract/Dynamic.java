@@ -56,7 +56,7 @@ public interface Dynamic {
 	 * 
 	 * The classes included in the suite must have a Contract.Inject setter that
 	 * accepts the type returned by this method. That method must then set the
-	 * internals of the test so that the Contract.Inject annoated getter will
+	 * internals of the test so that the Contract.Inject annotated getter will
 	 * produce the proper object for the specific test.
 	 * 
 	 */
