@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.xenei</groupId>
 	<artifactId>contracts</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>Xenei Contract Tests</name>
 	<description>Contract testing tools and tooling</description>
 	<url>https://github.com/Claudenw/junit-contracts/tree/master</url>
