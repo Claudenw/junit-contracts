@@ -21,7 +21,7 @@ The contracts project comprises two modules: junit-contracts and maven-contracts
 junits-contracts
 ----------------
 
-[junit-contracts|junit/README.html] is the module that encompasses the annotations and junit test
+<a href="junit/README.html">junit-contracts</a> is the module that encompasses the annotations and junit test
 runners to execute the connection tests.
 
 Release version
@@ -32,7 +32,7 @@ Release version
 maven-contracts
 ----------------
 
-[maven-contracts|maven/README.html] is the module that encompasses the maven plugin that will report results and errors from running the tests.
+<a href="maven/README.html">maven-contracts</a> is the module that encompasses the maven plugin that will report results and errors from running the tests.
 
 Release version
 
