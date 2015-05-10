@@ -175,7 +175,7 @@ public class ClassPathUtils {
 		else {
 			// there are no resources at that path so see if it is a class
 			try {
-				classes.add(Class.forName(packageName));
+				classes.add(Class.forName(packageName, false, classLoader));
 			} catch (final ClassNotFoundException e) {
 				LOG.warn(String.format(
 						"'%s' was neither a package name nor a class name",
