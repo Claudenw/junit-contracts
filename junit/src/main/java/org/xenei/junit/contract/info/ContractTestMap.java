@@ -2,6 +2,7 @@ package org.xenei.junit.contract.info;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -151,12 +152,20 @@ public class ContractTestMap {
 
 	/**
 	 * Get a TestInfo for a interface under test.
+	 * 
+	 * Will not return null, may return an empty set
 	 *
 	 * @param contract
-	 *            The class (interface) under tes.t
-	 * @return The TestInfo for the contract class.
+	 *            The class (interface) under test.
+	 * @return The set of TestInfo for the contract class.
 	 */
 	public Set<TestInfo> getInfoByInterfaceClass(final Class<?> contract) {
+		Set<TestInfo> ti = interfaceToInfoMap.get(contract);
+		if (ti == null)
+		{
+			LOG.info(String.format("Found no tests for interface %s.", contract));
+			return Collections.emptySet();
+		}
 		return interfaceToInfoMap.get(contract);
 	}
 
@@ -203,15 +212,7 @@ public class ContractTestMap {
 						contractClassInfo));
 			}
 			else {
-
-				final Set<TestInfo> tiSet = getInfoByInterfaceClass(clazz);
-				if (tiSet.isEmpty()) {
-					LOG.info(String.format("Checked %s found nothing", clazz));
-				}
-				else {
-					testClasses.addAll(tiSet);
-				}
-
+				testClasses.addAll(getInfoByInterfaceClass(clazz));
 			}
 		}
 		return testClasses;
