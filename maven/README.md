@@ -15,9 +15,9 @@ packages
     
 A list of packages to process. Includes sub packages.  General format is 
 
-     &lt;packages>
-         &lt;package>some.package.name&lt;/package>
-     &lt;/packages>
+     <packages>
+         <package>some.package.name</package>
+     </packages>
 
 error
 -----
