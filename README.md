@@ -108,6 +108,6 @@ Samples and Examples
 ====================
 
 The test code contains a number of examples and is well [documented]
-(https://github.com/Claudenw/junit-contracts/blob/master/src/test/java/org/xenei/junit/contract/README.md) for use as such.
+(https://github.com/Claudenw/junit-contracts/blob/master/junit/src/test/java/org/xenei/junit/contract/README.md) for use as such.
 
 The sample code tree includes a sample for a Serializable contract test.
