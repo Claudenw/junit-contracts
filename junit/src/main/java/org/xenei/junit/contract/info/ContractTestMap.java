@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.ClassPathUtils;
@@ -27,21 +28,20 @@ public class ContractTestMap {
 	private final Map<Class<?>, Set<TestInfo>> interfaceToInfoMap = new HashMap<Class<?>, Set<TestInfo>>();
 
 	private final static Set<String> skipInterfaces;
-	
+
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
 
 	static {
 		skipInterfaces = new HashSet<String>();
-		String prop = System.getProperty("contracts.skipClasses");
-		if (prop != null)
-		{
-			for (String iFace : prop.split( "," ))
-			{
+		final String prop = System.getProperty("contracts.skipClasses");
+		if (prop != null) {
+			for (final String iFace : prop.split(",")) {
 				skipInterfaces.add(iFace);
 			}
 		}
 	}
+
 	/**
 	 * Populate and return a ContractTestMap with all the contract tests on the
 	 * class path.
@@ -53,18 +53,24 @@ public class ContractTestMap {
 	 * @return contractTestClasses TestInfo objects for classes annotated with @Contract
 	 */
 	public static ContractTestMap populateInstance() {
+		return populateInstance(new Class<?>[0]);
+	}
 
+	public static ContractTestMap populateInstance(final Class<?>[] ignoreTests) {
+		final List<Class<?>> ignored = Arrays.asList(ignoreTests);
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
 
 		for (final Class<?> clazz : ClassPathUtils.getClasses("")) {
-			if (! skipInterfaces.contains( clazz.getName() ))
-			{
+			final boolean skip = skipInterfaces.contains(clazz.getName())
+					|| ignored.contains(clazz);
+			if (!skip) {
 				// contract annotation is on the test class
 				// value of contract annotation is class under test
 				LOG.debug("seeking contracts for {}", clazz);
 				final Contract c = clazz.getAnnotation(Contract.class);
-				if (c != null) {
+				final Ignore ignore = clazz.getAnnotation(Ignore.class);
+				if ((c != null) && (ignore == null)) {
 					LOG.debug("adding {} {}", clazz, c);
 					retval.add(new TestInfo(clazz, c));
 				}
@@ -85,7 +91,7 @@ public class ContractTestMap {
 	 */
 	public static ContractTestMap populateInstance(final ClassLoader classLoader) {
 		return populateInstance(classLoader, new String[] {
-			""
+				""
 		});
 	}
 
@@ -130,6 +136,7 @@ public class ContractTestMap {
 	 *            the info to add
 	 */
 	public void add(final TestInfo info) {
+
 		classToInfoMap.put(info.getContractTestClass(), info);
 		Set<TestInfo> tiSet = interfaceToInfoMap.get(info.getInterfaceClass());
 		if (tiSet == null) {
@@ -152,7 +159,7 @@ public class ContractTestMap {
 
 	/**
 	 * Get a TestInfo for a interface under test.
-	 * 
+	 *
 	 * Will not return null, may return an empty set
 	 *
 	 * @param contract
@@ -160,10 +167,10 @@ public class ContractTestMap {
 	 * @return The set of TestInfo for the contract class.
 	 */
 	public Set<TestInfo> getInfoByInterfaceClass(final Class<?> contract) {
-		Set<TestInfo> ti = interfaceToInfoMap.get(contract);
-		if (ti == null)
-		{
-			LOG.info(String.format("Found no tests for interface %s.", contract));
+		final Set<TestInfo> ti = interfaceToInfoMap.get(contract);
+		if (ti == null) {
+			LOG.info(String
+					.format("Found no tests for interface %s.", contract));
 			return Collections.emptySet();
 		}
 		return interfaceToInfoMap.get(contract);
@@ -220,7 +227,7 @@ public class ContractTestMap {
 
 	/**
 	 * A list of all test Infos.
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<TestInfo> listTestInfo() {

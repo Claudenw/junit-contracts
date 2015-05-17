@@ -22,7 +22,7 @@ public class InterfaceReportTest {
 
 	private InterfaceReport interfaceReport;
 	
-	private String[] packages = { "org.xenei.junit.contract" };
+	private String[] packages = { "org.xenei.junit.contract.exampleTests" };
 	
 	private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 	
@@ -68,15 +68,15 @@ public class InterfaceReportTest {
 		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
 		Set<String> names = getClassNames( classes );
 		assertEquals( 3, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.CImpl3"));
-		assertTrue( names.contains( "org.xenei.junit.contract.EImpl"));
-		assertTrue( names.contains( "org.xenei.junit.contract.FImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.CImpl3"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.EImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.FImpl"));
 		
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
 		assertEquals( 1, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.F"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();
 		assertEquals( 0, errors.size() );
@@ -86,25 +86,25 @@ public class InterfaceReportTest {
 	@Test
 	public void testSkipClass() throws MalformedURLException
 	{
-		String[] skipClasses = { "org.xenei.junit.contract.MissingClass", "org.xenei.junit.contract.CImpl3", "org.xenei.junit.contract.DTImplSuite$ForceA" };
+		String[] skipClasses = { "org.xenei.junit.contract.exampleTests.MissingClass", "org.xenei.junit.contract.exampleTests.CImpl3", "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" };
 		interfaceReport = new InterfaceReport(packages, skipClasses, classLoader);
 		
 		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
 		Set<String> names = getClassNames( classes );
 		assertEquals( 2, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.EImpl"));
-		assertTrue( names.contains( "org.xenei.junit.contract.FImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.EImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.FImpl"));
 		
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
 		assertEquals( 1, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.F"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();
 		assertEquals( 0, errors.size() );
 		Selector selector = new MessageSelector();
-		StringEvent event = new StringEvent( "Skip class org.xenei.junit.contract.MissingClass was not found");
+		StringEvent event = new StringEvent( "Skip class org.xenei.junit.contract.exampleTests.MissingClass was not found");
 		appender.assertContains(selector, event );
 	}
 
@@ -112,25 +112,25 @@ public class InterfaceReportTest {
 	@Test
 	public void testBadClasses() throws MalformedURLException
 	{
-		String[] myPackages = { "org.xenei.junit.contract", "org.xenei.junit.bad" };
-		String[] skipClasses = { "org.xenei.junit.contract.CImpl3", "org.xenei.junit.contract.DTImplSuite$ForceA" };
+		String[] myPackages = { "org.xenei.junit.contract.exampleTests.", "org.xenei.junit.bad" };
+		String[] skipClasses = { "org.xenei.junit.contract.exampleTests.CImpl3", "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" };
 		String[] expectedErrors = {
-				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a non-abstract declared setter method",
-				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstrtact) must not be abstract"		
+				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
+				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract"		
 		};
 		interfaceReport = new InterfaceReport(myPackages, skipClasses, classLoader);
 		
 		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
 		Set<String> names = getClassNames( classes );
 		assertEquals( 2, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.EImpl"));
-		assertTrue( names.contains( "org.xenei.junit.contract.FImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.EImpl"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.FImpl"));
 		
 		
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames( classes );
 		assertEquals( 1, names.size() );
-		assertTrue( names.contains( "org.xenei.junit.contract.F"));
+		assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.F"));
 		
 		List<Throwable> errors = interfaceReport.getErrors();
 		assertEquals( 2, errors.size() );

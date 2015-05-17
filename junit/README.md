@@ -49,5 +49,22 @@ For example our test code (as defined in the pom.xml) adds
 
     -Dcontracts.skipClasses=org.xenei.junit.bad.BadAbstrtact,org.xenei.junit.bad.BadNoInject
 
-to skip our known bad tests.  
+to skip our known bad tests. 
+
+@ContractImpl tests
+-------------------
+
+The @ContractImpl has two attributes that can remove tests.
+
+* skip is an array of interface classes that should not be tested.  All contract tests for the interfaces will be skipped.
+
+* ignore list any @Contract annotated tests that should be ignored.  This allows removal of broken
+tests that are outside the control of the developer of the @ContractImpl test.
+
+@Contract tests
+---------------
+
+The @Contract tests may be removed by adding the standard junit @Ignore annotation.
+
+  
 

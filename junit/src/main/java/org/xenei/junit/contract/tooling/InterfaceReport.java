@@ -1,13 +1,11 @@
 package org.xenei.junit.contract.tooling;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -102,7 +100,7 @@ public class InterfaceReport {
 							interfaceInfoMap.put(contract.value(), ii);
 						}
 						ii.add(c);
-					} 
+					}
 				}
 			}
 		}
@@ -172,7 +170,8 @@ public class InterfaceReport {
 
 		for (final InterfaceInfo info : getInterfaceInfoMap().values()) {
 			// no test and has methods
-			if (info.getTests().isEmpty() && info.getName().getDeclaredMethods().length > 0) {
+			if (info.getTests().isEmpty()
+					&& (info.getName().getDeclaredMethods().length > 0)) {
 				retval.add(info.getName());
 			}
 		}
@@ -222,7 +221,7 @@ public class InterfaceReport {
 			// only interested in concrete implementations
 			if (!(clazz.isInterface()
 					|| Modifier.isAbstract(clazz.getModifiers()) || skipClasses
-					.contains(clazz))) {
+						.contains(clazz))) {
 
 				// we are only interested if there is no contract test for the
 				// class and there parent tests
@@ -258,9 +257,9 @@ public class InterfaceReport {
 	 * @throws MalformedURLException
 	 */
 	public static void main(final String[] args) throws ParseException,
-			MalformedURLException {
+	MalformedURLException {
 		final CommandLine commands = new BasicParser()
-				.parse(getOptions(), args);
+		.parse(getOptions(), args);
 
 		if (commands.hasOption("h")) {
 			final HelpFormatter formatter = new HelpFormatter();
@@ -374,7 +373,8 @@ public class InterfaceReport {
 				final Collection<Class<?>> classes) {
 			final ContractImplMap retval = new ContractImplMap();
 			for (final Class<?> c : classes) {
-				final ContractImpl contractImpl = c.getAnnotation(ContractImpl.class);
+				final ContractImpl contractImpl = c
+						.getAnnotation(ContractImpl.class);
 				if (contractImpl != null) {
 					retval.add(c, contractImpl);
 				}

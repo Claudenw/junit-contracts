@@ -95,7 +95,7 @@ public class ClassPathUtils {
 				}
 				else if (file.getName().endsWith(".class")) {
 					classes.add(packageName
-							+ '.'
+							+ (packageName.endsWith(".")?"":'.')
 							+ file.getName().substring(0,
 									file.getName().length() - 6));
 				}

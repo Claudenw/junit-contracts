@@ -1,12 +1,10 @@
 package org.xenei.junit.contract.info;
 
-import java.util.List;
-
-import org.slf4j.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.slf4j.Logger;
 
 public class TestInfoErrorRunner extends Runner {
 
@@ -14,17 +12,14 @@ public class TestInfoErrorRunner extends Runner {
 
 	private final Class<?> fTestClass;
 
-	public TestInfoErrorRunner(final Class<?> testClass, TestInfo testInfo)
-	{
+	public TestInfoErrorRunner(final Class<?> testClass, final TestInfo testInfo) {
 		fTestClass = testClass;
 		this.testInfo = testInfo;
 	}
-	
-	public void logErrors( Logger log )
-	{
-		for (Throwable t : testInfo.getErrors() )
-		{
-			log.error( t.toString() );
+
+	public void logErrors(final Logger log) {
+		for (final Throwable t : testInfo.getErrors()) {
+			log.error(t.toString());
 		}
 	}
 
@@ -46,17 +41,22 @@ public class TestInfoErrorRunner extends Runner {
 	}
 
 	private Description describeCause(final Throwable child) {
-		return Description.createTestDescription(testInfo.getContractTestClass(),
-				String.format( "%s(%s)", testInfo.getContractTestClass().getSimpleName(), fTestClass.getSimpleName()) );
-		// "initializationError");
+		return Description.createTestDescription(testInfo
+				.getContractTestClass(), String.format("%s(%s)", testInfo
+				.getContractTestClass().getSimpleName(), fTestClass
+				.getSimpleName()));
 	}
 
 	private void runCause(final Throwable child, final RunNotifier notifier) {
 		final Description description = describeCause(child);
 		notifier.fireTestStarted(description);
 		notifier.fireTestFailure(new Failure(description, child));
-		//notifier.fireTestAssumptionFailed(new Failure(description, child));
 		notifier.fireTestFinished(description);
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.format( "TestInfoErrorRunner[ %s ]", testInfo);
+	}
 }

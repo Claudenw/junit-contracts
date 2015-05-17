@@ -1,11 +1,13 @@
 package org.xenei.junit.bad;
-
-import org.xenei.junit.contract.A;
+/**
+ * Class to test that the ignore option works.
+ */
 import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.exampleTests.A;
 
 @Contract(A.class)
 public class BadNoInject {
-	
+
 	public BadNoInject() {
 	}
 

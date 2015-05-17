@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -77,7 +76,7 @@ import org.xenei.junit.contract.info.TestInfoErrorRunner;
  * requirements change. See Dynamic for more information.
  * </p>
  */
-@Ignore("Not a real test")
+//@Ignore("Not a real test")
 public class ContractSuite extends ParentRunner<Runner> {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractSuite.class);
@@ -87,30 +86,42 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 * Called reflectively on classes annotated with
 	 * <code>@RunWith(Suite.class)</code>
 	 *
-	 * @param cls
+	 * @param contractTest
 	 *            the root class
 	 * @param builder
 	 *            builds runners for classes in the suite
 	 * @throws Throwable
 	 */
-	public ContractSuite(final Class<?> cls, final RunnerBuilder builder)
-			throws Throwable {
-		super(cls);
+	public ContractSuite(final Class<?> contractTest,
+			final RunnerBuilder builder) throws Throwable {
+		super(contractTest);
 
-		// List<Throwable> errors = new ArrayList<Throwable>();
+		final ContractImpl contractImpl = contractTest
+				.getAnnotation(ContractImpl.class);
 		// find all the contract annotated tests on the class path.
-		final ContractTestMap contractTestMap = ContractTestMap.populateInstance();
-
-		final Object baseObj = cls.newInstance();
-		List<Runner> r;
-		if (baseObj instanceof Dynamic) {
-			r = addDynamicClasses(builder, contractTestMap, (Dynamic) baseObj);
+		final ContractTestMap contractTestMap = ContractTestMap
+				.populateInstance(contractImpl.ignore());
+		final TestInfo testInfo = contractTestMap
+				.getInfoByTestClass(contractTest);
+		List<Runner> runners;
+		if ((testInfo != null) && testInfo.hasErrors()) {
+			runners = new ArrayList<Runner>();
+			runners.add(new TestInfoErrorRunner(contractTest, testInfo));
 		}
 		else {
-			r = addAnnotatedClasses(cls, builder, contractTestMap, baseObj);
+			final Object baseObj = contractTest.newInstance();
+
+			if (baseObj instanceof Dynamic) {
+				runners = addDynamicClasses(builder, contractTestMap,
+						(Dynamic) baseObj);
+			}
+			else {
+				runners = addAnnotatedClasses(contractTest, builder,
+						contractTestMap, baseObj);
+			}
 		}
 
-		fRunners = Collections.unmodifiableList(r);
+		fRunners = Collections.unmodifiableList(runners);
 	}
 
 	/**
@@ -128,9 +139,10 @@ public class ContractSuite extends ParentRunner<Runner> {
 			throws InitializationError {
 		final ContractImpl impl = cls.getAnnotation(ContractImpl.class);
 		if (impl == null) {
+
 			throw new InitializationError(
 					"Classes annotated as @RunWith( ContractSuite ) [" + cls
-					+ "] must also be annotated with @ContractImpl");
+							+ "] must also be annotated with @ContractImpl");
 		}
 		return impl;
 	}
@@ -152,20 +164,22 @@ public class ContractSuite extends ParentRunner<Runner> {
 	private List<Runner> addDynamicClasses(final RunnerBuilder builder,
 			final ContractTestMap contractTestMap, final Dynamic dynamic)
 			throws InitializationError {
-		final Class<? extends Dynamic> cls = dynamic.getClass();
+		final Class<? extends Dynamic> dynamicClass = dynamic.getClass();
 		// this is the list of all the JUnit runners in the suite.
-		final List<Runner> r = new ArrayList<Runner>();
-		ContractImpl impl = getContractImpl(cls);
+		final List<Runner> runners = new ArrayList<Runner>();
+		ContractImpl impl = getContractImpl(dynamicClass);
 		if (impl == null) {
-			return r;
+			return runners;
 		}
-		final DynamicSuiteInfo dynamicSuiteInfo = new DynamicSuiteInfo(cls,
-				impl);
+		final DynamicSuiteInfo dynamicSuiteInfo = new DynamicSuiteInfo(
+				dynamicClass, impl);
 
 		final Collection<Class<?>> tests = dynamic.getSuiteClasses();
 		if ((tests == null) || (tests.size() == 0)) {
-			throw new InitializationError(
-					"Dynamic suite did not return a list of classes to execute");
+			dynamicSuiteInfo
+					.addError(new InitializationError(
+							"Dynamic suite did not return a list of classes to execute"));
+			runners.add(new TestInfoErrorRunner(dynamicClass, dynamicSuiteInfo));
 		}
 		else {
 			for (final Class<?> test : tests) {
@@ -176,32 +190,39 @@ public class ContractSuite extends ParentRunner<Runner> {
 					if (impl != null) {
 						final DynamicTestInfo parentTestInfo = new DynamicTestInfo(
 								test, impl, dynamicSuiteInfo);
-						addSpecifiedClasses(r, test, builder, contractTestMap,
-								dynamic, parentTestInfo);
+
+						if (!parentTestInfo.hasErrors()) {
+							addSpecifiedClasses(runners, test, builder,
+									contractTestMap, dynamic, parentTestInfo);
+						}
+						// this is not an else as addSpecifiedClasses may add
+						// errors to parentTestInfo
+						if (parentTestInfo.hasErrors()) {
+							runners.add(new TestInfoErrorRunner(dynamicClass,
+									parentTestInfo));
+						}
 					}
 				}
 				else {
 					try {
-						r.add(builder.runnerForClass(test));
+						runners.add(builder.runnerForClass(test));
 					} catch (final Throwable t) {
 						throw new InitializationError(t);
 					}
 				}
 			}
 		}
-		return r;
+		return runners;
 
 	}
 
 	/**
 	 * Add annotated classes to the test
 	 *
-	 * @param cls
+	 * @param baseClass
 	 *            the base test class
 	 * @param builder
 	 *            The builder to use
-	 * @param errors
-	 *            the list of errors
 	 * @param contractTestMap
 	 *            The ContractTest map.
 	 * @param baseObj
@@ -210,30 +231,40 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 * @return the list of runners
 	 * @throws InitializationError
 	 */
-	private List<Runner> addAnnotatedClasses(final Class<?> cls,
+	private List<Runner> addAnnotatedClasses(final Class<?> baseClass,
 			final RunnerBuilder builder, final ContractTestMap contractTestMap,
 			final Object baseObj) throws InitializationError {
-		final List<Runner> r = new ArrayList<Runner>();
-		final ContractImpl impl = getContractImpl(cls);
+		final List<Runner> runners = new ArrayList<Runner>();
+		final ContractImpl impl = getContractImpl(baseClass);
 		if (impl != null) {
 			TestInfo testInfo = contractTestMap
 					.getInfoByTestClass(impl.value());
 			if (testInfo == null) {
-				testInfo = new SuiteInfo(cls, impl);
+				testInfo = new SuiteInfo(baseClass, impl);
 				contractTestMap.add(testInfo);
 			}
-			addSpecifiedClasses(r, cls, builder, contractTestMap, baseObj,
-					testInfo);
+
+			if (!testInfo.hasErrors()) {
+				addSpecifiedClasses(runners, baseClass, builder,
+						contractTestMap, baseObj, testInfo);
+			}
+			// this is not an else since addSpecifiedClasses may add errors to
+			// testInfo.
+			if (testInfo.hasErrors()) {
+				runners.add(new TestInfoErrorRunner(baseClass, testInfo));
+			}
 		}
-		return r;
+		return runners;
 	}
 
 	/**
 	 * Adds the specified classes to to the test suite.
 	 *
-	 * @param r
+	 * May add error notations to the parentTestInfo.
+	 *
+	 * @param runners
 	 *            The list of runners to add the test to
-	 * @param cls
+	 * @param testClass
 	 *            The class under test
 	 * @param builder
 	 *            The builder to user
@@ -242,22 +273,24 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 * @param contractTestMap
 	 *            The ContractTestMap
 	 * @param baseObj
+	 *            The object under test
 	 * @param parentTestInfo
+	 *            The parent test Info.
 	 * @throws InitializationError
 	 */
-	private void addSpecifiedClasses(final List<Runner> r, final Class<?> cls,
-			final RunnerBuilder builder, final ContractTestMap contractTestMap,
-			final Object baseObj, final TestInfo parentTestInfo)
-			throws InitializationError {
+	private void addSpecifiedClasses(final List<Runner> runners,
+			final Class<?> testClass, final RunnerBuilder builder,
+			final ContractTestMap contractTestMap, final Object baseObj,
+			final TestInfo parentTestInfo) throws InitializationError {
 		// this is the list of all the JUnit runners in the suite.
 
 		final Set<TestInfo> testClasses = new LinkedHashSet<TestInfo>();
 		// we have a RunWith annotated class: Klass
 		// see if it is in the annotatedClasses
 
-		final BaseClassRunner bcr = new BaseClassRunner(cls);
+		final BaseClassRunner bcr = new BaseClassRunner(testClass);
 		if (bcr.computeTestMethods().size() > 0) {
-			r.add(bcr);
+			runners.add(bcr);
 		}
 
 		// get all the annotated classes that test interfaces that
@@ -267,18 +300,22 @@ public class ContractSuite extends ParentRunner<Runner> {
 				testClasses, parentTestInfo)) {
 
 			if (testInfo.getErrors().size() > 0) {
-				LOG.error("Errors during parsing "+ testInfo);
-				final TestInfoErrorRunner runner = new TestInfoErrorRunner(cls,testInfo);
-						
-				runner.logErrors( LOG );
-				r.add(runner);
+				// parentTestInfo.addError( new
+				// InitializationError(testInfo.getErrors()));
+				final TestInfoErrorRunner runner = new TestInfoErrorRunner(
+						testClass, testInfo);
+
+				runner.logErrors(LOG);
+				runners.add(runner);
 			}
 			else {
-				r.add(new ContractTestRunner(baseObj, parentTestInfo, testInfo));
+				runners.add(new ContractTestRunner(baseObj, parentTestInfo,
+						testInfo));
 			}
 		}
-		if (r.size() == 0) {
-			throw new InitializationError("No tests for " + cls);
+		if (runners.size() == 0) {
+			parentTestInfo.addError(new InitializationError("No tests for "
+					+ testClass));
 		}
 
 	}
@@ -295,6 +332,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 	@Override
 	protected void runChild(final Runner child, final RunNotifier notifier) {
+		LOG.info( "Running: {} ", child);
 		child.run(notifier);
 	}
 
