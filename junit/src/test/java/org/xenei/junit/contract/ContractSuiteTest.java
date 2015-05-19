@@ -1,11 +1,9 @@
 package org.xenei.junit.contract;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -53,34 +51,41 @@ public class ContractSuiteTest {
 		final ContractSuite cs = new ContractSuite(BadNoInjectTest.class,
 				builder);
 		final RunNotifier notifier = mock(RunNotifier.class);
-		
 		cs.run(notifier);
 
 		final ArgumentCaptor<Description> description = ArgumentCaptor
 				.forClass(Description.class);
 		verify(notifier).fireTestStarted(description.capture());
-		assertEquals(BadNoInject.class.getName(), description.getValue()
-				.getClassName());
 
-		final ArgumentCaptor<Failure> failure = ArgumentCaptor
-				.forClass(Failure.class);
-		verify(notifier).fireTestFailure(failure.capture());
-		final Throwable throwable = failure.getValue().getException();
-		assertTrue("Should be illegal state exception",
-				throwable instanceof IllegalStateException);
-		assertEquals(
-				"Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
-				throwable.getMessage());
+		if (BadNoInject.class.getName().equals(
+				description.getValue().getClassName())) {
 
-		verify(notifier).fireTestFinished(description.capture());
-		assertEquals(BadNoInject.class.getName(), description.getValue()
-				.getClassName());
-
+			final ArgumentCaptor<Failure> failure = ArgumentCaptor
+					.forClass(Failure.class);
+			verify(notifier).fireTestFailure(failure.capture());
+			final Throwable throwable = failure.getValue().getException();
+			assertTrue("Should be illegal state exception",
+					throwable instanceof IllegalStateException);
+			assertEquals(
+					"Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
+					throwable.getMessage());
+			verify(notifier).fireTestFinished(description.capture());
+			assertEquals(BadNoInject.class.getName(), description.getValue()
+					.getClassName());
+		}
+		else if (BadNoInjectTest.class.getName().equals(
+				description.getValue().getClassName())) {
+			verify(notifier).fireTestFinished(description.capture());
+			assertEquals(BadNoInjectTest.class.getName(), description.getValue()
+					.getClassName());	
+		} else {
+			fail("Unexpected description class name: "
+					+ description.getValue().getClassName());
+		}
 	}
 
-	
 	@ContractImpl(value = BadNoInject.class)
-	private static class BadNoInjectTest {
+	public static class BadNoInjectTest {
 		// the producer to use for all the tests
 		private final IProducer<BadNoInject> producer = new IProducer<BadNoInject>() {
 			@Override
@@ -101,12 +106,11 @@ public class ContractSuiteTest {
 		public IProducer<BadNoInject> getProducer() {
 			return producer;
 		}
-		
-//		@ContractTest
-//		public void forceTest()
-//		{
-//			// just a test to meet the requirements.
-//		}
+
+		@ContractTest
+		public void forceTest() {
+			// just a test to meet the requirements.
+		}
 
 	}
 

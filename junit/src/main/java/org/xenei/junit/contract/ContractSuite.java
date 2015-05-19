@@ -300,8 +300,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 				testClasses, parentTestInfo)) {
 
 			if (testInfo.getErrors().size() > 0) {
-				// parentTestInfo.addError( new
-				// InitializationError(testInfo.getErrors()));
+	
 				final TestInfoErrorRunner runner = new TestInfoErrorRunner(
 						testClass, testInfo);
 
