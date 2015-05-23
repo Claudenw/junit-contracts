@@ -32,6 +32,7 @@ import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xenei.junit.contract.filter.ClassFilter;
 
 /**
  * Package of class path searching utilities
@@ -42,6 +43,23 @@ public class ClassPathUtils {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ClassPathUtils.class);
 
+	/**
+	 * Recursive method used to find all classes in a given directory and
+	 * subdirs that match the filter. Adapted from http://snippets.dzone.com/posts/show/4831 and
+	 * extended to support use of JAR files
+	 *
+	 * @param directory
+	 *            The base directory
+	 * @param packageName
+	 *            The package name for classes found inside the base directory
+	 * @param filter The filter to match.
+	 * @return The classes
+	 * @throws IOException
+	 */
+	public static Set<String> findClasses(final String directory,
+			final String packageName, final ClassFilter filter) throws IOException {
+		return filterClassNames( findClasses( directory, packageName), filter );
+	}
 	/**
 	 * Recursive method used to find all classes in a given directory and
 	 * subdirs. Adapted from http://snippets.dzone.com/posts/show/4831 and
@@ -125,6 +143,21 @@ public class ClassPathUtils {
 	}
 
 	/**
+	 * Find all classes accessible from the context class loader which belong to
+	 * the given package and subpackages that match the filter.
+	 *
+	 * An empty or null packageName = all packages.
+	 *
+	 * @param packageName
+	 *            The base package or class name.
+	 * @param filter 
+	 * 			  The class filter to match.
+	 * @return The classes
+	 */
+	public static Collection<Class<?>> getClasses(final String packageName, ClassFilter filter) {
+		return filterClasses( getClasses( packageName), filter);
+	}
+	/**
 	 * Find all classes accessible from the classloader which belong to the
 	 * given package and subpackages.
 	 *
@@ -186,6 +219,51 @@ public class ClassPathUtils {
 	}
 
 	/**
+	 * Find all classes accessible from the classloader which belong to the
+	 * given package and subpackages and match the filter.
+	 *
+	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
+	 * support use of JAR files
+	 *
+	 * @param classLoader
+	 *            The classloader to load the classes from.
+	 * @param packageName
+	 *            The base package or class name
+	 * @param filter
+	 * 			  A class filter to limit results.            
+	 * @return The classes
+	 */
+	public static Collection<Class<?>> getClasses(
+			final ClassLoader classLoader, final String packageName, final ClassFilter filter) {
+		return filterClasses( getClasses( classLoader, packageName ), filter);
+	}
+	
+	public static Set<Class<?>> filterClasses( Collection<Class<?>> classes,ClassFilter filter)
+	{
+		Set<Class<?>> retval = new HashSet<Class<?>>();
+		for (Class<?> clazz : classes)
+		{
+			if (filter.accept(clazz))
+			{
+				retval.add( clazz );
+			}
+		}
+		return retval;
+	}
+	
+	public static Set<String> filterClassNames( Collection<String> classNames, ClassFilter filter)
+	{
+		Set<String> retval = new HashSet<String>();
+		for (String className : classNames)
+		{
+			if (filter.accept(className))
+			{
+				retval.add( className );
+			}
+		}
+		return retval;
+	}
+	/**
 	 * Get the array of class path elements.
 	 *
 	 * These are strings separated by java.class.path property
@@ -215,6 +293,16 @@ public class ClassPathUtils {
 		return implClasses;
 	}
 
+	/**
+	 * Get all the interfaces for the class that meet the filter.
+	 *
+	 * @param clazz
+	 *            The class to find interfaces for.
+	 * @return set of interfaces implemented by clazz.
+	 */
+	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz, ClassFilter filter) {
+		return filterClasses( getAllInterfaces( clazz ), filter );
+	}
 	/**
 	 * Get all the interfaces that the class implements. Adds the interfaces to
 	 * the set of classes.

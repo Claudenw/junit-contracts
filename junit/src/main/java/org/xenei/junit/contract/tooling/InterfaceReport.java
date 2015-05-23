@@ -1,7 +1,23 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.xenei.junit.contract.tooling;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -26,8 +42,18 @@ import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.NoContractTest;
+import org.xenei.junit.contract.filter.AbstractClassFilter;
+import org.xenei.junit.contract.filter.AndClassFilter;
+import org.xenei.junit.contract.filter.AnnotationClassFilter;
+import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
+import org.xenei.junit.contract.filter.NotClassFilter;
+import org.xenei.junit.contract.filter.TrueClassFilter;
+import org.xenei.junit.contract.filter.WildcardClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.TestInfo;
+import org.xenei.junit.contract.filter.InterfaceClassFilter;
+import org.xenei.junit.contract.filter.OrClassFilter;
 
 public class InterfaceReport {
 
@@ -37,7 +63,7 @@ public class InterfaceReport {
 	 */
 	private final Collection<Class<?>> packageClasses;
 
-	private final Collection<Class<?>> skipClasses;
+	private final ClassFilter skipClasses;
 
 	/**
 	 * A map of all interfaces implemented in the packages that have contract
@@ -55,7 +81,11 @@ public class InterfaceReport {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
-
+	
+	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter( InterfaceClassFilter.INSTANCE,
+				new NotClassFilter( AnnotationClassFilter.INSTANCE ),
+				new NotClassFilter( new HasAnnotationClassFilter( NoContractTest.class )));
+	
 	private static final Comparator<Class<?>> CLASS_NAME_COMPARATOR = new Comparator<Class<?>>() {
 
 		@Override
@@ -64,11 +94,6 @@ public class InterfaceReport {
 		}
 	};
 
-	private boolean isInterestingInterface(final Class<?> clazz) {
-		return clazz.isInterface() && !clazz.isAnnotation()
-				&& (null == clazz.getAnnotation(NoContractTest.class))
-				&& !skipClasses.contains(clazz);
-	}
 
 	public Collection<InterfaceInfo> getInterfaceInfoCollection() {
 		return getInterfaceInfoMap().values();
@@ -82,10 +107,11 @@ public class InterfaceReport {
 	 * @return
 	 */
 	private Map<Class<?>, InterfaceInfo> getInterfaceInfoMap() {
+		
 		if (interfaceInfoMap == null) {
 			interfaceInfoMap = new HashMap<Class<?>, InterfaceInfo>();
 			for (final Class<?> c : packageClasses) {
-				if (isInterestingInterface(c)) {
+				if (INTERESTING_CLASSES.accept(c)) {
 					if (!interfaceInfoMap.containsKey(c)) {
 						interfaceInfoMap.put(c, new InterfaceInfo(c));
 					}
@@ -119,10 +145,15 @@ public class InterfaceReport {
 		// this includes classes not in the specified packages
 		contractTestMap = ContractTestMap.populateInstance(classLoader,
 				packages);
-
+		if (skipClasses != null) {
+			this.skipClasses = new NotClassFilter( new WildcardClassFilter(skipClasses));
+		} else {
+			this.skipClasses = TrueClassFilter.TRUE;
+		}
+		
 		packageClasses = new HashSet<Class<?>>();
 		for (final String p : packages) {
-			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p));
+			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p, this.skipClasses));
 		}
 
 		if (packageClasses.size() == 0) {
@@ -130,16 +161,6 @@ public class InterfaceReport {
 					+ packages);
 		}
 
-		this.skipClasses = new HashSet<Class<?>>();
-		if (skipClasses != null) {
-			for (final String s : skipClasses) {
-				try {
-					this.skipClasses.add(Class.forName(s, false, classLoader));
-				} catch (final ClassNotFoundException e) {
-					LOG.warn("Skip class {} was not found", s);
-				}
-			}
-		}
 		contractImplMap = ContractImplMap.populateInstance(packageClasses);
 	}
 
@@ -178,35 +199,6 @@ public class InterfaceReport {
 		return retval;
 	}
 
-	// private static Set<Class<?>> getAllInterfacesForClass(
-	// final Map<Class<?>, Set<Class<?>>> map, final Class<?> c) {
-	// final Set<Class<?>> retval = new HashSet<Class<?>>();
-	// if ((c == null) || (c == Object.class)) {
-	// return Collections.emptySet();
-	// }
-	// for (final Class<?> i : c.getClasses()) {
-	// if (i.isInterface()) {
-	// if (!map.containsKey(i)) {
-	// map.put(i, getAllInterfacesForClass(map, i));
-	// }
-	// retval.addAll(map.get(i));
-	// }
-	// else {
-	// retval.addAll(getAllInterfacesForClass(map, i));
-	// }
-	// }
-	// for (final Class<?> i : c.getInterfaces()) {
-	// if (!map.containsKey(i)) {
-	// map.put(i, getAllInterfacesForClass(map, i));
-	// }
-	// retval.addAll(map.get(i));
-	// }
-	// if (!map.containsKey(c.getSuperclass())) {
-	// retval.addAll(getAllInterfacesForClass(map, c.getSuperclass()));
-	// }
-	// return retval;
-	// }
-
 	/**
 	 * Search for classes that extend interfaces with contract tests but that
 	 * don't have an implementation of the test producer.
@@ -216,32 +208,32 @@ public class InterfaceReport {
 	public Set<Class<?>> getUnImplementedTests() {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
 				CLASS_NAME_COMPARATOR);
+		// only interested in concrete implementations
 
-		for (final Class<?> clazz : packageClasses) {
-			// only interested in concrete implementations
-			if (!(clazz.isInterface()
-					|| Modifier.isAbstract(clazz.getModifiers()) || skipClasses
-						.contains(clazz))) {
+		ClassFilter filter = new OrClassFilter( AbstractClassFilter.INSTANCE, InterfaceClassFilter.INSTANCE );
+		filter = new NotClassFilter( filter );
+		
+		for (final Class<?> clazz : ClassPathUtils.filterClasses(packageClasses, filter )) {
+						
+			// we are only interested if there is no contract test for the
+			// class and there are parent tests
+			LOG.debug("checking {} for contract tests", clazz);
+			final Set<Class<?>> interfaces = ClassPathUtils
+					.getAllInterfaces(clazz, skipClasses );
+			final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();
 
-				// we are only interested if there is no contract test for the
-				// class and there parent tests
-				LOG.debug("checking {} for contract tests", clazz);
-				final Set<Class<?>> interfaces = ClassPathUtils
-						.getAllInterfaces(clazz);
-				final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();
+			interfaces.retainAll(interfaceInfo.keySet());
 
-				interfaces.retainAll(interfaceInfo.keySet());
-
-				// interfaces contains only contract test interfaces that clazz
-				// implements.
-				if (!interfaces.isEmpty()) {
-					// not empty so we are need to verify that we have a test
-					// for clazz
-					if (!contractImplMap.hasTestFor(clazz)) {
-						retval.add(clazz);
-					}
+			// interfaces contains only contract test interfaces that clazz
+			// implements.
+			if (!interfaces.isEmpty()) {
+				// not empty so we are need to verify that we have a test
+				// for clazz
+				if (!contractImplMap.hasTestFor(clazz)) {
+					retval.add(clazz);
 				}
 			}
+			
 		}
 		return retval;
 	}
@@ -334,6 +326,12 @@ public class InterfaceReport {
 				"skipInterfaces",
 				true,
 				"A list of interfaces that should not have tests.  See also @NoContractTest annotation");
+		retval.addOption(
+				"c",
+				"skipClasses",
+				true,
+				"A list of classes that should not have tests.");
+
 		return retval;
 	}
 
