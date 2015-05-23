@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Match classes with a regular expression.
  */
-public class RegexClassFilter extends AbstractStringClassFilter implements Serializable {
+public class RegexClassFilter extends AbstractBaseClassFilter implements Serializable {
 
     /**
 	 * 
@@ -94,15 +94,24 @@ public class RegexClassFilter extends AbstractStringClassFilter implements Seria
     }
 
     /**
-     * Checks to see if the filename matches one of the regular expressions.
+     * Checks to see if the class name matches the regular expression.
      *
-     * @param dir   the file directory (ignored)
-     * @param name  the filename
+     * @param className the class name to match
      * @return true if the filename matches one of the regular expressions
      */
     @Override
     public boolean accept(String className) {
         return pattern.matcher(className).matches();
     }
-
+    
+    /**
+     * Checks to see if the class name matches the regular expression.
+     *
+     * @param className the class name to match
+     * @return true if the filename matches one of the regular expressions
+     */@Override
+	public boolean accept(Class<?> clazz)
+	{
+		return accept( clazz.getName());
+	} 
 }

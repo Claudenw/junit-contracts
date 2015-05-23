@@ -29,12 +29,6 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
 	 */
 	private static final long serialVersionUID = -5764899732969345726L;
 
-	/** The filename prefixes to search for */
-    private final String[] prefixes;
-
-    /** Whether the comparison is case sensitive. */
-    private final Case caseSensitivity;
-
     /**
      * Constructs a new Prefix class filter for a single prefix.
      * 
@@ -42,7 +36,7 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @throws IllegalArgumentException if the prefix is null
      */
     public PrefixClassFilter(String prefix) {
-        this(prefix, Case.SENSITIVE);
+        super(prefix);
     }
 
     /**
@@ -52,12 +46,8 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @param prefix  the prefix to allow, must not be null
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      */
-    public PrefixClassFilter(String prefix, Case caseSensitivity) {
-        if (prefix == null) {
-            throw new IllegalArgumentException("The prefix must not be null");
-        }
-        this.prefixes = new String[] {prefix};
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public PrefixClassFilter(Case caseSensitivity,String prefix) {
+        super( caseSensitivity, prefix );
     }
 
     /**
@@ -69,8 +59,8 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @param prefixes  the prefixes to allow, must not be null
      * @throws IllegalArgumentException if the prefix array is null
      */
-    public PrefixClassFilter(String[] prefixes) {
-        this(prefixes, Case.SENSITIVE);
+    public PrefixClassFilter(String... prefixes) {
+        super(prefixes);
     }
 
     /**
@@ -82,13 +72,8 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @param prefixes  the prefixes to allow, must not be null
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      */
-    public PrefixClassFilter(String[] prefixes, Case caseSensitivity) {
-        if (prefixes == null) {
-            throw new IllegalArgumentException("The array of prefixes must not be null");
-        }
-        this.prefixes = new String[prefixes.length];
-        System.arraycopy(prefixes, 0, this.prefixes, 0, prefixes.length);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public PrefixClassFilter(Case caseSensitivity, String... prefixes) {
+    	super( caseSensitivity, prefixes );
     }
 
     /**
@@ -99,7 +84,7 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @throws ClassCastException if the list does not contain Strings
      */
     public PrefixClassFilter(List<String> prefixes) {
-        this(prefixes, Case.SENSITIVE);
+        super(prefixes);
     }
 
     /**
@@ -111,12 +96,8 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      * @throws IllegalArgumentException if the prefix list is null
      * @throws ClassCastException if the list does not contain Strings
      */
-    public PrefixClassFilter(List<String> prefixes, Case caseSensitivity) {
-        if (prefixes == null) {
-            throw new IllegalArgumentException("The list of prefixes must not be null");
-        }
-        this.prefixes = prefixes.toArray(new String[prefixes.size()]);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public PrefixClassFilter( Case caseSensitivity, List<String> prefixes) {
+    	super( caseSensitivity, prefixes );
     }
 
     /**
@@ -127,34 +108,11 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements Seri
      */
     @Override
     public boolean accept(String className) {
-        for (String prefix : this.prefixes) {
+        for (String prefix : getStrings()) {
             if (caseSensitivity.checkStartsWith(className, prefix)) {
                 return true;
             }
         }
         return false;
     }
-
-    /**
-     * Provide a String representation of this file filter.
-     *
-     * @return a String representation
-     */
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(super.toString());
-        buffer.append("(");
-        if (prefixes != null) {
-            for (int i = 0; i < prefixes.length; i++) {
-                if (i > 0) {
-                    buffer.append(",");
-                }
-                buffer.append(prefixes[i]);
-            }
-        }
-        buffer.append(")");
-        return buffer.toString();
-    }
-    
 }

@@ -30,12 +30,6 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
 	 */
 	private static final long serialVersionUID = 525854048564445111L;
 
-	/** The filename suffixes to search for */
-    private final String[] suffixes;
-
-    /** Whether the comparison is case sensitive. */
-    private final Case caseSensitivity;
-
     /**
      * Constructs a new Suffix class filter for a single extension.
      * 
@@ -43,7 +37,7 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @throws IllegalArgumentException if the suffix is null
      */
     public SuffixClassFilter(String suffix) {
-        this(suffix, Case.SENSITIVE);
+        super(suffix);
     }
 
     /**
@@ -54,12 +48,8 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
 
      */
-    public SuffixClassFilter(String suffix, Case caseSensitivity) {
-        if (suffix == null) {
-            throw new IllegalArgumentException("The suffix must not be null");
-        }
-        this.suffixes = new String[] {suffix};
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public SuffixClassFilter(Case caseSensitivity, String suffix) {
+        super( caseSensitivity, suffix );
     }
 
     /**
@@ -71,8 +61,8 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @param suffixes  the suffixes to allow, must not be null
      * @throws IllegalArgumentException if the suffix array is null
      */
-    public SuffixClassFilter(String[] suffixes) {
-        this(suffixes, Case.SENSITIVE);
+    public SuffixClassFilter(String... suffixes) {
+    	 super( suffixes );
     }
 
     /**
@@ -85,13 +75,8 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the suffix array is null
      */
-    public SuffixClassFilter(String[] suffixes, Case caseSensitivity) {
-        if (suffixes == null) {
-            throw new IllegalArgumentException("The array of suffixes must not be null");
-        }
-        this.suffixes = new String[suffixes.length];
-        System.arraycopy(suffixes, 0, this.suffixes, 0, suffixes.length);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public SuffixClassFilter(Case caseSensitivity, String... suffixes) {
+    	 super( caseSensitivity, suffixes );
     }
 
     /**
@@ -102,7 +87,7 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @throws ClassCastException if the list does not contain Strings
      */
     public SuffixClassFilter(List<String> suffixes) {
-        this(suffixes, Case.SENSITIVE);
+    	super( suffixes );
     }
 
     /**
@@ -113,12 +98,8 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the suffix list is null
      */
-    public SuffixClassFilter(List<String> suffixes, Case caseSensitivity) {
-        if (suffixes == null) {
-            throw new IllegalArgumentException("The list of suffixes must not be null");
-        }
-        this.suffixes = suffixes.toArray(new String[suffixes.size()]);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public SuffixClassFilter(Case caseSensitivity, List<String> suffixes ) {
+    	super( caseSensitivity, suffixes );
     }
 
     
@@ -131,34 +112,11 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
      */
     @Override
     public boolean accept(String className) {
-        for (String suffix : this.suffixes) {
+        for (String suffix : getStrings()) {
             if (caseSensitivity.checkEndsWith(className, suffix)) {
                 return true;
             }
         }
         return false;
     }
-
-    /**
-     * Provide a String representation of this file filter.
-     *
-     * @return a String representation
-     */
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(super.toString());
-        buffer.append("(");
-        if (suffixes != null) {
-            for (int i = 0; i < suffixes.length; i++) {
-                if (i > 0) {
-                    buffer.append(",");
-                }
-                buffer.append(suffixes[i]);
-            }
-        }
-        buffer.append(")");
-        return buffer.toString();
-    }
-    
 }

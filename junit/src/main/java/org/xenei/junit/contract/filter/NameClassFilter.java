@@ -30,10 +30,7 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
 	 * 
 	 */
 	private static final long serialVersionUID = 2314511406134237664L;
-	/** The filenames to search for */
-    private final String[] names;
-    /** Whether the comparison is case sensitive. */
-    private final Case caseSensitivity;
+	
 
     /**
      * Constructs a new case-sensitive name class filter for a single name.
@@ -42,7 +39,7 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @throws IllegalArgumentException if the name is null
      */
     public NameClassFilter(String name) {
-        this(name, null);
+        super(name);
     }
 
     /**
@@ -52,12 +49,8 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the name is null
      */
-    public NameClassFilter(String name, Case caseSensitivity) {
-        if (name == null) {
-            throw new IllegalArgumentException("The name must not be null");
-        }
-        this.names = new String[] {name};
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public NameClassFilter(Case caseSensitivity, String name) {
+        super(caseSensitivity, name );
     }
 
     /**
@@ -69,8 +62,8 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @param names  the names to allow, must not be null
      * @throws IllegalArgumentException if the names array is null
      */
-    public NameClassFilter(String[] names) {
-        this(names, null);
+    public NameClassFilter(String... names) {
+        super(names);
     }
 
     /**
@@ -83,13 +76,8 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the names array is null
      */
-    public NameClassFilter(String[] names, Case caseSensitivity) {
-        if (names == null) {
-            throw new IllegalArgumentException("The array of names must not be null");
-        }
-        this.names = new String[names.length];
-        System.arraycopy(names, 0, this.names, 0, names.length);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public NameClassFilter(Case caseSensitivity, String... names) {
+        super( caseSensitivity, names );
     }
 
     /**
@@ -100,7 +88,7 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @throws ClassCastException if the list does not contain Strings
      */
     public NameClassFilter(List<String> names) {
-        this(names, null);
+        super(names);
     }
 
     /**
@@ -111,12 +99,8 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      * @throws IllegalArgumentException if the name list is null
      * @throws ClassCastException if the list does not contain Strings
      */
-    public NameClassFilter(List<String> names, Case caseSensitivity) {
-        if (names == null) {
-            throw new IllegalArgumentException("The list of names must not be null");
-        }
-        this.names = names.toArray(new String[names.size()]);
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
+    public NameClassFilter(Case caseSensitivity, List<String> names ) {
+        super(caseSensitivity, names);
     }
 
     /**
@@ -127,34 +111,12 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
      */
     @Override
     public boolean accept(String className) {
-        for (String name2 : this.names) {
+        for (String name2 : getStrings()) {
             if (caseSensitivity.checkEquals(className, name2)) {
                 return true;
             }
         }
         return false;
-    } 
-
-    /**
-     * Provide a String representaion of this file filter.
-     *
-     * @return a String representaion
-     */
-    @Override
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(getClass().getSimpleName());
-        buffer.append("(");
-        if (names != null) {
-            for (int i = 0; i < names.length; i++) {
-                if (i > 0) {
-                    buffer.append(",");
-                }
-                buffer.append(names[i]);
-            }
-        }
-        buffer.append(")");
-        return buffer.toString();
-    }
+    }  
 
 }
