@@ -29,12 +29,12 @@ public class AnnotationClassFilter  extends AbstractBaseClassFilter implements S
 	private static final long serialVersionUID = 7819589374453236969L;
 	
 	/** Singleton instance of file filter */
-    public static final ClassFilter INSTANCE = new AnnotationClassFilter();
+    public static final ClassFilter ANNOTATION = new AnnotationClassFilter();
 
     /**
      * Restrictive consructor.
      */
-    protected AnnotationClassFilter() {
+    private AnnotationClassFilter() {
     }
 
     /**

@@ -32,6 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.filter.AndClassFilter;
+import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
+import org.xenei.junit.contract.filter.PrefixClassFilter;
 
 /**
  * A map like object that maintains information about test classes and the
@@ -122,30 +126,34 @@ public class ContractTestMap {
 	 */
 	public static ContractTestMap populateInstance(
 			final ClassLoader classLoader, final String[] packages) {
+		return populateInstance( classLoader, new PrefixClassFilter( packages ));
+	}
+
+	/**
+	 *
+	 * @param classLoader
+	 *            The class loader to use.
+	 * @param packages
+	 *            A list of package names to report
+	 * @return A ContractTestMap.
+	 */
+	public static ContractTestMap populateInstance(
+			final ClassLoader classLoader, final ClassFilter filter) {
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
 
-		for (final Class<?> clazz : ClassPathUtils.getClasses(classLoader, "")) {
+		for (final Class<?> clazz : ClassPathUtils.getClasses(classLoader, "", filter)) {
 			// contract annotation is on the test class
 			// value of contract annotation is class under test
-
-			boolean report = false;
-			LOG.debug("Checking error logging for {}", clazz);
-			for (final String pkg : packages) {
-				LOG.debug("Checking {} against {}", pkg, clazz.getPackage());
-				report |= clazz.getPackage().getName().startsWith(pkg);
-			}
-			if (report) {
-				final Contract c = clazz.getAnnotation(Contract.class);
-				if (c != null) {
-					retval.add(new TestInfo(clazz, c));
-				}
+			final Contract c = clazz.getAnnotation(Contract.class);
+			if (c != null) {
+				retval.add(new TestInfo(clazz, c));
 			}
 		}
 
 		return retval;
 	}
-
+	
 	/**
 	 * Add a TestInfo to the map.
 	 *

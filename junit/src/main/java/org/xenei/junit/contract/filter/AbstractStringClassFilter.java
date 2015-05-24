@@ -166,15 +166,17 @@ public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter 
 	}   
 
 	 /**
-     * Provide a String representaion of this file filter.
+     * Provide a String representation of this file filter.
      *
-     * @return a String representaion
+     * @return a String representation
      */
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(getClass().getSimpleName());
-        buffer.append("(");
+        String[] parts = getClass().getName().split( "\\." );
+
+        String name = parts[parts.length-1];
+        buffer.append(String.format( "%s[%s](",name, caseSensitivity.toString().charAt(0)));
         
         for (int i = 0; i < strings.size(); i++) {
             if (i > 0) {

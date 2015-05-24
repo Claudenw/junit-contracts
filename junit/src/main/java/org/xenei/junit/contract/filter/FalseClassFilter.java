@@ -31,21 +31,15 @@ public class FalseClassFilter extends AbstractBaseClassFilter implements Seriali
 	private static final long serialVersionUID = 5537028986673047572L;
 	/**
      * Singleton instance of false filter.
-     * @since 1.3
+
      */
     public static final ClassFilter FALSE = new FalseClassFilter();
-    /**
-     * Singleton instance of false filter.
-     * Please use the identical FalseFileFilter.FALSE constant.
-     * The new name is more JDK 1.5 friendly as it doesn't clash with other
-     * values when using static imports.
-     */
-    public static final ClassFilter INSTANCE = FALSE;
+
 
     /**
      * Restrictive constructor.
      */
-    protected FalseClassFilter() {
+    private FalseClassFilter() {
     }
 
     /**

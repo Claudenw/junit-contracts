@@ -44,7 +44,7 @@ import java.util.regex.Matcher;
  * }
  * </pre>
  */
-public class WildcardClassFilter extends OrClassFilter implements Serializable {
+public class WildcardClassFilter extends AbstractBaseClassFilter implements Serializable {
 
     /**
 	 * 
@@ -54,6 +54,8 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
     private final List<String> wildcards;
     /** Whether the comparison is case sensitive. */
     private final Case caseSensitivity;
+    
+    private OrClassFilter wrapped;
 
     /**
      * Construct a new case-sensitive wildcard filter for a single wildcard.
@@ -73,6 +75,7 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      */
     public WildcardClassFilter(Case caseSensitivity) {
         super();
+        wrapped = new OrClassFilter();
         this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
         this.wildcards = new ArrayList<String>();
     }
@@ -93,7 +96,7 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the pattern is null
      */
-    public WildcardClassFilter(String wildcard, Case caseSensitivity) {
+    public WildcardClassFilter(Case caseSensitivity,String wildcard) {
     	this(caseSensitivity);
     	addWildcard( wildcard );
     }
@@ -107,8 +110,8 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      * @param wildcards  the array of wildcards to match
      * @throws IllegalArgumentException if the pattern array is null
      */
-    public WildcardClassFilter(String[] wildcards) {
-        this(wildcards, null);
+    public WildcardClassFilter(String... wildcards) {
+        this( null, wildcards );
     }
 
     /**
@@ -121,15 +124,9 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the pattern array is null
      */
-    public WildcardClassFilter(String[] wildcards, Case caseSensitivity) {
+    public WildcardClassFilter(Case caseSensitivity, String[] wildcards) {
     	this(caseSensitivity);
-    	if (wildcards == null) {
-            throw new IllegalArgumentException("The wildcard array must not be null");
-        }
-    	for (String s : wildcards )
-    	{
-    		addWildcard( s );
-    	}
+    	addWildCards( wildcards );
     }
 
     /**
@@ -140,7 +137,7 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      * @throws ClassCastException if the list does not contain Strings
      */
     public WildcardClassFilter(List<String> wildcards) {
-        this(wildcards, null);
+        this(null, wildcards);
     }
 
     /**
@@ -151,8 +148,22 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
      * @throws IllegalArgumentException if the pattern list is null
      * @throws ClassCastException if the list does not contain Strings
      */
-    public WildcardClassFilter(List<String> wildcards, Case caseSensitivity) {
+    public WildcardClassFilter(Case caseSensitivity, List<String> wildcards) {
     	this(caseSensitivity);
+    	addWildCards( wildcards );
+    }
+    
+    public void addWildCards( List<String> wildcards ){
+    	if (wildcards == null) {
+            throw new IllegalArgumentException("The wildcard list must not be null");
+        }
+    	for (String s : wildcards )
+    	{
+    		addWildcard( s );
+    	}
+    }
+    
+    public void addWildCards( String... wildcards ){
     	if (wildcards == null) {
             throw new IllegalArgumentException("The wildcard array must not be null");
         }
@@ -164,33 +175,38 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
     
     public void addWildcard(String wildcard)
     {
-    	addClassFilter( new RegexClassFilter( makeRegex( wildcard ), 
-    			caseSensitivity));
+    	if (wildcard == null) {
+            throw new IllegalArgumentException("The wildcard must not be null");
+        }
+    	this.wildcards.add( wildcard );
+    	wrapped.addClassFilter( new RegexClassFilter( caseSensitivity, makeRegex( wildcard )));
     }
 
     /**
-     * Provide a String representaion of this file filter.
+     * Provide a String representation of this file filter.
      *
-     * @return a String representaion
+     * @return a String representation
      */
-    @Override
+   @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(getClass().getSimpleName());
-        buffer.append("(");
-        if (wildcards != null) {
-            for (int i = 0; i < wildcards.size(); i++) {
-                if (i > 0) {
-                    buffer.append(",");
-                }
-                buffer.append(wildcards.get(i));
+        String[] parts = getClass().getName().split( "\\." );
+
+        String name = parts[parts.length-1];
+        buffer.append(String.format( "%s[%s](",name, caseSensitivity.toString().charAt(0)));
+        
+        for (int i = 0; i < wildcards.size(); i++) {
+            if (i > 0) {
+                buffer.append(",");
             }
+            buffer.append(wildcards.get(i));
         }
+        
         buffer.append(")");
         return buffer.toString();
     }
     
-    private static void parseWildBlock( StringBuilder sb, String s)
+    private static void parseWildAsterisk( StringBuilder sb, String s)
     {
     	String[] blocks = s.split( "\\*" );
     	Iterator<String> iter = Arrays.asList(blocks).iterator();
@@ -199,17 +215,23 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
     	{
     		sb.append( ".*" ).append(Matcher.quoteReplacement(iter.next()));
     	}
+    	if (s.endsWith( "*")) {
+    		sb.append( ".*" );
+    	}
     }
     
-    private static void parseWildChar(StringBuilder sb, String s)
+    private static void parseWildQuestion(StringBuilder sb, String s)
     {
     	String[] blocks = s.split( "\\?" );
     	Iterator<String> iter = Arrays.asList(blocks).iterator();
-    	parseWildBlock(sb, iter.next());
+    	parseWildAsterisk(sb, iter.next());
     	while (iter.hasNext() )
     	{
     		sb.append( "." );
-    		parseWildBlock( sb, iter.next());
+    		parseWildAsterisk( sb, iter.next());
+    	}
+    	if (s.endsWith( "?")) {
+    		sb.append( "." );
     	}
     }
     
@@ -217,20 +239,33 @@ public class WildcardClassFilter extends OrClassFilter implements Serializable {
     {
     	String[] blocks = s.split( "\\." );
     	Iterator<String> iter = Arrays.asList(blocks).iterator();
-    	parseWildBlock(sb, iter.next());
+    	parseWildQuestion(sb, iter.next());
     	while (iter.hasNext() )
     	{
     		sb.append( "\\." );
-    		parseWildChar( sb, iter.next());
+    		parseWildQuestion( sb, iter.next());
+    	}
+    	if (s.endsWith( ".")) {
+    		sb.append( "\\." );
     	}
     	return sb;
     }
     
-    private static String makeRegex( String wildcard ) {
+    public static String makeRegex( String wildcard ) {
     	if (wildcard == null) {
             throw new IllegalArgumentException("The wildcard must not be null");
         }
     	return parseDot( new StringBuilder("^"), wildcard ).append("$").toString();
     }
+
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return wrapped.accept( clazz );
+	}
+
+	@Override
+	public boolean accept(String className) {
+		return wrapped.accept( className );
+	}
     
 }

@@ -23,6 +23,11 @@ package org.xenei.junit.contract.filter;
  *
  */
 public interface ClassFilter {
+	public static final ClassFilter TRUE = TrueClassFilter.TRUE;
+	public static final ClassFilter FALSE = FalseClassFilter.FALSE;
+	public static final ClassFilter ANNOTATION = AnnotationClassFilter.ANNOTATION;
+	public static final ClassFilter ABSTRACT = AbstractClassFilter.ABSTRACT;
+	public static final ClassFilter INTERFACE = InterfaceClassFilter.INTERFACE;
 	/**
 	 * Accept a class.
 	 * @param clazz the class to accept.

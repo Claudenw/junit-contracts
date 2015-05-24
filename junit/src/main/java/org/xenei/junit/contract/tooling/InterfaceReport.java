@@ -82,8 +82,8 @@ public class InterfaceReport {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
 	
-	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter( InterfaceClassFilter.INSTANCE,
-				new NotClassFilter( AnnotationClassFilter.INSTANCE ),
+	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter( ClassFilter.INTERFACE,
+				new NotClassFilter( ClassFilter.ANNOTATION ),
 				new NotClassFilter( new HasAnnotationClassFilter( NoContractTest.class )));
 	
 	private static final Comparator<Class<?>> CLASS_NAME_COMPARATOR = new Comparator<Class<?>>() {
@@ -210,7 +210,7 @@ public class InterfaceReport {
 				CLASS_NAME_COMPARATOR);
 		// only interested in concrete implementations
 
-		ClassFilter filter = new OrClassFilter( AbstractClassFilter.INSTANCE, InterfaceClassFilter.INSTANCE );
+		ClassFilter filter = new OrClassFilter( ClassFilter.ABSTRACT, ClassFilter.INTERFACE );
 		filter = new NotClassFilter( filter );
 		
 		for (final Class<?> clazz : ClassPathUtils.filterClasses(packageClasses, filter )) {

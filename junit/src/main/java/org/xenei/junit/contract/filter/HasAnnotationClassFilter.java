@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 /**
  * Accepts classes that have the specified annotation.
  */
-public class HasAnnotationClassFilter extends AbstractBaseClassFilter implements Serializable {
+public class HasAnnotationClassFilter implements ClassFilter, Serializable {
 
 	/**
 	 * 
@@ -37,6 +37,10 @@ public class HasAnnotationClassFilter extends AbstractBaseClassFilter implements
 	 * @param annotation The annotation for the class to have.
 	 */
     public HasAnnotationClassFilter(Class<? extends Annotation> annotation) {
+    	if (annotation==null)
+    	{
+    		throw new IllegalArgumentException( "Annotation may not be null");
+    	}
     	this.annotation = annotation;
     }
 
@@ -66,5 +70,15 @@ public class HasAnnotationClassFilter extends AbstractBaseClassFilter implements
 			return false;
 		}
     }
+
+    /**
+     * Provide a String representaion of this file filter.
+     *
+     * @return a String representaion
+     */
+    @Override
+    public String toString() {
+        return String.format( "%s(%s)",getClass().getSimpleName(), annotation.getName());
+    }  
 
 }

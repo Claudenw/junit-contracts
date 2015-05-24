@@ -32,16 +32,12 @@ public class TrueClassFilter extends AbstractBaseClassFilter implements Serializ
      * Singleton instance of true filter.
      */
     public static final ClassFilter TRUE = new TrueClassFilter();
-    /**
-     * Singleton instance of true filter.
-     * Please use the identical TrueFileFilter.TRUE constant.
-     */
-    public static final ClassFilter INSTANCE = TRUE;
+
 
     /**
      * Restrictive constructor.
      */
-    protected TrueClassFilter() {
+    private TrueClassFilter() {
     }
 
     /**

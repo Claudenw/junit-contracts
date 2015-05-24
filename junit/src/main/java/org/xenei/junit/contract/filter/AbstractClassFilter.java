@@ -29,12 +29,12 @@ public class AbstractClassFilter  extends AbstractBaseClassFilter implements Ser
 	 */
 	private static final long serialVersionUID = -2018565558176238916L;
 	/** Singleton instance of file filter */
-    public static final ClassFilter INSTANCE = new AbstractClassFilter();
+    public static final ClassFilter ABSTRACT = new AbstractClassFilter();
 
     /**
      * Restrictive constructor.
      */
-    protected AbstractClassFilter() {
+    private AbstractClassFilter() {
     }
 
     /**

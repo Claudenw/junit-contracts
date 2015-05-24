@@ -29,12 +29,12 @@ public class InterfaceClassFilter extends AbstractBaseClassFilter implements Ser
 	private static final long serialVersionUID = -2416808898165436521L;
 	
 	/** Singleton instance of class filter */
-    public static final ClassFilter INSTANCE = new InterfaceClassFilter();
+    public static final ClassFilter INTERFACE = new InterfaceClassFilter();
 
     /**
      * Restrictive consructor.
      */
-    protected InterfaceClassFilter() {
+    private InterfaceClassFilter() {
     }
 
     /**

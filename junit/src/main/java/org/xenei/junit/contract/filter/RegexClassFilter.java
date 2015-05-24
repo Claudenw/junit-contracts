@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Match classes with a regular expression.
  */
-public class RegexClassFilter extends AbstractBaseClassFilter implements Serializable {
+public class RegexClassFilter implements ClassFilter, Serializable {
 
     /**
 	 * 
@@ -40,11 +40,7 @@ public class RegexClassFilter extends AbstractBaseClassFilter implements Seriali
      * @throws IllegalArgumentException if the pattern is null
      */
     public RegexClassFilter(String pattern) {
-        if (pattern == null) {
-            throw new IllegalArgumentException("Pattern is missing");
-        }
-
-        this.pattern = Pattern.compile(pattern);
+        this(Case.SENSITIVE, pattern);
     }
 
     /**
@@ -54,7 +50,7 @@ public class RegexClassFilter extends AbstractBaseClassFilter implements Seriali
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the pattern is null
      */
-    public RegexClassFilter(String pattern, Case caseSensitivity) {
+    public RegexClassFilter(Case caseSensitivity,String pattern) {
         if (pattern == null) {
             throw new IllegalArgumentException("Pattern is missing");
         }
@@ -114,4 +110,12 @@ public class RegexClassFilter extends AbstractBaseClassFilter implements Seriali
 	{
 		return accept( clazz.getName());
 	} 
+     
+     @Override
+     public String toString() {
+         String[] parts = getClass().getName().split( "\\." );
+         return String.format( "%s(%s)", parts[parts.length-1], pattern);
+         
+         
+     }
 }
