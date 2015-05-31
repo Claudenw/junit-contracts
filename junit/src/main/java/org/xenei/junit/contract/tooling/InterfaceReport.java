@@ -249,6 +249,15 @@ public class InterfaceReport {
 		}
 		return retval;
 	}
+	
+	/**
+	 * Get the filter
+	 * @return
+	 */
+	public ClassFilter getClassFilter()
+	{
+		return filter;
+	}
 
 	/**
 	 * Run the interface report generation.

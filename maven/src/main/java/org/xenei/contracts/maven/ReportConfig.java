@@ -1,5 +1,11 @@
 package org.xenei.contracts.maven;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.codehaus.plexus.util.StringUtils;
+import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.parser.Parser;
+
 /**
  * Configuration for a report
  *
@@ -7,6 +13,7 @@ package org.xenei.contracts.maven;
 public class ReportConfig {
 	private boolean reporting = true;
 	private boolean failOnError = false;
+	private ClassFilter filter = ClassFilter.TRUE;
 	
 	public ReportConfig() {}
 	
@@ -42,6 +49,32 @@ public class ReportConfig {
 	 */
 	public boolean isFailOnError() {
 		return failOnError;
+	}
+
+	/**
+	 * Gets the filter 
+	 * @return the filter.
+	 */
+	public ClassFilter getFilter() {
+		return filter;
+	}
+
+	/**
+	 * Set the class filter.  Only classes that pass the filter will be included.
+	 * By default the filter accepts all classes.
+	 * Passing a null or null length string will result in all classes passing the test.
+	 * @param filter The string representation of the filter.
+	 * @throws IllegalArgumentException
+	 */
+	public void setFilter(String filter) throws IllegalArgumentException {
+		if (StringUtils.isBlank(filter))
+		{
+			this.filter = ClassFilter.TRUE;
+		}
+		else
+		{
+			this.filter = new Parser().parse( filter );
+		}
 	}
 	
 }

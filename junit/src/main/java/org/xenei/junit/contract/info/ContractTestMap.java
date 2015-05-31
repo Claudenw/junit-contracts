@@ -61,11 +61,24 @@ public class ContractTestMap {
 	static {
 		final String prop = System.getProperty("contracts.skipClasses");
 		if (prop != null) {
-			SKIP_FILTER = new OrClassFilter();
+			ClassFilter cf = null;
+			
 			for (final String iFace : prop.split(",")) {
-				((ConditionalClassFilter) SKIP_FILTER)
-						.addClassFilter(new NameClassFilter(iFace));
+				if (cf == null)
+				{
+					cf = new NameClassFilter(iFace.trim());
+				} else {
+					if (cf instanceof NameClassFilter)
+					{
+						cf = new OrClassFilter( cf, new NameClassFilter(iFace.trim()));
+					}
+					else
+					{
+						((OrClassFilter)cf).addClassFilter(new NameClassFilter(iFace.trim()));
+					}
+				}
 			}
+			SKIP_FILTER = cf;
 		} else {
 			// skip none.
 			SKIP_FILTER = ClassFilter.FALSE;
