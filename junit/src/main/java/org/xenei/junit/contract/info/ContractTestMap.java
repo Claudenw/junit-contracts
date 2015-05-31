@@ -34,7 +34,6 @@ import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.filter.AndClassFilter;
 import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.ConditionalClassFilter;
 import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
 import org.xenei.junit.contract.filter.NameClassFilter;
 import org.xenei.junit.contract.filter.NotClassFilter;
@@ -62,19 +61,18 @@ public class ContractTestMap {
 		final String prop = System.getProperty("contracts.skipClasses");
 		if (prop != null) {
 			ClassFilter cf = null;
-			
+
 			for (final String iFace : prop.split(",")) {
-				if (cf == null)
-				{
+				if (cf == null) {
 					cf = new NameClassFilter(iFace.trim());
 				} else {
-					if (cf instanceof NameClassFilter)
-					{
-						cf = new OrClassFilter( cf, new NameClassFilter(iFace.trim()));
-					}
-					else
-					{
-						((OrClassFilter)cf).addClassFilter(new NameClassFilter(iFace.trim()));
+					if (cf instanceof NameClassFilter) {
+						cf = new OrClassFilter(cf, new NameClassFilter(
+								iFace.trim()));
+					} else {
+						((OrClassFilter) cf)
+								.addClassFilter(new NameClassFilter(iFace
+										.trim()));
 					}
 				}
 			}

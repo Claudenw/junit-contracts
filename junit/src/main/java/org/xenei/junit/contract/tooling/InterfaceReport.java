@@ -249,13 +249,13 @@ public class InterfaceReport {
 		}
 		return retval;
 	}
-	
+
 	/**
 	 * Get the filter
+	 * 
 	 * @return
 	 */
-	public ClassFilter getClassFilter()
-	{
+	public ClassFilter getClassFilter() {
 		return filter;
 	}
 
