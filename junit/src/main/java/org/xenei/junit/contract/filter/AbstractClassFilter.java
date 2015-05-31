@@ -22,51 +22,56 @@ import java.lang.reflect.Modifier;
 /**
  * Filters classes that are abstract
  */
-public class AbstractClassFilter  extends AbstractBaseClassFilter implements Serializable {
+public class AbstractClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2018565558176238916L;
 	/** Singleton instance of file filter */
-    public static final ClassFilter ABSTRACT = new AbstractClassFilter();
+	public static final ClassFilter ABSTRACT = new AbstractClassFilter();
 
-    /**
-     * Restrictive constructor.
-     */
-    private AbstractClassFilter() {
-    }
-    
-    @Override
-    public String[] args()
-    {
-    	return NO_ARGS;
-    }
+	/**
+	 * Restrictive constructor.
+	 */
+	private AbstractClassFilter() {
+	}
 
-    /**
-     * Checks to see if the class is abstract.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is abstract
-     */
-    @Override
-    public boolean accept(Class<?> clazz) {
-    	return Modifier.isAbstract(clazz.getModifiers());
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] args() {
+		return NO_ARGS;
+	}
 
-    /**
-     * Checks to see if the class is abstract.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is abstract
-     */
-    @Override
-    public boolean accept(String className) {
-    	
-    	try {
-			return accept( Class.forName(className ));
+	/**
+	 * Checks to see if the class is abstract.
+	 *
+	 * @param clazz
+	 *            the Class to check
+	 * @return true if the class is abstract
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return Modifier.isAbstract(clazz.getModifiers());
+	}
+
+	/**
+	 * Checks to see if the class is abstract.
+	 *
+	 * @param className
+	 *            the Class name to check
+	 * @return true if the class is abstract
+	 */
+	@Override
+	public boolean accept(String className) {
+
+		try {
+			return accept(Class.forName(className));
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-    }
+	}
 }

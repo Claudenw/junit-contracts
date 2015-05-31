@@ -16,6 +16,7 @@
  */
 package org.xenei.junit.contract.filter;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,72 +25,80 @@ import java.util.List;
  */
 public interface ConditionalClassFilter extends ClassFilter {
 
-    /**
-     * Adds the specified file filter to the list of file filters at the end of
-     * the list.
-     *
-     * @param classFilter the filter to be added
-     */
-    void addClassFilter(ClassFilter classFilter);
+	/**
+	 * Adds the specified file filter to the list of file filters at the end of
+	 * the list.
+	 *
+	 * @param classFilter
+	 *            the filter to be added
+	 */
+	void addClassFilter(ClassFilter classFilter);
 
-    /**
-     * Returns this conditional file filter's list of file filters.
-     *
-     * @return the file filter list
-     */
-    List<ClassFilter> getClassFilters();
+	/**
+	 * Returns this conditional file filter's list of file filters.
+	 *
+	 * @return the file filter list
+	 */
+	List<ClassFilter> getClassFilters();
 
-    /**
-     * Removes the specified file filter.
-     *
-     * @param classFilter filter to be removed
-     * @return {@code true} if the filter was found in the list,
-     * {@code false} otherwise
-     */
-    boolean removeClassFilter(ClassFilter classFilter);
+	/**
+	 * Removes the specified file filter.
+	 *
+	 * @param classFilter
+	 *            filter to be removed
+	 * @return {@code true} if the filter was found in the list, {@code false}
+	 *         otherwise
+	 */
+	boolean removeClassFilter(ClassFilter classFilter);
 
-    /**
-     * Sets the list of file filters, replacing any previously configured
-     * file filters on this filter.
-     *
-     * @param classFilters the list of filters
-     */
-    void setClassFilters(List<ClassFilter> classFilters);
-    
-    /**
-     * Sets the list of file filters, replacing any previously configured
-     * file filters on this filter.
-     *
-     * @param classFilters the array of filters
-     */
+	/**
+	 * Sets the list of file filters, replacing any previously configured file
+	 * filters on this filter.
+	 *
+	 * @param classFilters
+	 *            the collection of filters
+	 */
+	void setClassFilters(Collection<ClassFilter> classFilters);
+
+	/**
+	 * Sets the list of file filters, replacing any previously configured file
+	 * filters on this filter.
+	 *
+	 * @param classFilters
+	 *            the array of filters
+	 */
 	void setClassFilters(ClassFilter... classFilters);
-	
-	 /**
-     * Removes class filters from this filter.
-     *
-     * @param classFilters the list of filters to remove.
-     */
-	void removeClassFilters(List<ClassFilter> classFilters);
 
 	/**
-     * Removes class filters from this filter.
-     *
-     * @param classFilters the array of filters to remove.
-     */
+	 * Removes class filters from this filter.
+	 *
+	 * @param classFilters
+	 *            the collection of filters to remove.
+	 */
+	void removeClassFilters(Collection<ClassFilter> classFilters);
+
+	/**
+	 * Removes class filters from this filter.
+	 *
+	 * @param classFilters
+	 *            the array of filters to remove.
+	 */
 	void removeClassFilters(ClassFilter... classFilters);
-	
-	/**
-     * Adds class filters to this filter.
-     *
-     * @param classFilters the list of filters to add.
-     */
-	void addClassFilters(List<ClassFilter> classFilters);
 
 	/**
-     * Adds class filters to this filter.
-     *
-     * @param classFilters the array of filters to add.
-     */
+	 * Adds class filters to this filter.
+	 *
+	 * @param classFilters
+	 *            the collection of filters to add.
+	 */
+	void addClassFilters(Collection<ClassFilter> classFilters);
+
+	/**
+	 * Adds class filters to this filter.
+	 *
+	 * @param classFilters
+	 *            the array of filters to add.
+	 */
 	void addClassFilters(ClassFilter... classFilters);
 
 }

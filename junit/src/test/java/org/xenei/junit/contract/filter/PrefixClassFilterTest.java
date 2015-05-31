@@ -25,65 +25,62 @@ import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
 public class PrefixClassFilterTest {
-	
+
 	private final ClassFilter filter_sens;
 	private final ClassFilter filter_insens;
-	
+
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
-	
+
 	public PrefixClassFilterTest() {
 		filter_sens = new PrefixClassFilter(Case.SENSITIVE, "org.xenei");
 		filter_insens = new PrefixClassFilter(Case.INSENSITIVE, "org.Xenei");
 	}
-	
-	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter_sens.accept( t ) );
-		assertTrue( filter_insens.accept( t ));
-		
-		assertFalse( filter_sens.accept( f ) );
-		assertFalse( filter_insens.accept( f ));
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		
-		assertTrue( filter_sens.accept( t.getName() ) );
-		assertTrue( filter_insens.accept( t.getName() ));
 
-		assertFalse( filter_sens.accept( t.getName().toUpperCase() ) );
-		assertTrue( filter_insens.accept( t.getName().toUpperCase() ));
-		
-		assertFalse( filter_sens.accept( f.getName() ) );
-		assertFalse( filter_insens.accept( f.getName() ));
-	}
-	
 	@Test
-	public void testToString()
-	{
-		assertEquals( "Prefix( Sensitive, org.xenei )",filter_sens.toString() );
-		assertEquals( "Prefix( Insensitive, org.Xenei )",filter_insens.toString() );
+	public void testAcceptClass() {
+		assertTrue(filter_sens.accept(t));
+		assertTrue(filter_insens.accept(t));
+
+		assertFalse(filter_sens.accept(f));
+		assertFalse(filter_insens.accept(f));
 	}
-	
+
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+
+		assertTrue(filter_sens.accept(t.getName()));
+		assertTrue(filter_insens.accept(t.getName()));
+
+		assertFalse(filter_sens.accept(t.getName().toUpperCase()));
+		assertTrue(filter_insens.accept(t.getName().toUpperCase()));
+
+		assertFalse(filter_sens.accept(f.getName()));
+		assertFalse(filter_insens.accept(f.getName()));
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("Prefix( Sensitive, org.xenei )", filter_sens.toString());
+		assertEquals("Prefix( Insensitive, org.Xenei )",
+				filter_insens.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter_sens.toString() );
-		assertTrue( "Wrong class", cf instanceof PrefixClassFilter);
+
+		ClassFilter cf = p.parse(filter_sens.toString());
+		assertTrue("Wrong class", cf instanceof PrefixClassFilter);
 		String[] args = cf.args();
-		assertEquals( Case.SENSITIVE.toString(), args[0] );
-		assertEquals( "org.xenei", args[1] );
-		
-		cf = p.parse( filter_insens.toString() );
-		assertTrue( "Wrong class", cf instanceof PrefixClassFilter);
+		assertEquals(Case.SENSITIVE.toString(), args[0]);
+		assertEquals("org.xenei", args[1]);
+
+		cf = p.parse(filter_insens.toString());
+		assertTrue("Wrong class", cf instanceof PrefixClassFilter);
 		args = cf.args();
-		assertEquals( Case.INSENSITIVE.toString(), args[0] );
-		assertEquals( "org.Xenei", args[1] );
-		
+		assertEquals(Case.INSENSITIVE.toString(), args[0]);
+		assertEquals("org.Xenei", args[1]);
+
 	}
 }

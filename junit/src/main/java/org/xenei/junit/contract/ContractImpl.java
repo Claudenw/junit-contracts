@@ -61,14 +61,15 @@ public @interface ContractImpl {
 	 * Contract tests defined.
 	 */
 	Class<?> value();
-	
+
 	/**
 	 * The list of interface classes whos tests that should be skipped.
 	 */
 	Class<?>[] skip() default {};
-	
+
 	/**
-	 * The list of implementations to skip.  These are implementations of interface tests.
+	 * The list of implementations to skip. These are implementations of
+	 * interface tests.
 	 */
 	Class<?>[] ignore() default {};
 }

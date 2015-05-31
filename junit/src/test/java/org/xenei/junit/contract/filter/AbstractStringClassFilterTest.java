@@ -25,60 +25,66 @@ import java.util.List;
 import org.junit.Test;
 
 public class AbstractStringClassFilterTest {
-	private AbstractStringClassFilter filter = new AbstractStringClassFilter(){
+	private AbstractStringClassFilter filter = new AbstractStringClassFilter(
+			"foo") {
 
 		@Override
 		public boolean accept(String className) {
 			return true;
-		}};
-	private AbstractStringClassFilter filter_sens = new AbstractStringClassFilter( Case.SENSITIVE ){
+		}
+	};
+	private AbstractStringClassFilter filter_sens = new AbstractStringClassFilter(
+			Case.SENSITIVE, "foo") {
 
 		@Override
 		public boolean accept(String className) {
 			return true;
-		}};
-	private AbstractStringClassFilter filter_insens = new AbstractStringClassFilter( Case.INSENSITIVE ){
+		}
+	};
+	private AbstractStringClassFilter filter_insens = new AbstractStringClassFilter(
+			Case.INSENSITIVE, "foo") {
 
 		@Override
 		public boolean accept(String className) {
 			return true;
-		}};
-	
+		}
+	};
+
 	@Test
-	public void testToString()
-	{
-		assertEquals( "( Sensitive )", filter.toString() );
-		assertEquals( "( Sensitive )", filter_sens.toString() );
-		assertEquals( "( Insensitive )", filter_insens.toString() );
-		
-		filter.addString( ClassFilter.class.getName());
-		filter_sens.addString( ClassFilter.class.getName());
-		filter_insens.addString( ClassFilter.class.getName());
-		assertEquals( "( Sensitive, "+ClassFilter.class.getName()+" )", filter.toString() );
-		assertEquals( "( Sensitive, "+ClassFilter.class.getName()+" )", filter_sens.toString() );
-		assertEquals( "( Insensitive, "+ClassFilter.class.getName()+" )", filter_insens.toString() );
+	public void testToString() {
+		assertEquals("( Sensitive, foo )", filter.toString());
+		assertEquals("( Sensitive, foo )", filter_sens.toString());
+		assertEquals("( Insensitive, foo )", filter_insens.toString());
+
+		filter.addString(ClassFilter.class.getName());
+		filter_sens.addString(ClassFilter.class.getName());
+		filter_insens.addString(ClassFilter.class.getName());
+		assertEquals("( Sensitive, foo, " + ClassFilter.class.getName() + " )",
+				filter.toString());
+		assertEquals("( Sensitive, foo, " + ClassFilter.class.getName() + " )",
+				filter_sens.toString());
+		assertEquals("( Insensitive, foo, " + ClassFilter.class.getName()
+				+ " )", filter_insens.toString());
 
 	}
-	
+
 	@Test
-	public void testAddStrings()
-	{
-		filter.addStrings( "foo", "bar", "baz" );
-		assertEquals( 3, filter.getStrings().size());
-		assertTrue( "missing foo", filter.getStrings().contains( "foo"));
-		assertTrue( "missing bar", filter.getStrings().contains( "bar"));
-		assertTrue( "missing baz", filter.getStrings().contains( "baz"));
-		
+	public void testAddStrings() {
+		filter.addStrings("fu", "bar", "baz");
+		assertEquals(4, filter.getStrings().size());
+		assertTrue("missing fu", filter.getStrings().contains("fu"));
+		assertTrue("missing bar", filter.getStrings().contains("bar"));
+		assertTrue("missing baz", filter.getStrings().contains("baz"));
+
 		List<String> lst = new ArrayList<String>();
-		lst.add("foo" );
+		lst.add("fu");
 		lst.add("bar");
 		lst.add("baz");
-		filter_sens.addStrings( lst );
-		assertEquals( 3, filter.getStrings().size());
-		assertTrue( "missing foo", filter_sens.getStrings().contains( "foo"));
-		assertTrue( "missing bar", filter_sens.getStrings().contains( "bar"));
-		assertTrue( "missing baz", filter_sens.getStrings().contains( "baz"));
+		filter_sens.addStrings(lst);
+		assertEquals(4, filter.getStrings().size());
+		assertTrue("missing fu", filter_sens.getStrings().contains("fu"));
+		assertTrue("missing bar", filter_sens.getStrings().contains("bar"));
+		assertTrue("missing baz", filter_sens.getStrings().contains("baz"));
 	}
-	
 
 }

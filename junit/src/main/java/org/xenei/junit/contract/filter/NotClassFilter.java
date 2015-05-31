@@ -22,64 +22,72 @@ import java.io.Serializable;
  * This filter produces a logical NOT of the specified filter
  *
  */
-public class NotClassFilter extends AbstractBaseClassFilter implements Serializable {
-    
-    /**
+public class NotClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
+
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2488500113297018806L;
 	/** The filter */
-    private final ClassFilter filter;
+	private final ClassFilter filter;
 
-    /**
-     * Constructs a new file filter that NOTs the result of another filter.
-     * 
-     * @param filter  the filter, must not be null
-     * @throws IllegalArgumentException if the filter is null
-     */
-    public NotClassFilter(ClassFilter filter) {
-        if (filter == null) {
-            throw new IllegalArgumentException("The filter must not be null");
-        }
-        this.filter = filter;
-    }
+	/**
+	 * Constructs a new file filter that NOTs the result of another filter.
+	 * 
+	 * @param filter
+	 *            the enclosed filter, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the filter is null
+	 */
+	public NotClassFilter(ClassFilter filter) {
+		if (filter == null) {
+			throw new IllegalArgumentException("The filter must not be null");
+		}
+		this.filter = filter;
+	}
 
-    /**
-     * Returns the logical NOT of the underlying filter's return value for the same File.
-     * 
-     * @param file  the File to check
-     * @return true if the filter returns false
-     */
-    @Override
-    public boolean accept(Class<?> clazz) {
-        return ! filter.accept(clazz);
-    }
-    
-    /**
-     * Returns the logical NOT of the underlying filter's return value for the same arguments.
-     * 
-     * @param file  the File directory
-     * @param name  the filename
-     * @return true if the filter returns false
-     */
-    @Override
-    public boolean accept(String className) {
-        return ! filter.accept(className);
-    }
+	/**
+	 * Returns the logical NOT of the underlying filter's return value for the
+	 * same File.
+	 * 
+	 * @param class the Class to check
+	 * @return true if the enclosed filter returns false
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return !filter.accept(clazz);
+	}
 
-    /**
-     * Provide a String representation of this c;ass filter.
-     *
-     * @return a String representation
-     */
-    @Override
-    public String toString() {
-        return ClassFilter.Util.toString(this);
-    }
+	/**
+	 * Returns the logical NOT of the underlying filter's return value for the
+	 * same arguments.
+	 * 
+	 * @param classNname
+	 *            the class name to check.
+	 * @return true if the enclosed filter returns false
+	 */
+	@Override
+	public boolean accept(String className) {
+		return !filter.accept(className);
+	}
 
+	/**
+	 * Provide a String representation of this c;ass filter.
+	 *
+	 * @return a String representation
+	 */
+	@Override
+	public String toString() {
+		return ClassFilter.Util.toString(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] args() {
-		return new String[] {filter.toString()};
+		return new String[] { filter.toString() };
 	}
-    
+
 }

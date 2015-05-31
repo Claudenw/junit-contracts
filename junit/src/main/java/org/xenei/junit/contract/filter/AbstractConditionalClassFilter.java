@@ -25,122 +25,164 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Base implementation for ConditionalClassFilter implementations.
- * Provides implementations for basic add/delete filters and toString.
+ * Base implementation for ConditionalClassFilter implementations. Provides
+ * implementations for basic add/delete filters and toString.
  *
  */
 public abstract class AbstractConditionalClassFilter implements
 		ConditionalClassFilter {
 
 	/** The list of file filters. */
-    private final List<ClassFilter> classFilters;
-    
-    protected AbstractConditionalClassFilter()
-    {
-    	classFilters = new ArrayList<ClassFilter>();
-    }
-    
-    @Override
-    public String[] args()
-    {
-    	String[] retval = new String[classFilters.size()];
-    	for (int i=0;i<classFilters.size();i++)
-    	{
-    		retval[i] = classFilters.get(i).toString();
-    	}
-    	return retval;
-    }
+	private final List<ClassFilter> classFilters = new ArrayList<ClassFilter>();
 
+	/**
+	 * Create the conditionals from list of filters.
+	 * 
+	 * @param classFilters
+	 *            The filters to create the conditional from.
+	 */
+	protected AbstractConditionalClassFilter(
+			final Collection<ClassFilter> classFilters) {
+		if (classFilters == null || classFilters.size() < 2) {
+			throw new IllegalArgumentException(
+					"Collection of filters may not be null or contain less than 2 filters");
+		}
+		addClassFilters(classFilters);
+	}
+
+	/**
+	 * Create the conditionals from an array of filters.
+	 * 
+	 * @param classFilters
+	 *            The filters to create the conditional from.
+	 */
+	protected AbstractConditionalClassFilter(final ClassFilter... classFilters) {
+		if (classFilters.length < 2) {
+			throw new IllegalArgumentException(
+					"Array of filters may not contain less than 2 filters");
+		}
+		addClassFilters(classFilters);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] args() {
+		String[] retval = new String[classFilters.size()];
+		for (int i = 0; i < classFilters.size(); i++) {
+			retval[i] = classFilters.get(i).toString();
+		}
+		return retval;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
-		return ClassFilter.Util.filterClasses( collection,  this );
+		return ClassFilter.Util.filterClasses(collection, this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<String> filterNames(Collection<String> collection) {
-		return ClassFilter.Util.filterClassNames( collection,  this );
-	}
-    
-    protected boolean isFilterListEmpty()
-    {
-    	return classFilters.isEmpty();
-    }
-    
-    protected AbstractConditionalClassFilter(final List<ClassFilter> classFilters) {
-        if (classFilters == null) {
-            this.classFilters = new ArrayList<ClassFilter>();
-        } else {
-            this.classFilters = new ArrayList<ClassFilter>(classFilters);
-        }
-    }
-    
-    protected AbstractConditionalClassFilter(final ClassFilter... classFilters) {
-    	this();
-    	addClassFilters( classFilters );  
-    }
-    
-	@Override
-	public final void addClassFilter(ClassFilter classFilter) {
-		if (classFilter == null)
-    	{
-    		throw new IllegalArgumentException( "classFilter may not be null");
-    	}
-        this.classFilters.add(classFilter);
+		return ClassFilter.Util.filterClassNames(collection, this);
 	}
 
+	protected boolean isFilterListEmpty() {
+		return classFilters.isEmpty();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void addClassFilter(ClassFilter classFilter) {
+		if (classFilter == null) {
+			throw new IllegalArgumentException("classFilter may not be null");
+		}
+		this.classFilters.add(classFilter);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final List<ClassFilter> getClassFilters() {
 		return Collections.unmodifiableList(this.classFilters);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final boolean removeClassFilter(ClassFilter classFilter) {
 		return this.classFilters.remove(classFilter);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public final void setClassFilters(List<ClassFilter> classFilters) {
+	public final void setClassFilters(Collection<ClassFilter> classFilters) {
 		this.classFilters.clear();
-		addClassFilters( classFilters );
+		addClassFilters(classFilters);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public final void addClassFilters(List<ClassFilter> classFilters) {
-        for (ClassFilter filter : classFilters)
-        {
-        	addClassFilter(filter);
-        }
+	public final void addClassFilters(Collection<ClassFilter> classFilters) {
+		for (ClassFilter filter : classFilters) {
+			addClassFilter(filter);
+		}
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final void setClassFilters(ClassFilter... classFilters) {
 		this.classFilters.clear();
-		addClassFilters( classFilters );
-	}
-	
-	
-	@Override
-	public final void addClassFilters(ClassFilter... classFilters) {
-	    for (ClassFilter filter : classFilters)
-        {
-        	addClassFilter(filter);
-        }
-	}
-	
-	@Override
-	public final void removeClassFilters(List<ClassFilter> classFilters) {
-		this.classFilters.removeAll(classFilters); 
+		addClassFilters(classFilters);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void addClassFilters(ClassFilter... classFilters) {
+		for (ClassFilter filter : classFilters) {
+			addClassFilter(filter);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void removeClassFilters(Collection<ClassFilter> classFilters) {
+		this.classFilters.removeAll(classFilters);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final void removeClassFilters(ClassFilter... classFilters) {
-		this.classFilters.removeAll(Arrays.asList(classFilters)); 
+		this.classFilters.removeAll(Arrays.asList(classFilters));
 	}
-	
-    
-    @Override
-    public String toString() {
-        return ClassFilter.Util.toString( this );
-    }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ClassFilter.Util.toString(this);
+	}
 }

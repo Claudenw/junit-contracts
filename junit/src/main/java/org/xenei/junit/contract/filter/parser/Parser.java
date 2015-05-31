@@ -19,9 +19,12 @@ package org.xenei.junit.contract.filter.parser;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.xenei.junit.contract.filter.AbstractClassFilter;
 import org.xenei.junit.contract.filter.AbstractStringClassFilter;
 import org.xenei.junit.contract.filter.AndClassFilter;
@@ -69,10 +72,9 @@ public class Parser {
 	}
 
 	/**
-	 * Parses the class filter string into a ClassFilter object. 
+	 * Parses the class filter string into a ClassFilter object.
 	 * <p>
-	 * Strings are of
-	 * the form:
+	 * Strings are of the form:
 	 * 
 	 * <pre>
 	 * FilterName( arg[,arg[,arg[,...]]] )
@@ -88,11 +90,12 @@ public class Parser {
 	 * </pre>
 	 * 
 	 * is a function that accepts classes that are either interfaces or whos
-	 * fully qualified java name does not start with "org.xenei" 
+	 * fully qualified java name does not start with "org.xenei"
 	 * </p>
 	 * <p>
-	 * Filters that accept a Case as the first argument in the constructor may have the case
-	 * specified as the first parameter as either <code>Sensitive</code> or <code>Insensitive</code>.
+	 * Filters that accept a Case as the first argument in the constructor may
+	 * have the case specified as the first parameter as either
+	 * <code>Sensitive</code> or <code>Insensitive</code>.
 	 * </p>
 	 * 
 	 * @param filterStr
@@ -114,11 +117,12 @@ public class Parser {
 				}
 			}
 
+			if (NotClassFilter.class.isAssignableFrom(info.clazz)) {
+				return new NotClassFilter(parse(args));
+			}
+
 			if (ConditionalClassFilter.class.isAssignableFrom(info.clazz)) {
-				ConditionalClassFilter filter;
-
-				filter = (ConditionalClassFilter) info.clazz.newInstance();
-
+				List<ClassFilter> consArgs = new ArrayList<ClassFilter>();
 				// parse the functions.
 				int cnt = 0;
 				int startPos = 0;
@@ -131,8 +135,7 @@ public class Parser {
 					case ')':
 						cnt--;
 						if (cnt == 0) {
-							filter.addClassFilter(parse(args.substring(
-									startPos, i + 1)));
+							consArgs.add(parse(args.substring(startPos, i + 1)));
 							scanning = true;
 						}
 						break;
@@ -146,57 +149,25 @@ public class Parser {
 						break;
 					}
 				}
-				return filter;
+				return info.clazz.getConstructor(Collection.class).newInstance(
+						consArgs);
+
 			}
 
-			String[] argStrAry = args.split(",");
 			if (AbstractStringClassFilter.class.isAssignableFrom(info.clazz)) {
-				AbstractStringClassFilter filter = null;
-				Case caze = null;
-				try {
-					caze = Case.forName(argStrAry[0].trim());
-				} catch (IllegalArgumentException expected) {
-					// this catch has to be here because later
-					// IllegalArgumenExceptions must be thrown.
-
-					filter = (AbstractStringClassFilter) info.clazz
-							.getConstructor(String.class).newInstance(
-									argStrAry[0].trim());
-
-					for (int i = 1; i < argStrAry.length; i++) {
-						filter.addString(argStrAry[i].trim());
-					}
-					return filter;
-				}
-				if (argStrAry.length < 2) {
-					throw new IllegalArgumentException(
-							String.format(" Not enough arguments for %s: %s",
-									info.name, args));
-				}
-				filter = (AbstractStringClassFilter) info.clazz.getConstructor(
-						Case.class, String.class).newInstance(caze,
-						argStrAry[1].trim());
-				for (int i = 2; i < argStrAry.length; i++) {
-					filter.addString(argStrAry[i].trim());
-				}
-
-				return filter;
+				return constructWithCase(info, args);
 			}
 
 			if (WildcardClassFilter.class.isAssignableFrom(info.clazz)) {
-				WildcardClassFilter filter = new WildcardClassFilter(
-						Case.forName(argStrAry[0].trim()));
-				for (int i = 1; i < argStrAry.length; i++) {
-					filter.addWildcard(argStrAry[i].trim());
-				}
-				return filter;
+				return constructWithCase(info, args);
 			}
 
 			if (HasAnnotationClassFilter.class.isAssignableFrom(info.clazz)) {
-				if (argStrAry.length != 1) {
+				List<String> argStrLst = splitArgs(args);
+				if (argStrLst.size() != 1) {
 					throw new IllegalArgumentException(
 							String.format(
-									"More than one string provided for HasAnnotation: %s",
+									"Only one string me be provided for HasAnnotation: %s",
 									args));
 				}
 				Class<?> cls;
@@ -217,19 +188,27 @@ public class Parser {
 			}
 
 			if (RegexClassFilter.class.isAssignableFrom(info.clazz)) {
-				if (argStrAry.length == 1) {
-					return new RegexClassFilter(args.trim());
+				List<String> argStrLst = splitArgs(args);
+				if (argStrLst.size() == 0) {
+					throw new IllegalArgumentException(String.format(
+							"Not enough arguments for %s: %s", info.name, args));
 				}
-
-				if (argStrAry.length == 2) {
-					return new RegexClassFilter(Case.forName(argStrAry[0]
-							.trim()), argStrAry[1].trim());
+				Case caze = null;
+				try {
+					caze = Case.forName(argStrLst.get(0));
+				} catch (IllegalArgumentException expected) {
+					// this catch has to be here because later
+					// IllegalArgumenExceptions must be thrown.
+					return new RegexClassFilter(argStrLst.get(0));
 				}
+				if (argStrLst.size() < 2) {
+					throw new IllegalArgumentException(
+							String.format(" Not enough arguments for %s: %s",
+									info.name, args));
+				}
+				return new RegexClassFilter(caze, argStrLst.get(1));
 			}
 
-			if (NotClassFilter.class.isAssignableFrom(info.clazz)) {
-				return new NotClassFilter(parse(args));
-			}
 			throw new IllegalArgumentException("Unrecognized filter: "
 					+ info.name);
 		} catch (InstantiationException e) {
@@ -255,6 +234,50 @@ public class Parser {
 
 		}
 
+	}
+
+	private ClassFilter constructWithCase(ParserInfo info, String args)
+			throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
+		List<String> argStrLst = splitArgs(args);
+		if (argStrLst.size() == 0) {
+			throw new IllegalArgumentException(String.format(
+					"Not enough arguments for %s: %s", info.name, args));
+		}
+		Case caze = null;
+		try {
+			caze = Case.forName(argStrLst.get(0));
+		} catch (IllegalArgumentException expected) {
+			// this catch has to be here because later
+			// IllegalArgumenExceptions must be thrown.
+
+			return info.clazz.getConstructor(Collection.class).newInstance(
+					argStrLst);
+
+		}
+		if (argStrLst.size() < 2) {
+			throw new IllegalArgumentException(String.format(
+					" Not enough arguments for %s: %s", info.name, args));
+		}
+		return info.clazz.getConstructor(Case.class, Collection.class)
+				.newInstance(caze, argStrLst.subList(1, argStrLst.size()));
+
+	}
+
+	/**
+	 * Split the string on the commas and trim the results.
+	 * 
+	 * @param args
+	 *            the string to split.
+	 * @return the individual comma separated strings from the argument trimed.
+	 */
+	private List<String> splitArgs(String args) {
+		List<String> retval = new ArrayList<String>();
+		for (String s : args.split(",")) {
+			retval.add(s.trim());
+		}
+		return retval;
 	}
 
 	/**
@@ -303,5 +326,5 @@ public class Parser {
 		}
 
 	}
-	
+
 }

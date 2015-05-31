@@ -26,58 +26,58 @@ public class OrClassFilterTest {
 
 	private Class<?> cls = String.class;
 	private String str = cls.getName();
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.FALSE);
-		assertFalse( filter.accept( cls ) );
-		
-		filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertTrue( filter.accept( cls ) );
-		
-		filter = new OrClassFilter( ClassFilter.TRUE, ClassFilter.FALSE);
-		assertTrue( filter.accept( cls ) );
-		
-		filter = new OrClassFilter( ClassFilter.TRUE, ClassFilter.TRUE);
-		assertTrue( filter.accept( cls ) );
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.FALSE);
-		assertFalse( filter.accept( str ) );
-		
-		filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertTrue( filter.accept( str ) );
-		
-		filter = new OrClassFilter( ClassFilter.TRUE, ClassFilter.FALSE);
-		assertTrue( filter.accept( str ) );
-		
-		filter = new OrClassFilter( ClassFilter.TRUE, ClassFilter.TRUE);
-		assertTrue( filter.accept( str ) );
-	}
-	
-	@Test
-	public void testToString()
-	{
-		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertEquals( "Or( False(), True() )", filter.toString() );
+	public void testAcceptClass() {
+		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
+				ClassFilter.FALSE);
+		assertFalse(filter.accept(cls));
+
+		filter = new OrClassFilter(ClassFilter.FALSE, ClassFilter.TRUE);
+		assertTrue(filter.accept(cls));
+
+		filter = new OrClassFilter(ClassFilter.TRUE, ClassFilter.FALSE);
+		assertTrue(filter.accept(cls));
+
+		filter = new OrClassFilter(ClassFilter.TRUE, ClassFilter.TRUE);
+		assertTrue(filter.accept(cls));
 	}
 
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
+				ClassFilter.FALSE);
+		assertFalse(filter.accept(str));
+
+		filter = new OrClassFilter(ClassFilter.FALSE, ClassFilter.TRUE);
+		assertTrue(filter.accept(str));
+
+		filter = new OrClassFilter(ClassFilter.TRUE, ClassFilter.FALSE);
+		assertTrue(filter.accept(str));
+
+		filter = new OrClassFilter(ClassFilter.TRUE, ClassFilter.TRUE);
+		assertTrue(filter.accept(str));
+	}
+
+	@Test
+	public void testToString() {
+		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
+				ClassFilter.TRUE);
+		assertEquals("Or( False(), True() )", filter.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertTrue( "wrong class type", cf instanceof OrClassFilter);
+
+		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
+				ClassFilter.TRUE);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertTrue("wrong class type", cf instanceof OrClassFilter);
 		String[] args = cf.args();
-		assertEquals( ClassFilter.FALSE.toString(), args[0]);
-		assertEquals( ClassFilter.TRUE.toString(), args[1]);
-		
+		assertEquals(ClassFilter.FALSE.toString(), args[0]);
+		assertEquals(ClassFilter.TRUE.toString(), args[1]);
+
 	}
 }

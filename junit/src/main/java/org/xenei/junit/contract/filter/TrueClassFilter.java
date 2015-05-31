@@ -22,47 +22,52 @@ import java.io.Serializable;
  * A class filter that always returns true.
  *
  */
-public class TrueClassFilter extends AbstractBaseClassFilter implements Serializable {
+public class TrueClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6422553815074269475L;
 	/**
-     * Singleton instance of true filter.
-     */
-    public static final ClassFilter TRUE = new TrueClassFilter();
+	 * Singleton instance of true filter.
+	 */
+	public static final ClassFilter TRUE = new TrueClassFilter();
 
+	/**
+	 * Restrictive constructor.
+	 */
+	private TrueClassFilter() {
+	}
 
-    /**
-     * Restrictive constructor.
-     */
-    private TrueClassFilter() {
-    }
-
-    /**
-     * Returns true.
-     *
-     * @param clazz  the class to check (ignored)
-     * @return true
-     */
-    @Override
+	/**
+	 * Returns true.
+	 *
+	 * @param clazz
+	 *            the class to check (ignored)
+	 * @return true
+	 */
+	@Override
 	public boolean accept(Class<?> clazz) {
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Returns true.
-     *
-
-     * @param className  the class name (ignored)
-     * @return true
-     */
-    @Override
+	/**
+	 * Returns true.
+	 *
+	 * 
+	 * @param className
+	 *            the class name (ignored)
+	 * @return true
+	 */
+	@Override
 	public boolean accept(String className) {
-        return true;
-    }
+		return true;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] args() {
 		return NO_ARGS;

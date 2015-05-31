@@ -17,93 +17,87 @@
 package org.xenei.junit.contract.filter;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * A ClassFilter providing conditional AND logic across a list of
- * file filters. This filter returns {@code true} if all filters in the
- * list return {@code true}. Otherwise, it returns {@code false}.
- * Checking of the file filter list stops when the first filter returns
- * {@code false}.
+ * A ClassFilter providing conditional AND logic across a list of file filters.
+ * This filter returns {@code true} if all filters in the list return
+ * {@code true}. Otherwise, it returns {@code false}. Checking of the file
+ * filter list stops when the first filter returns {@code false}.
  */
-public class AndClassFilter 
-        extends AbstractConditionalClassFilter
-        implements Serializable {
+public class AndClassFilter extends AbstractConditionalClassFilter implements
+		Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7607072170374969854L;
 
 	/**
-     * Constructs a new instance of <code>AndClassFilter</code>.
-     */
-    public AndClassFilter() {
-    	super();
-    }
+	 * Constructs a new instance of <code>AndClassFilter</code> with the
+	 * specified list of filters.
+	 *
+	 * @param classFilters
+	 *            a Collection of ClassFilter instances, copied, null ignored
+	 */
+	public AndClassFilter(final Collection<ClassFilter> classFilters) {
+		super(classFilters);
+	}
 
-    @Override
-    public String funcName() {
-    	return "And";
-    }
-    /**
-     * Constructs a new instance of <code>AndClassFilter</code>
-     * with the specified list of filters.
-     *
-     * @param classFilters  a List of ClassFilter instances, copied, null ignored
-     * @since 1.1
-     */
-    public AndClassFilter(final List<ClassFilter> classFilters) {
-    	super(classFilters);
-    }
+	/**
+	 * Constructs a new instance of <code>AndClassFilter</code> with the
+	 * specified list of filters.
+	 *
+	 * @param classFilters
+	 *            a List of ClassFilter instances, copied, null ignored
+	 */
+	public AndClassFilter(final ClassFilter... classFilters) {
+		super(classFilters);
+	}
 
-    /**
-     * Constructs a new instance of <code>AndClassFilter</code>
-     * with the specified list of filters.
-     *
-     * @param classFilters  a List of ClassFilter instances, copied, null ignored
-     * @since 1.1
-     */
-    public AndClassFilter(final ClassFilter... classFilters) {
-    	super(classFilters);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String funcName() {
+		return "And";
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean accept(String className) {
+		List<ClassFilter> filters = this.getClassFilters();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean accept(String className) {
-    	List<ClassFilter> filters = this.getClassFilters();
-    	
-        if (filters.isEmpty()) {
-            return false;
-        }
-        for (ClassFilter classFilter : filters) {
-            if (!classFilter.accept(className)) {
-                return false;
-            }
-        }
-        return true;
-    }
+		if (filters.isEmpty()) {
+			return false;
+		}
+		for (ClassFilter classFilter : filters) {
+			if (!classFilter.accept(className)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean accept(Class<?> clazz) {
-    	List<ClassFilter> filters = this.getClassFilters();
-    	
-        if (filters.isEmpty()) {
-            return false;
-        }
-        for (ClassFilter classFilter : filters) {
-            if (!classFilter.accept(clazz)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		List<ClassFilter> filters = this.getClassFilters();
+
+		if (filters.isEmpty()) {
+			return false;
+		}
+		for (ClassFilter classFilter : filters) {
+			if (!classFilter.accept(clazz)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

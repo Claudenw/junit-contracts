@@ -26,58 +26,58 @@ public class AndClassFilterTest {
 
 	private Class<?> cls = String.class;
 	private String str = cls.getName();
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		ClassFilter filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.FALSE);
-		assertFalse( filter.accept( cls ) );
-		
-		filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertFalse( filter.accept( cls ) );
-		
-		filter = new AndClassFilter( ClassFilter.TRUE, ClassFilter.FALSE);
-		assertFalse( filter.accept( cls ) );
-		
-		filter = new AndClassFilter( ClassFilter.TRUE, ClassFilter.TRUE);
-		assertTrue( filter.accept( cls ) );
+	public void testAcceptClass() {
+		ClassFilter filter = new AndClassFilter(ClassFilter.FALSE,
+				ClassFilter.FALSE);
+		assertFalse(filter.accept(cls));
+
+		filter = new AndClassFilter(ClassFilter.FALSE, ClassFilter.TRUE);
+		assertFalse(filter.accept(cls));
+
+		filter = new AndClassFilter(ClassFilter.TRUE, ClassFilter.FALSE);
+		assertFalse(filter.accept(cls));
+
+		filter = new AndClassFilter(ClassFilter.TRUE, ClassFilter.TRUE);
+		assertTrue(filter.accept(cls));
 	}
-	
+
 	@Test
-	public void testAccceptString()
-	{
-		ClassFilter filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.FALSE);
-		assertFalse( filter.accept( str ) );
-		
-		filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertFalse( filter.accept( str ) );
-		
-		filter = new AndClassFilter( ClassFilter.TRUE, ClassFilter.FALSE);
-		assertFalse( filter.accept( str ) );
-		
-		filter = new AndClassFilter( ClassFilter.TRUE, ClassFilter.TRUE);
-		assertTrue( filter.accept( str ) );
+	public void testAccceptString() {
+		ClassFilter filter = new AndClassFilter(ClassFilter.FALSE,
+				ClassFilter.FALSE);
+		assertFalse(filter.accept(str));
+
+		filter = new AndClassFilter(ClassFilter.FALSE, ClassFilter.TRUE);
+		assertFalse(filter.accept(str));
+
+		filter = new AndClassFilter(ClassFilter.TRUE, ClassFilter.FALSE);
+		assertFalse(filter.accept(str));
+
+		filter = new AndClassFilter(ClassFilter.TRUE, ClassFilter.TRUE);
+		assertTrue(filter.accept(str));
 	}
-	
+
 	@Test
-	public void testToString()
-	{
-		ClassFilter filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertEquals( "And( False(), True() )", filter.toString() );
+	public void testToString() {
+		ClassFilter filter = new AndClassFilter(ClassFilter.FALSE,
+				ClassFilter.TRUE);
+		assertEquals("And( False(), True() )", filter.toString());
 	}
-	
+
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter filter = new AndClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertTrue( "wrong class type", cf instanceof AndClassFilter);
+
+		ClassFilter filter = new AndClassFilter(ClassFilter.FALSE,
+				ClassFilter.TRUE);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertTrue("wrong class type", cf instanceof AndClassFilter);
 		String[] args = cf.args();
-		assertEquals( ClassFilter.FALSE.toString(), args[0]);
-		assertEquals( ClassFilter.TRUE.toString(), args[1]);
+		assertEquals(ClassFilter.FALSE.toString(), args[0]);
+		assertEquals(ClassFilter.TRUE.toString(), args[1]);
 	}
 
 }

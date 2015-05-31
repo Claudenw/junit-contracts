@@ -49,7 +49,7 @@ import org.xenei.junit.contract.IProducer;
 // run as a contract test
 @RunWith(ContractSuite.class)
 // testing the CImpl class.
-@ContractImpl(value=CImpl.class, ignore={BadNoInject.class})
+@ContractImpl(value = CImpl.class, ignore = { BadNoInject.class })
 public class CImplContractTest {
 	// the producer to use for all the tests
 	private IProducer<CImpl> producer = new IProducer<CImpl>() {

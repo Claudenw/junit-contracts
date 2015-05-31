@@ -16,6 +16,7 @@
  */
 
 package org.xenei.junit.bad;
+
 /**
  * Class to test that the ignore option works.
  */

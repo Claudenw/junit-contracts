@@ -21,49 +21,55 @@ import java.io.Serializable;
 /**
  * Check if the class is an interface
  */
-public class InterfaceClassFilter extends AbstractBaseClassFilter implements Serializable {
+public class InterfaceClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2416808898165436521L;
-	
+
 	/** Singleton instance of class filter */
-    public static final ClassFilter INTERFACE = new InterfaceClassFilter();
+	public static final ClassFilter INTERFACE = new InterfaceClassFilter();
 
-    /**
-     * Restrictive consructor.
-     */
-    private InterfaceClassFilter() {
-    }
+	/**
+	 * Restrictive consructor.
+	 */
+	private InterfaceClassFilter() {
+	}
 
-    /**
-     * Checks to see if the class is an interface.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is an interface
-     */
-    @Override
-    public boolean accept(Class<?> clazz) {
-    	return clazz.isInterface();
-    }
+	/**
+	 * Checks to see if the class is an interface.
+	 *
+	 * @param clazz
+	 *            the Class to check
+	 * @return true if the class is an interface
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return clazz.isInterface();
+	}
 
-    /**
-     * Checks to see if the class is an interface.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is an interface
-     */
-    @Override
-    public boolean accept(String className) {
-    	
-    	try {
-			return accept( Class.forName(className ));
+	/**
+	 * Checks to see if the class is an interface.
+	 *
+	 * @param clazzName
+	 *            the class name to check
+	 * @return true if the class is an interface
+	 */
+	@Override
+	public boolean accept(String className) {
+
+		try {
+			return accept(Class.forName(className));
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-    }
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] args() {
 		return NO_ARGS;

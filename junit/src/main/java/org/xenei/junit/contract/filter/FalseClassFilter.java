@@ -22,49 +22,50 @@ import java.io.Serializable;
  * A class filter that always returns false.
  *
  */
-public class FalseClassFilter extends AbstractBaseClassFilter implements Serializable {
+public class FalseClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
 
-  
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5537028986673047572L;
 	/**
-     * Singleton instance of false filter.
+	 * Singleton instance of false filter.
+	 */
+	public static final ClassFilter FALSE = new FalseClassFilter();
 
-     */
-    public static final ClassFilter FALSE = new FalseClassFilter();
+	/**
+	 * Restrictive constructor.
+	 */
+	private FalseClassFilter() {
+	}
 
+	/**
+	 * Returns false.
+	 *
+	 * @param fileName
+	 *            the file name to check (ignored)
+	 * @return false
+	 */
+	@Override
+	public boolean accept(String fileName) {
+		return false;
+	}
 
-    /**
-     * Restrictive constructor.
-     */
-    private FalseClassFilter() {
-    }
-
-    /**
-     * Returns false.
-     *
-     * @param file  the file to check (ignored)
-     * @return false
-     */
-    public boolean accept(String fileName) {
-        return false;
-    }
-
-    /**
-     * Returns false.
-     *
-     * @param dir  the directory to check (ignored)
-     * @param name  the filename (ignored)
-     * @return false
-     */
-    public boolean accept(Class<?> clazz) {
-        return false;
-    }
+	/**
+	 * Returns false.
+	 *
+	 * @param clazz
+	 *            the class to check (ignored)
+	 * @return false
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return false;
+	}
 
 	@Override
 	public String[] args() {
 		return NO_ARGS;
-	}  
+	}
 }

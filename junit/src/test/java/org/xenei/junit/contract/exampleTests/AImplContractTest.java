@@ -46,7 +46,7 @@ import org.xenei.junit.contract.IProducer;
 // run with contract suite
 @RunWith(ContractSuite.class)
 // testing AImpl
-@ContractImpl(value=AImpl.class, ignore={BadNoInject.class})
+@ContractImpl(value = AImpl.class, ignore = { BadNoInject.class })
 public class AImplContractTest {
 
 	// create the producer to inject

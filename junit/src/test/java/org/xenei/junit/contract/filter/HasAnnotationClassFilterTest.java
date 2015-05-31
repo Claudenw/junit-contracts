@@ -26,40 +26,37 @@ import org.xenei.junit.contract.exampleTests.AT;
 import org.xenei.junit.contract.filter.parser.Parser;
 
 public class HasAnnotationClassFilterTest {
-	private ClassFilter filter = new HasAnnotationClassFilter( Contract.class );
+	private ClassFilter filter = new HasAnnotationClassFilter(Contract.class);
 	private Class<?> t = AT.class;
 	private Class<?> f = A.class;
-	
+
 	@Test
-	public void testAcceptClass()
-	{		
-		assertTrue( filter.accept( t ) );	
-		assertFalse( filter.accept( f ) );		
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		
-		assertTrue( filter.accept( t.getName() ) );
-		assertFalse( filter.accept( f.getName() ) );	
-	}
-	
-	@Test
-	public void testToString()
-	{
-		assertEquals( "HasAnnotation( "+Contract.class.getName()+" )", filter.toString() );
+	public void testAcceptClass() {
+		assertTrue(filter.accept(t));
+		assertFalse(filter.accept(f));
 	}
 
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+
+		assertTrue(filter.accept(t.getName()));
+		assertFalse(filter.accept(f.getName()));
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("HasAnnotation( " + Contract.class.getName() + " )",
+				filter.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertTrue( "Wrong type",  cf instanceof HasAnnotationClassFilter);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertTrue("Wrong type", cf instanceof HasAnnotationClassFilter);
 		String[] args = cf.args();
-		assertEquals( 1, args.length);
-		assertEquals( Contract.class.getName(), args[0] );
+		assertEquals(1, args.length);
+		assertEquals(Contract.class.getName(), args[0]);
 	}
 }

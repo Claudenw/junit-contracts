@@ -89,12 +89,11 @@ public class ContractSuiteTest {
 			verify(notifier).fireTestFinished(description.capture());
 			assertEquals(BadNoInject.class.getName(), description.getValue()
 					.getClassName());
-		}
-		else if (BadNoInjectTest.class.getName().equals(
+		} else if (BadNoInjectTest.class.getName().equals(
 				description.getValue().getClassName())) {
 			verify(notifier).fireTestFinished(description.capture());
-			assertEquals(BadNoInjectTest.class.getName(), description.getValue()
-					.getClassName());	
+			assertEquals(BadNoInjectTest.class.getName(), description
+					.getValue().getClassName());
 		} else {
 			fail("Unexpected description class name: "
 					+ description.getValue().getClassName());

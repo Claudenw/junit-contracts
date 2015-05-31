@@ -28,34 +28,30 @@ public class AnnotationClassFilterTest {
 	private ClassFilter filter = ClassFilter.ANNOTATION;
 	private Class<?> t = Contract.class;
 	private Class<?> f = ContractTestRunner.class;
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter.accept( t ) );
-		assertFalse( filter.accept( f ));
+	public void testAcceptClass() {
+		assertTrue(filter.accept(t));
+		assertFalse(filter.accept(f));
 	}
-	
+
 	@Test
-	public void testAccceptString()
-	{
-		assertTrue( filter.accept( t.getName() ) );
-		assertFalse( filter.accept( f.getName() ));
+	public void testAccceptString() {
+		assertTrue(filter.accept(t.getName()));
+		assertFalse(filter.accept(f.getName()));
 	}
-	
+
 	@Test
-	public void testToString()
-	{
-		assertEquals( "Annotation()",filter.toString() );
+	public void testToString() {
+		assertEquals("Annotation()", filter.toString());
 	}
-	
+
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertEquals( ClassFilter.ANNOTATION, cf);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertEquals(ClassFilter.ANNOTATION, cf);
 	}
 
 }

@@ -67,7 +67,7 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 		this.getterObj = getterObj;
 		this.getter = parentTestInfo.getMethod();
 	}
-	
+
 	/**
 	 * Create a test runner for stand alone test
 	 * 
@@ -83,11 +83,11 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 *            interface..
 	 * @throws InitializationError
 	 */
-	public ContractTestRunner(Class<?> testClass) throws InitializationError  {
-		super(testClass );
+	public ContractTestRunner(Class<?> testClass) throws InitializationError {
+		super(testClass);
 		this.parentTestInfo = null;
-		this.testInfo =null;	
-		this.getterObj =null;
+		this.testInfo = null;
+		this.getterObj = null;
 		this.getter = null;
 	}
 
@@ -99,20 +99,21 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
-	 * @throws InitializationError 
+	 * @throws InitializationError
 	 */
 	@Override
 	protected Object createTest() throws InstantiationException,
 			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, InitializationError {
 		Object retval = getTestClass().getOnlyConstructor().newInstance();
-		if (parentTestInfo != null)
-		{
+		if (parentTestInfo != null) {
 			if (parentTestInfo instanceof DynamicTestInfo) {
 				DynamicTestInfo dti = (DynamicTestInfo) parentTestInfo;
-	
-				Object baseProducer = dti.getDynamicInjector().invoke(getterObj);
-				testInfo.getMethod().invoke(retval, dti.getProducer(baseProducer));
+
+				Object baseProducer = dti.getDynamicInjector()
+						.invoke(getterObj);
+				testInfo.getMethod().invoke(retval,
+						dti.getProducer(baseProducer));
 			} else {
 				testInfo.getMethod().invoke(retval, getter.invoke(getterObj));
 			}
@@ -136,23 +137,25 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 */
 	@Override
 	protected String getName() {
-		return testInfo==null?super.getName():testInfo.getContractTestClass().getName();
+		return testInfo == null ? super.getName() : testInfo
+				.getContractTestClass().getName();
 	}
 
 	@Override
 	protected Description describeChild(FrameworkMethod method) {
-		if (testInfo == null)
-		{
-			return super.describeChild( method );
+		if (testInfo == null) {
+			return super.describeChild(method);
 		}
-		if (parentTestInfo == null)
-		{
-			return Description.createTestDescription(testInfo.getContractTestClass(),
-					testName(method), method.getAnnotations());
+		if (parentTestInfo == null) {
+			return Description.createTestDescription(
+					testInfo.getContractTestClass(), testName(method),
+					method.getAnnotations());
 		}
-		String name = String.format("%s(%s)", testName(method), testInfo.getContractTestClass().getSimpleName());
-		return Description.createTestDescription(parentTestInfo.getContractTestClass(),
-				name, method.getAnnotations());
+		String name = String.format("%s(%s)", testName(method), testInfo
+				.getContractTestClass().getSimpleName());
+		return Description.createTestDescription(
+				parentTestInfo.getContractTestClass(), name,
+				method.getAnnotations());
 	}
 
 	/**

@@ -21,49 +21,55 @@ import java.io.Serializable;
 /**
  * A ClassFilter that filters classes that are annotations.
  */
-public class AnnotationClassFilter  extends AbstractBaseClassFilter implements Serializable {
+public class AnnotationClassFilter extends AbstractBaseClassFilter implements
+		Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7819589374453236969L;
-	
+
 	/** Singleton instance of file filter */
-    public static final ClassFilter ANNOTATION = new AnnotationClassFilter();
+	public static final ClassFilter ANNOTATION = new AnnotationClassFilter();
 
-    /**
-     * Restrictive consructor.
-     */
-    private AnnotationClassFilter() {
-    }
+	/**
+	 * Restrictive constructor.
+	 */
+	private AnnotationClassFilter() {
+	}
 
-    /**
-     * Checks to see if the class is abstract.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is abstract
-     */
-    @Override
-    public boolean accept(Class<?> clazz) {
-    	return clazz.isAnnotation();
-    }
+	/**
+	 * Checks to see if the class is abstract.
+	 *
+	 * @param clazz
+	 *            the Class to check
+	 * @return true if the class is abstract
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return clazz.isAnnotation();
+	}
 
-    /**
-     * Checks to see if the class is abstract.
-     *
-     * @param clazz  the Class to check
-     * @return true if the class is abstract
-     */
-    @Override
-    public boolean accept(String className) {
-    	
-    	try {
-			return accept( Class.forName(className ));
+	/**
+	 * Checks to see if the class is abstract.
+	 *
+	 * @param className
+	 *            the Class name to check
+	 * @return true if the class is abstract
+	 */
+	@Override
+	public boolean accept(String className) {
+
+		try {
+			return accept(Class.forName(className));
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-    }
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] args() {
 		return NO_ARGS;

@@ -48,7 +48,7 @@ import org.xenei.junit.contract.IProducer;
 // run as a contract test
 @RunWith(ContractSuite.class)
 // testing the CImpl class.
-@ContractImpl(value=CImpl.class, skip={A.class})
+@ContractImpl(value = CImpl.class, skip = { A.class })
 public class CImplContractTestWithSkip {
 	// the producer to use for all the tests
 	private IProducer<CImpl> producer = new IProducer<CImpl>() {

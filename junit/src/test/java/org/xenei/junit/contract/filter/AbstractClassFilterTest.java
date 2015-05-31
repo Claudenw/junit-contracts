@@ -20,30 +20,26 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.xenei.junit.contract.filter.parser.Parser;
 
 public class AbstractClassFilterTest {
 	private ClassFilter filter = ClassFilter.ABSTRACT;
 	private Class<?> t = AbstractBaseClassFilter.class;
 	private Class<?> f = String.class;
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter.accept( t ) );
-		assertFalse( filter.accept( f ));
+	public void testAcceptClass() {
+		assertTrue(filter.accept(t));
+		assertFalse(filter.accept(f));
 	}
-	
+
 	@Test
-	public void testAccceptString()
-	{
-		assertTrue( filter.accept( t.getName() ) );
-		assertFalse( filter.accept( f.getName() ));
+	public void testAccceptString() {
+		assertTrue(filter.accept(t.getName()));
+		assertFalse(filter.accept(f.getName()));
 	}
-	
+
 	@Test
-	public void testToString()
-	{
-		assertEquals( "Abstract()",filter.toString() );
+	public void testToString() {
+		assertEquals("Abstract()", filter.toString());
 	}
 }

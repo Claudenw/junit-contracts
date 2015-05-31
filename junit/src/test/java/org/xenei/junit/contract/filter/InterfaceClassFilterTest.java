@@ -26,33 +26,29 @@ public class InterfaceClassFilterTest {
 	private ClassFilter filter = ClassFilter.INTERFACE;
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter.accept( t ) );
-		assertFalse( filter.accept( f ));
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		assertTrue( filter.accept( t.getName() ) );
-		assertFalse( filter.accept( f.getName() ));
-	}
-	
-	@Test
-	public void testToString()
-	{
-		assertEquals( "Interface()",filter.toString() );
+	public void testAcceptClass() {
+		assertTrue(filter.accept(t));
+		assertFalse(filter.accept(f));
 	}
 
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+		assertTrue(filter.accept(t.getName()));
+		assertFalse(filter.accept(f.getName()));
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("Interface()", filter.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertEquals(  ClassFilter.INTERFACE, cf);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertEquals(ClassFilter.INTERFACE, cf);
 	}
 }

@@ -72,8 +72,7 @@ public class TestInfoErrorRunner extends Runner {
 	}
 
 	@Override
-	public String toString()
-	{
-		return String.format( "TestInfoErrorRunner[ %s ]", testInfo);
+	public String toString() {
+		return String.format("TestInfoErrorRunner[ %s ]", testInfo);
 	}
 }

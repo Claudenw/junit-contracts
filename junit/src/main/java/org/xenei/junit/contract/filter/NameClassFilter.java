@@ -19,126 +19,159 @@ package org.xenei.junit.contract.filter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * filters classes by name.
  * 
  */
-public class NameClassFilter extends AbstractStringClassFilter implements Serializable {
-    
-    /**
+public class NameClassFilter extends AbstractStringClassFilter implements
+		Serializable {
+
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2314511406134237664L;
-	
 
-    /**
-     * Constructs a new case-sensitive name class filter for a single name.
-     * 
-     * @param name  the name to allow, must not be null
-     * @throws IllegalArgumentException if the name is null
-     */
-    public NameClassFilter(String name) {
-        super(name);
-    }
+	/**
+	 * Constructs a new case-sensitive name class filter for a single name.
+	 * 
+	 * @param name
+	 *            the name to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the name is null
+	 */
+	public NameClassFilter(String name) {
+		super(name);
+	}
 
-    /**
-     * Construct a new name class filter specifying case-sensitivity.
-     *
-     * @param name  the name to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the name is null
-     */
-    public NameClassFilter(Case caseSensitivity, String name) {
-        super(caseSensitivity, name );
-    }
+	/**
+	 * Construct a new name class filter specifying case-sensitivity.
+	 *
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null means case-sensitive
+	 * @param name
+	 *            the name to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the name is null
+	 */
+	public NameClassFilter(Case caseSensitivity, String name) {
+		super(caseSensitivity, name);
+	}
 
-    /**
-     * Constructs a new case-sensitive name class filter for an array of names.
-     * <p>
-     * The array is not cloned, so could be changed after constructing the
-     * instance. This would be inadvisable however.
-     * 
-     * @param names  the names to allow, must not be null
-     * @throws IllegalArgumentException if the names array is null
-     */
-    public NameClassFilter(String... names) {
-        super(names);
-    }
+	/**
+	 * Constructs a new case-sensitive name class filter for an array of names.
+	 * <p>
+	 * The array is not cloned, so could be changed after constructing the
+	 * instance. This would be inadvisable however.
+	 * </p>
+	 * 
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the names array is null
+	 */
+	public NameClassFilter(String... names) {
+		super(names);
+	}
 
-    private static List<String> toNames( Class<?>... classes )
-    {
-    	List<String> retval = new ArrayList<String>();
-    	for (Class<?> cls : classes)
-    	{
-    		retval.add( cls.getName() );
-    	}
-    	return retval;
-    }
-    /**
-     * Constructs a new case-sensitive name class filter for an array of names.
-     * <p>
-     * The array is not cloned, so could be changed after constructing the
-     * instance. This would be inadvisable however.
-     * 
-     * @param names  the names to allow, must not be null
-     * @throws IllegalArgumentException if the names array is null
-     */
-    public NameClassFilter(Class<?>... classes) {
-        super(toNames( classes ));
-    }
-    /**
-     * Constructs a new name class filter for an array of names specifying case-sensitivity.
-     * <p>
-     * The array is not cloned, so could be changed after constructing the
-     * instance. This would be inadvisable however.
-     * 
-     * @param names  the names to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the names array is null
-     */
-    public NameClassFilter(Case caseSensitivity, String... names) {
-        super( caseSensitivity, names );
-    }
+	/**
+	 * The list of names from the classes. Static so it can be used in the
+	 * constructor.
+	 * 
+	 * @param classes
+	 *            the array of classes.
+	 * @return the list of class names.
+	 */
+	private static List<String> toNames(Class<?>... classes) {
+		List<String> retval = new ArrayList<String>();
+		for (Class<?> cls : classes) {
+			retval.add(cls.getName());
+		}
+		return retval;
+	}
 
-    /**
-     * Constructs a new case-sensitive name class filter for a list of names.
-     * 
-     * @param names  the names to allow, must not be null
-     * @throws IllegalArgumentException if the name list is null
-     * @throws ClassCastException if the list does not contain Strings
-     */
-    public NameClassFilter(List<String> names) {
-        super(names);
-    }
+	/**
+	 * Constructs a new case-sensitive name class filter for an array of names.
+	 * <p>
+	 * The array is not cloned, so could be changed after constructing the
+	 * instance. This would be inadvisable however.
+	 * 
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the names array is null
+	 */
+	public NameClassFilter(Class<?>... classes) {
+		super(toNames(classes));
+	}
 
-    /**
-     * Constructs a new name class filter for a list of names specifying case-sensitivity.
-     * 
-     * @param names  the names to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the name list is null
-     * @throws ClassCastException if the list does not contain Strings
-     */
-    public NameClassFilter(Case caseSensitivity, List<String> names ) {
-        super(caseSensitivity, names);
-    }
+	/**
+	 * Constructs a new name class filter for an array of names specifying
+	 * case-sensitivity.
+	 * <p>
+	 * The array is not cloned, so could be changed after constructing the
+	 * instance. This would be inadvisable however.
+	 * 
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null means case-sensitive
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the names array is null
+	 */
+	public NameClassFilter(Case caseSensitivity, String... names) {
+		super(caseSensitivity, names);
+	}
 
-    /**
-     * Checks to see if the name matches.
-     * 
-     * @param className  the class name to check
-     * @return true if the filename matches
-     */
-    @Override
-    public boolean accept(String className) {
-        for (String name2 : getStrings()) {
-            if (caseSensitivity.checkEquals(className, name2)) {
-                return true;
-            }
-        }
-        return false;
-    }  
+	/**
+	 * Constructs a new case-sensitive name class filter for a collection of
+	 * names.
+	 * 
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the name list is null
+	 * @throws ClassCastException
+	 *             if the list does not contain Strings
+	 */
+	public NameClassFilter(Collection<String> names) {
+		super(names);
+	}
+
+	/**
+	 * Constructs a new name class filter for a collection of names specifying
+	 * case-sensitivity.
+	 * 
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null means case-sensitive
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the name list is null
+	 * @throws ClassCastException
+	 *             if the list does not contain Strings
+	 */
+	public NameClassFilter(Case caseSensitivity, Collection<String> names) {
+		super(caseSensitivity, names);
+	}
+
+	/**
+	 * Checks to see if the name matches.
+	 * 
+	 * @param className
+	 *            the class name to check
+	 * @return true if the filename matches
+	 */
+	@Override
+	public boolean accept(String className) {
+		for (String name2 : getStrings()) {
+			if (caseSensitivity.checkEquals(className, name2)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

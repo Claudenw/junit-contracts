@@ -25,65 +25,61 @@ import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
 public class SuffixClassFilterTest {
-	
+
 	private final ClassFilter filter_sens;
 	private final ClassFilter filter_insens;
-	
+
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
-	
+
 	public SuffixClassFilterTest() {
 		filter_sens = new SuffixClassFilter(Case.SENSITIVE, "Filter");
 		filter_insens = new SuffixClassFilter(Case.INSENSITIVE, "filter");
 	}
-	
-	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter_sens.accept( t ) );
-		assertTrue( filter_insens.accept( t ));
-		
-		assertFalse( filter_sens.accept( f ) );
-		assertFalse( filter_insens.accept( f ));
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		
-		assertTrue( filter_sens.accept( t.getName() ) );
-		assertTrue( filter_insens.accept( t.getName() ));
 
-		assertFalse( filter_sens.accept( t.getName().toUpperCase() ) );
-		assertTrue( filter_insens.accept( t.getName().toUpperCase() ));
-		
-		assertFalse( filter_sens.accept( f.getName() ) );
-		assertFalse( filter_insens.accept( f.getName() ));
-	}
-	
 	@Test
-	public void testToString()
-	{
-		assertEquals( "Suffix( Sensitive, Filter )",filter_sens.toString() );
-		assertEquals( "Suffix( Insensitive, filter )",filter_insens.toString() );
+	public void testAcceptClass() {
+		assertTrue(filter_sens.accept(t));
+		assertTrue(filter_insens.accept(t));
+
+		assertFalse(filter_sens.accept(f));
+		assertFalse(filter_insens.accept(f));
 	}
-	
+
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+
+		assertTrue(filter_sens.accept(t.getName()));
+		assertTrue(filter_insens.accept(t.getName()));
+
+		assertFalse(filter_sens.accept(t.getName().toUpperCase()));
+		assertTrue(filter_insens.accept(t.getName().toUpperCase()));
+
+		assertFalse(filter_sens.accept(f.getName()));
+		assertFalse(filter_insens.accept(f.getName()));
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("Suffix( Sensitive, Filter )", filter_sens.toString());
+		assertEquals("Suffix( Insensitive, filter )", filter_insens.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter_sens.toString() );
-		assertTrue( "Wrong class", cf instanceof SuffixClassFilter);
+
+		ClassFilter cf = p.parse(filter_sens.toString());
+		assertTrue("Wrong class", cf instanceof SuffixClassFilter);
 		String[] args = cf.args();
-		assertEquals( Case.SENSITIVE.toString(), args[0] );
-		assertEquals( "Filter", args[1] );
-		
-		cf = p.parse( filter_insens.toString() );
-		assertTrue( "Wrong class", cf instanceof SuffixClassFilter);
+		assertEquals(Case.SENSITIVE.toString(), args[0]);
+		assertEquals("Filter", args[1]);
+
+		cf = p.parse(filter_insens.toString());
+		assertTrue("Wrong class", cf instanceof SuffixClassFilter);
 		args = cf.args();
-		assertEquals( Case.INSENSITIVE.toString(), args[0] );
-		assertEquals( "filter", args[1] );
-		
+		assertEquals(Case.INSENSITIVE.toString(), args[0]);
+		assertEquals("filter", args[1]);
+
 	}
 }

@@ -100,23 +100,25 @@ public class ContractSuite extends ParentRunner<Runner> {
 		final ContractImpl contractImpl = contractTest
 				.getAnnotation(ContractImpl.class);
 		// find all the contract annotated tests on the class path.
+		ClassFilter ignoreFilter = ClassFilter.FALSE;
+		if (contractImpl.ignore().length > 0) {
+			ignoreFilter = new NameClassFilter(contractImpl.ignore());
+		}
 		final ContractTestMap contractTestMap = ContractTestMap
-				.populateInstance( ClassFilter.TRUE, new NameClassFilter( contractImpl.ignore()));
+				.populateInstance(ClassFilter.TRUE, ignoreFilter);
 		final TestInfo testInfo = contractTestMap
 				.getInfoByTestClass(contractTest);
 		List<Runner> runners;
 		if ((testInfo != null) && testInfo.hasErrors()) {
 			runners = new ArrayList<Runner>();
 			runners.add(new TestInfoErrorRunner(contractTest, testInfo));
-		}
-		else {
+		} else {
 			final Object baseObj = contractTest.newInstance();
 
 			if (baseObj instanceof Dynamic) {
 				runners = addDynamicClasses(builder, contractTestMap,
 						(Dynamic) baseObj);
-			}
-			else {
+			} else {
 				runners = addAnnotatedClasses(contractTest, builder,
 						contractTestMap, baseObj);
 			}
@@ -181,8 +183,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 					.addError(new InitializationError(
 							"Dynamic suite did not return a list of classes to execute"));
 			runners.add(new TestInfoErrorRunner(dynamicClass, dynamicSuiteInfo));
-		}
-		else {
+		} else {
 			for (final Class<?> test : tests) {
 				final RunWith runwith = test.getAnnotation(RunWith.class);
 				if ((runwith != null)
@@ -203,8 +204,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 									parentTestInfo));
 						}
 					}
-				}
-				else {
+				} else {
 					try {
 						runners.add(builder.runnerForClass(test));
 					} catch (final Throwable t) {
@@ -301,14 +301,13 @@ public class ContractSuite extends ParentRunner<Runner> {
 				testClasses, parentTestInfo)) {
 
 			if (testInfo.getErrors().size() > 0) {
-	
+
 				final TestInfoErrorRunner runner = new TestInfoErrorRunner(
 						testClass, testInfo);
 
 				runner.logErrors(LOG);
 				runners.add(runner);
-			}
-			else {
+			} else {
 				runners.add(new ContractTestRunner(baseObj, parentTestInfo,
 						testInfo));
 			}
@@ -332,7 +331,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 	@Override
 	protected void runChild(final Runner child, final RunNotifier notifier) {
-		LOG.info( "Running: {} ", child);
+		LOG.info("Running: {} ", child);
 		child.run(notifier);
 	}
 

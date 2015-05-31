@@ -19,6 +19,7 @@
 package org.xenei.junit.contract.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,163 +28,193 @@ import java.util.List;
  *
  */
 public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter {
-	
-	private final List<String> strings;
-	
-    /** Whether the comparison is case sensitive. */
-    protected final Case caseSensitivity;
-    
-    /**
-     * Constructs a new case-sensitive name class filter for a single name.
-     * 
-     * @param str  the string to allow, must not be null
-     * @throws IllegalArgumentException if the str is null
-     */
-    protected AbstractStringClassFilter() {
-    	this((Case)null);
-    }
-    
-    protected AbstractStringClassFilter(Case caseSensitivity) {
-    	this.strings = new ArrayList<String>();
-        this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE : caseSensitivity;
-    }
-    
-    /**
-     * Constructs a new case-sensitive name class filter for a single name.
-     * 
-     * @param str  the string to allow, must not be null
-     * @throws IllegalArgumentException if the str is null
-     */
-    protected AbstractStringClassFilter(String str) {
-        this();
-        addString( str );
-    }
 
-    /**
-     * Construct a new name class filter specifying case-sensitivity.
-     *
-     * @param str  the string to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the name is null
-     */
-    protected AbstractStringClassFilter(Case caseSensitivity, String str) {
-    	this(caseSensitivity);
-    	addString( str );
-    }
+	private final List<String> strings = new ArrayList<String>();
 
-    /**
-     * Constructs a new case-sensitive name class filter for an array of names.
-     * <p>
-     * The array is not cloned, so could be changed after constructing the
-     * instance. This would be inadvisable however.
-     * 
-     * @param names  the names to allow, must not be null
-     * @throws IllegalArgumentException if the names array is null
-     */
-    protected AbstractStringClassFilter(String... strings) {
-        this();
-        addStrings( strings);
-    }
+	/** Whether the comparison is case sensitive. */
+	protected final Case caseSensitivity;
 
-    /**
-     * Constructs a new name class filter for an array of names specifying case-sensitivity.
-     * <p>
-     * The array is not cloned, so could be changed after constructing the
-     * instance. This would be inadvisable however.
-     * 
-     * @param names  the names to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the names array is null
-     */
-    protected AbstractStringClassFilter(Case caseSensitivity, String... strings) {
-    	this( caseSensitivity );
-    	addStrings( strings );
-    }
+	/**
+	 * Constructs a new case-sensitive name class filter for a single name.
+	 * 
+	 * @param str
+	 *            the string to allow, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the str is null
+	 */
+	protected AbstractStringClassFilter(String str) {
+		this(null, str);
+	}
 
-    /**
-     * Constructs a new case-sensitive name class filter for a list of names.
-     * 
-     * @param names  the names to allow, must not be null
-     * @throws IllegalArgumentException if the name list is null
-     * @throws ClassCastException if the list does not contain Strings
-     */
-    protected AbstractStringClassFilter(List<String> strings) {
-        this();
-        addStrings( strings );
-    }
+	/**
+	 * Construct a new name class filter specifying case-sensitivity.
+	 *
+	 * @param str
+	 *            the string to allow, must not be null
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null = case-sensitive
+	 * @throws IllegalArgumentException
+	 *             if the name is null
+	 */
+	protected AbstractStringClassFilter(Case caseSensitivity, String str) {
+		this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE
+				: caseSensitivity;
+		addString(str);
+	}
 
-    /**
-     * Constructs a new name class filter for a list of names specifying case-sensitivity.
-     * 
-     * @param names  the names to allow, must not be null
-     * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
-     * @throws IllegalArgumentException if the name list is null
-     * @throws ClassCastException if the list does not contain Strings
-     */
-    protected AbstractStringClassFilter(Case caseSensitivity, List<String> strings) {
-    	this(caseSensitivity);
-    	addStrings( strings );
-    }
-    
-    @Override
-    public String[] args()
-    {
-    	String[] retval = new String[ strings.size()+1 ];
-    	retval[0] = caseSensitivity.getName();
-    	for (int i=0;i<strings.size(); i++)
-    	{
-    		retval[i+1] = strings.get(i);
-    	}
-    	return retval;
-    }
+	/**
+	 * Constructs a new case-sensitive name class filter for an array of names.
+	 * <p>
+	 * The array is not cloned, so could be changed after constructing the
+	 * instance. This would be inadvisable however.
+	 * 
+	 * @param strings
+	 *            the array of strings to allow, must not be null or zero length
+	 * @throws IllegalArgumentException
+	 *             if the names array is null
+	 */
+	protected AbstractStringClassFilter(String... strings) {
+		this(null, strings);
+	}
 
-    public final void addString(String str)
-    {
-    	 if (str == null) {
-             throw new IllegalArgumentException("The string must not be null");
-         }
-    	 strings.add(str);
-    }
-    
-    public final void addStrings(List<String> strings)
-    {
-    	 if (strings == null) {
-             throw new IllegalArgumentException("The strings must not be null");
-         }
-    	 for (String s : strings)
-    	 {
-    		 addString( s );
-    	 }
-    }
-	
-    public final void addStrings(String... strings)
-    {
-    	 if (strings == null) {
-             throw new IllegalArgumentException("The strings must not be null");
-         }
-    	 for (String s : strings)
-    	 {
-    		 addString( s );
-    	 }
-    }
-    
-    public final List<String> getStrings() {
+	/**
+	 * Constructs a new name class filter for an array of names specifying
+	 * case-sensitivity.
+	 * <p>
+	 * The array is not cloned, so could be changed after constructing the
+	 * instance. This would be inadvisable however.
+	 * 
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null means case-sensitive
+	 * @param strings
+	 *            the array of strings to allow, must not be null or zero length
+	 * @throws IllegalArgumentException
+	 *             if the names array is null
+	 */
+	protected AbstractStringClassFilter(Case caseSensitivity, String... strings) {
+		if (strings == null || strings.length < 1) {
+			throw new IllegalArgumentException(
+					"List of strings may not be null or null length");
+		}
+		this.caseSensitivity = caseSensitivity == null ? Case.SENSITIVE
+				: caseSensitivity;
+		addStrings(strings);
+	}
+
+	/**
+	 * Constructs a new case-sensitive name class filter for a collection of
+	 * names.
+	 * 
+	 * @param strings
+	 *            the array of strings to allow, must not be null or zero length
+	 * @throws IllegalArgumentException
+	 *             if the name list is null
+	 * @throws ClassCastException
+	 *             if the list does not contain Strings
+	 */
+	protected AbstractStringClassFilter(Collection<String> strings) {
+		this(null, strings.toArray(new String[strings.size()]));
+	}
+
+	/**
+	 * Constructs a new name class filter for a collection of names specifying
+	 * case-sensitivity.
+	 * 
+	 * @param names
+	 *            the names to allow, must not be null
+	 * @param caseSensitivity
+	 *            how to handle case sensitivity, null means case-sensitive
+	 * @throws IllegalArgumentException
+	 *             if the name list is null
+	 * @throws ClassCastException
+	 *             if the list does not contain Strings
+	 */
+	protected AbstractStringClassFilter(Case caseSensitivity,
+			Collection<String> strings) {
+		this(caseSensitivity, strings.toArray(new String[strings.size()]));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] args() {
+		String[] retval = new String[strings.size() + 1];
+		retval[0] = caseSensitivity.getName();
+		for (int i = 0; i < strings.size(); i++) {
+			retval[i + 1] = strings.get(i);
+		}
+		return retval;
+	}
+
+	/**
+	 * Add a string to the filter.
+	 * 
+	 * @param str
+	 *            the string to add.
+	 */
+	public final void addString(String str) {
+		if (str == null) {
+			throw new IllegalArgumentException("The string must not be null");
+		}
+		strings.add(str);
+	}
+
+	/**
+	 * Add a collection of strings to the filter. Strings will be added in the
+	 * order the collection iterator returns them.
+	 * 
+	 * @param strings
+	 *            the collection of strings to be added.
+	 */
+	public final void addStrings(Collection<String> strings) {
+		if (strings == null) {
+			throw new IllegalArgumentException("The strings must not be null");
+		}
+		for (String s : strings) {
+			addString(s);
+		}
+	}
+
+	/**
+	 * Add an array of strings to the filter.
+	 * 
+	 * @param strings
+	 *            The strings to add.
+	 */
+	public final void addStrings(String... strings) {
+		if (strings == null) {
+			throw new IllegalArgumentException("The strings must not be null");
+		}
+		for (String s : strings) {
+			addString(s);
+		}
+	}
+
+	/**
+	 * Get the list of strings from the filter.
+	 * 
+	 * @return An unmodifiableList of strings.
+	 */
+	public final List<String> getStrings() {
 		return Collections.unmodifiableList(this.strings);
 	}
-    
-	@Override
-	public boolean accept(Class<?> clazz)
-	{
-		return accept( clazz.getName());
-	}   
 
-	 /**
-     * Provide a String representation of this file filter.
-     *
-     * @return a String representation
-     */
-    @Override
-    public String toString() {
-        return ClassFilter.Util.toString(this);
-    }
+	/**
+	 * Converts class to name and calls accept( className )
+	 * 
+	 * @return true if the class name passes the filter.
+	 */
+	@Override
+	public boolean accept(Class<?> clazz) {
+		return accept(clazz.getName());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ClassFilter.Util.toString(this);
+	}
 }

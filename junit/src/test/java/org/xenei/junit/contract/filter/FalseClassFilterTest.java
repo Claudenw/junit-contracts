@@ -25,31 +25,27 @@ import org.xenei.junit.contract.filter.parser.Parser;
 public class FalseClassFilterTest {
 	private ClassFilter filter = ClassFilter.FALSE;
 	private Class<?> cls = String.class;
-	
+
 	@Test
-	public void testAcceptClass()
-	{
-		assertFalse( filter.accept( cls ));
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		assertFalse( filter.accept( cls ));
-	}
-	
-	@Test
-	public void testToString()
-	{
-		assertEquals( "False()",filter.toString() );
+	public void testAcceptClass() {
+		assertFalse(filter.accept(cls));
 	}
 
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAccceptString() {
+		assertFalse(filter.accept(cls));
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("False()", filter.toString());
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter.toString() );
-		assertEquals( ClassFilter.FALSE, cf);
+
+		ClassFilter cf = p.parse(filter.toString());
+		assertEquals(ClassFilter.FALSE, cf);
 	}
 }

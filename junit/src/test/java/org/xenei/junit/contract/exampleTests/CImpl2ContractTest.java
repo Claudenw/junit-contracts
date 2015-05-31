@@ -52,9 +52,7 @@ import org.xenei.junit.contract.IProducer;
 // run as a contract test
 @RunWith(ContractSuite.class)
 // testing the CImpl2 class.
-@ContractImpl(value = CImpl2.class, ignore = {
-	BadNoInject.class
-})
+@ContractImpl(value = CImpl2.class, ignore = { BadNoInject.class })
 public class CImpl2ContractTest {
 	// the producer to use for all the tests
 	private final IProducer<CImpl2> producer = new IProducer<CImpl2>() {
@@ -112,8 +110,7 @@ public class CImpl2ContractTest {
 				"CImpl2ContractTest.producer.cleanUp()",
 				"CImpl2ContractTest.producer.newInstance()",
 				"cname version of bname",
-		"CImpl2ContractTest.producer.cleanUp()"
-		};
+				"CImpl2ContractTest.producer.cleanUp()" };
 
 		final List<String> l = Listener.get();
 		Assert.assertEquals(Arrays.asList(expected), l);

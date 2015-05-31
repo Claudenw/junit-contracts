@@ -43,17 +43,12 @@ import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.NoContractTest;
-import org.xenei.junit.contract.filter.AbstractClassFilter;
 import org.xenei.junit.contract.filter.AndClassFilter;
-import org.xenei.junit.contract.filter.AnnotationClassFilter;
 import org.xenei.junit.contract.filter.ClassFilter;
 import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
 import org.xenei.junit.contract.filter.NotClassFilter;
-import org.xenei.junit.contract.filter.TrueClassFilter;
-import org.xenei.junit.contract.filter.WildcardClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.TestInfo;
-import org.xenei.junit.contract.filter.InterfaceClassFilter;
 import org.xenei.junit.contract.filter.OrClassFilter;
 import org.xenei.junit.contract.filter.parser.Parser;
 
@@ -91,11 +86,12 @@ public class InterfaceReport {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
-	
-	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter( ClassFilter.INTERFACE,
-				new NotClassFilter( ClassFilter.ANNOTATION ),
-				new NotClassFilter( new HasAnnotationClassFilter( NoContractTest.class )));
-	
+
+	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter(
+			ClassFilter.INTERFACE, new NotClassFilter(ClassFilter.ANNOTATION),
+			new NotClassFilter(new HasAnnotationClassFilter(
+					NoContractTest.class)));
+
 	private static final Comparator<Class<?>> CLASS_NAME_COMPARATOR = new Comparator<Class<?>>() {
 
 		@Override
@@ -103,7 +99,6 @@ public class InterfaceReport {
 			return o1.getName().compareTo(o2.getName());
 		}
 	};
-
 
 	public Collection<InterfaceInfo> getInterfaceInfoCollection() {
 		return getInterfaceInfoMap().values();
@@ -117,7 +112,7 @@ public class InterfaceReport {
 	 * @return
 	 */
 	private Map<Class<?>, InterfaceInfo> getInterfaceInfoMap() {
-		
+
 		if (interfaceInfoMap == null) {
 			interfaceInfoMap = new HashMap<Class<?>, InterfaceInfo>();
 			for (final Class<?> c : packageClasses) {
@@ -125,8 +120,7 @@ public class InterfaceReport {
 					if (!interfaceInfoMap.containsKey(c)) {
 						interfaceInfoMap.put(c, new InterfaceInfo(c));
 					}
-				}
-				else {
+				} else {
 					final Contract contract = c.getAnnotation(Contract.class);
 					if (contract != null) {
 						InterfaceInfo ii = interfaceInfoMap.get(contract
@@ -145,9 +139,13 @@ public class InterfaceReport {
 
 	/**
 	 * Constructor.
-	 * @param packages The list of packages to process.  
-	 * @param skipClasses the list of classes to skip.
-	 * @param classLoader the class loader to use.
+	 * 
+	 * @param packages
+	 *            The list of packages to process.
+	 * @param skipClasses
+	 *            the list of classes to skip.
+	 * @param classLoader
+	 *            the class loader to use.
 	 * @throws MalformedURLException
 	 */
 	public InterfaceReport(final String[] packages, ClassFilter filter,
@@ -167,10 +165,11 @@ public class InterfaceReport {
 		} else {
 			this.filter = ClassFilter.TRUE;
 		}
-		
+
 		packageClasses = new HashSet<Class<?>>();
 		for (final String p : packages) {
-			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p, this.filter));
+			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p,
+					this.filter));
 		}
 
 		if (packageClasses.size() == 0) {
@@ -226,14 +225,15 @@ public class InterfaceReport {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
 				CLASS_NAME_COMPARATOR);
 		// only interested in concrete implementations
-		ClassFilter filter = new NotClassFilter( new OrClassFilter( ClassFilter.ABSTRACT, ClassFilter.INTERFACE ) );
-		
-		for (final Class<?> clazz : filter.filter(packageClasses )) {		
+		ClassFilter filter = new NotClassFilter(new OrClassFilter(
+				ClassFilter.ABSTRACT, ClassFilter.INTERFACE));
+
+		for (final Class<?> clazz : filter.filter(packageClasses)) {
 			// we are only interested if there is no contract test for the
 			// class and there are parent tests
 			LOG.debug("checking {} for contract tests", clazz);
 			final Set<Class<?>> interfaces = ClassPathUtils
-					.getAllInterfaces(clazz );
+					.getAllInterfaces(clazz);
 			final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();
 
 			interfaces.retainAll(interfaceInfo.keySet());
@@ -259,19 +259,22 @@ public class InterfaceReport {
 	 *            the command line arguments.
 	 * @throws ParseException
 	 * @throws MalformedURLException
-	 * @throws ClassNotFoundException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws InstantiationException 
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws InstantiationException
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
 	public static void main(final String[] args) throws ParseException,
-	MalformedURLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+			MalformedURLException, IllegalArgumentException,
+			IllegalAccessException, NoSuchFieldException, SecurityException,
+			InstantiationException, InvocationTargetException,
+			NoSuchMethodException, ClassNotFoundException {
 		final CommandLine commands = new BasicParser()
-		.parse(getOptions(), args);
+				.parse(getOptions(), args);
 
 		if (commands.hasOption("h")) {
 			final HelpFormatter formatter = new HelpFormatter();
@@ -299,8 +302,8 @@ public class InterfaceReport {
 		}
 
 		final InterfaceReport ifReport = new InterfaceReport(
-				commands.getOptionValues("p"), new Parser().parse( commands.getOptionValue("s")),
-				classLoader);
+				commands.getOptionValues("p"), new Parser().parse(commands
+						.getOptionValue("s")), classLoader);
 
 		if (commands.hasOption("u")) {
 			System.out.println("Untested Interfaces");
@@ -346,10 +349,7 @@ public class InterfaceReport {
 				"skipInterfaces",
 				true,
 				"A list of interfaces that should not have tests.  See also @NoContractTest annotation");
-		retval.addOption(
-				"c",
-				"skipClasses",
-				true,
+		retval.addOption("c", "skipClasses", true,
 				"A list of classes that should not have tests.");
 
 		return retval;

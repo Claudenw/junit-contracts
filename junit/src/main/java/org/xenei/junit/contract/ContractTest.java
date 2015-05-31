@@ -28,9 +28,8 @@ import java.lang.annotation.Target;
  * <p>
  * For example <code><pre>
  * 
- * @ContractTest
- * public void testX() {...} </pre></code> Declares
- *            <code>testX</code> as a contract test method in the suite
+ * @ContractTest public void testX() {...} </pre></code> Declares
+ *               <code>testX</code> as a contract test method in the suite
  * 
  */
 @Target(ElementType.METHOD)

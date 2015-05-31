@@ -27,38 +27,43 @@ import java.util.Collection;
 public abstract class AbstractBaseClassFilter implements ClassFilter {
 
 	protected static final String[] NO_ARGS = new String[0];
-	
+
 	/**
-     * Provide a String representation of this file filter.
-     *
-     * @return a String representation
-     */
+	 * {@inheritDoc}
+	 */
 	@Override
-    public String toString() {
-        return ClassFilter.Util.toString( this );
-    }
-
-    @Override
-    public String funcName() {
-    	String func = getClass().getSimpleName();
-    	if (func.endsWith("ClassFilter"))
-    	{
-    		return func.substring(0, func.length()-"ClassFilter".length());
-    	}
-    	if (func.endsWith("Filter"))
-    	{
-    		return func.substring(0, func.length()-"Filter".length());
-    	}
-    	return func;
-    }
-
-	@Override
-	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
-		return ClassFilter.Util.filterClasses( collection,  this );
+	public String toString() {
+		return ClassFilter.Util.toString(this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String funcName() {
+		String func = getClass().getSimpleName();
+		if (func.endsWith("ClassFilter")) {
+			return func.substring(0, func.length() - "ClassFilter".length());
+		}
+		if (func.endsWith("Filter")) {
+			return func.substring(0, func.length() - "Filter".length());
+		}
+		return func;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
+		return ClassFilter.Util.filterClasses(collection, this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<String> filterNames(Collection<String> collection) {
-		return ClassFilter.Util.filterClassNames( collection,  this );
+		return ClassFilter.Util.filterClassNames(collection, this);
 	}
 }

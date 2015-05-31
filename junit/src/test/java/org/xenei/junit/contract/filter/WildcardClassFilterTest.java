@@ -25,84 +25,85 @@ import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
 public class WildcardClassFilterTest {
-	
+
 	private final ClassFilter filter_sens;
 	private final ClassFilter filter_insens;
-	
+
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
-	
-	public WildcardClassFilterTest() {
-		filter_sens = new WildcardClassFilter(Case.SENSITIVE, "*xene?.*ClassFilter");
-		filter_insens = new WildcardClassFilter(Case.INSENSITIVE, "*Xene?.*ClassFilter");
-	}
-	
-	@Test
-	public void testAcceptClass()
-	{
-		assertTrue( filter_sens.accept( t ) );
-		assertTrue( filter_insens.accept( t ));
-		
-		assertFalse( filter_sens.accept( f ) );
-		assertFalse( filter_insens.accept( f ));
-	}
-	
-	@Test
-	public void testAccceptString()
-	{
-		
-		assertTrue( filter_sens.accept( t.getName() ) );
-		assertTrue( filter_insens.accept( t.getName() ));
 
-		assertFalse( filter_sens.accept( t.getName().toUpperCase() ) );
-		assertTrue( filter_insens.accept( t.getName().toUpperCase() ));
-		
-		assertFalse( filter_sens.accept( f.getName() ) );
-		assertFalse( filter_insens.accept( f.getName() ));
+	public WildcardClassFilterTest() {
+		filter_sens = new WildcardClassFilter(Case.SENSITIVE,
+				"*xene?.*ClassFilter");
+		filter_insens = new WildcardClassFilter(Case.INSENSITIVE,
+				"*Xene?.*ClassFilter");
 	}
-	
+
 	@Test
-	public void testToString()
-	{
-		assertEquals( "Wildcard( Sensitive, *xene?.*ClassFilter )",filter_sens.toString() );
-		assertEquals( "Wildcard( Insensitive, *Xene?.*ClassFilter )",filter_insens.toString() );
+	public void testAcceptClass() {
+		assertTrue(filter_sens.accept(t));
+		assertTrue(filter_insens.accept(t));
+
+		assertFalse(filter_sens.accept(f));
+		assertFalse(filter_insens.accept(f));
 	}
-	
+
 	@Test
-	public void testDotPosition()
-	{
-		assertEquals( "^\\Q.org.xenei.\\E$", WildcardClassFilter.makeRegex( ".org.xenei."));
+	public void testAccceptString() {
+
+		assertTrue(filter_sens.accept(t.getName()));
+		assertTrue(filter_insens.accept(t.getName()));
+
+		assertFalse(filter_sens.accept(t.getName().toUpperCase()));
+		assertTrue(filter_insens.accept(t.getName().toUpperCase()));
+
+		assertFalse(filter_sens.accept(f.getName()));
+		assertFalse(filter_insens.accept(f.getName()));
 	}
-	
+
 	@Test
-	public void testAsteriskPosition()
-	{
-		assertEquals( "^.*\\Qorg\\E.*\\Qxenei\\E.*$", WildcardClassFilter.makeRegex( "*org*xenei*"));
-		assertEquals( "^.*\\Q.bad.\\E.*$", WildcardClassFilter.makeRegex("*.bad.*"));
+	public void testToString() {
+		assertEquals("Wildcard( Sensitive, *xene?.*ClassFilter )",
+				filter_sens.toString());
+		assertEquals("Wildcard( Insensitive, *Xene?.*ClassFilter )",
+				filter_insens.toString());
 	}
-	
+
 	@Test
-	public void testQuestionPosition()
-	{
-		assertEquals( "^.\\Qorg\\E.\\Qxenei\\E.$", WildcardClassFilter.makeRegex( "?org?xenei?"));
+	public void testDotPosition() {
+		assertEquals("^\\Q.org.xenei.\\E$",
+				WildcardClassFilter.makeRegex(".org.xenei."));
 	}
-	
+
 	@Test
-	public void testParse() throws Exception
-	{
+	public void testAsteriskPosition() {
+		assertEquals("^.*\\Qorg\\E.*\\Qxenei\\E.*$",
+				WildcardClassFilter.makeRegex("*org*xenei*"));
+		assertEquals("^.*\\Q.bad.\\E.*$",
+				WildcardClassFilter.makeRegex("*.bad.*"));
+	}
+
+	@Test
+	public void testQuestionPosition() {
+		assertEquals("^.\\Qorg\\E.\\Qxenei\\E.$",
+				WildcardClassFilter.makeRegex("?org?xenei?"));
+	}
+
+	@Test
+	public void testParse() throws Exception {
 		Parser p = new Parser();
-		
-		ClassFilter cf = p.parse( filter_sens.toString() );
-		assertTrue( "Wrong class", cf instanceof WildcardClassFilter);
+
+		ClassFilter cf = p.parse(filter_sens.toString());
+		assertTrue("Wrong class", cf instanceof WildcardClassFilter);
 		String[] args = cf.args();
-		assertEquals( Case.SENSITIVE.toString(), args[0] );
-		assertEquals( "*xene?.*ClassFilter", args[1] );
-		
-		cf = p.parse( filter_insens.toString() );
-		assertTrue( "Wrong class", cf instanceof WildcardClassFilter);
+		assertEquals(Case.SENSITIVE.toString(), args[0]);
+		assertEquals("*xene?.*ClassFilter", args[1]);
+
+		cf = p.parse(filter_insens.toString());
+		assertTrue("Wrong class", cf instanceof WildcardClassFilter);
 		args = cf.args();
-		assertEquals( Case.INSENSITIVE.toString(), args[0] );
-		assertEquals( "*Xene?.*ClassFilter", args[1] );
-		
+		assertEquals(Case.INSENSITIVE.toString(), args[0]);
+		assertEquals("*Xene?.*ClassFilter", args[1]);
+
 	}
 }

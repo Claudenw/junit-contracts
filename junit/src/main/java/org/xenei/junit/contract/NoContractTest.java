@@ -28,11 +28,13 @@ import java.lang.annotation.Target;
  * <p>
  * For example <code><pre>
  * 
- * @NoContractTest public interface Foo {...} </pre></code> 
+ * @NoContractTest public interface Foo {...} </pre></code>
  * 
- * Declares that <code>Foo</code> does not require a contract test.
+ *                 Declares that <code>Foo</code> does not require a contract
+ *                 test.
  *
- * This is primarily used to filter out interfaces in the Interface reports.
+ *                 This is primarily used to filter out interfaces in the
+ *                 Interface reports.
  * 
  */
 @Target(ElementType.TYPE)
