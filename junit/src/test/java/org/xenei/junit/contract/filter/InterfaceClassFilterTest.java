@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class InterfaceClassFilterTest {
 	private ClassFilter filter = ClassFilter.INTERFACE;
@@ -43,7 +44,15 @@ public class InterfaceClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "InterfaceClassFilter",filter.toString() );
+		assertEquals( "Interface()",filter.toString() );
 	}
 
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter.toString() );
+		assertEquals(  ClassFilter.INTERFACE, cf);
+	}
 }

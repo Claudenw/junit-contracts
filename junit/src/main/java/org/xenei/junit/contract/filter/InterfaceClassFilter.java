@@ -64,4 +64,9 @@ public class InterfaceClassFilter extends AbstractBaseClassFilter implements Ser
 		}
     }
 
+	@Override
+	public String[] args() {
+		return NO_ARGS;
+	}
+
 }

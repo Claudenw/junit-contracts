@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -86,7 +86,7 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements Seri
      * @throws IllegalArgumentException if the pattern is null
      */
     public WildcardClassFilter(String wildcard) {
-        this(wildcard, null);
+        this(null, wildcard);
     }
 
     /**
@@ -124,7 +124,7 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements Seri
      * @param caseSensitivity  how to handle case sensitivity, null means case-sensitive
      * @throws IllegalArgumentException if the pattern array is null
      */
-    public WildcardClassFilter(Case caseSensitivity, String[] wildcards) {
+    public WildcardClassFilter(Case caseSensitivity, String... wildcards) {
     	this(caseSensitivity);
     	addWildCards( wildcards );
     }
@@ -189,38 +189,33 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements Seri
      */
    @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        String[] parts = getClass().getName().split( "\\." );
-
-        String name = parts[parts.length-1];
-        buffer.append(String.format( "%s[%s](",name, caseSensitivity.toString().charAt(0)));
-        
-        for (int i = 0; i < wildcards.size(); i++) {
-            if (i > 0) {
-                buffer.append(",");
-            }
-            buffer.append(wildcards.get(i));
-        }
-        
-        buffer.append(")");
-        return buffer.toString();
+        return ClassFilter.Util.toString(this);
     }
+   
+   private static StringBuilder escapeString(StringBuilder sb, String s)
+   {
+	   if ( s!=null && s.length()!=0)
+	   {
+		   sb.append( Pattern.quote( s ));
+	   }
+	   return sb;
+   }
     
     private static void parseWildAsterisk( StringBuilder sb, String s)
     {
     	String[] blocks = s.split( "\\*" );
     	Iterator<String> iter = Arrays.asList(blocks).iterator();
-    	sb.append( Matcher.quoteReplacement(iter.next()) );
+    	escapeString( sb, iter.next() );
     	while (iter.hasNext() )
     	{
-    		sb.append( ".*" ).append(Matcher.quoteReplacement(iter.next()));
+    		sb = escapeString( sb.append( ".*" ),iter.next());
     	}
     	if (s.endsWith( "*")) {
     		sb.append( ".*" );
     	}
     }
     
-    private static void parseWildQuestion(StringBuilder sb, String s)
+    private static StringBuilder parseWildQuestion(StringBuilder sb, String s)
     {
     	String[] blocks = s.split( "\\?" );
     	Iterator<String> iter = Arrays.asList(blocks).iterator();
@@ -233,29 +228,14 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements Seri
     	if (s.endsWith( "?")) {
     		sb.append( "." );
     	}
-    }
-    
-    private static StringBuilder parseDot(StringBuilder sb, String s)
-    {
-    	String[] blocks = s.split( "\\." );
-    	Iterator<String> iter = Arrays.asList(blocks).iterator();
-    	parseWildQuestion(sb, iter.next());
-    	while (iter.hasNext() )
-    	{
-    		sb.append( "\\." );
-    		parseWildQuestion( sb, iter.next());
-    	}
-    	if (s.endsWith( ".")) {
-    		sb.append( "\\." );
-    	}
     	return sb;
     }
-    
+      
     public static String makeRegex( String wildcard ) {
     	if (wildcard == null) {
             throw new IllegalArgumentException("The wildcard must not be null");
         }
-    	return parseDot( new StringBuilder("^"), wildcard ).append("$").toString();
+    	return parseWildQuestion( new StringBuilder("^"), wildcard ).append("$").toString();
     }
 
 	@Override
@@ -266,6 +246,17 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements Seri
 	@Override
 	public boolean accept(String className) {
 		return wrapped.accept( className );
+	}
+
+	@Override
+	public String[] args() {
+		String[] retval = new String[wildcards.size()+1];
+		retval[0] = caseSensitivity.toString();
+		for (int i=0;i<wildcards.size();i++)
+		{
+			retval[i+1] = wildcards.get(i);
+		}
+		return retval;
 	}
     
 }

@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class AbstractClassFilterTest {
 	private ClassFilter filter = ClassFilter.ABSTRACT;
@@ -43,7 +44,6 @@ public class AbstractClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "AbstractClassFilter",filter.toString() );
+		assertEquals( "Abstract()",filter.toString() );
 	}
-
 }

@@ -18,6 +18,7 @@ package org.xenei.junit.contract.filter;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * Accepts classes that have the specified annotation.
@@ -44,6 +45,12 @@ public class HasAnnotationClassFilter implements ClassFilter, Serializable {
     	this.annotation = annotation;
     }
 
+    @Override
+    public String funcName()
+    {
+    	return "HasAnnotation";
+    }
+    
     /**
      * Checks to see if the class has the annotation..
      *
@@ -78,7 +85,24 @@ public class HasAnnotationClassFilter implements ClassFilter, Serializable {
      */
     @Override
     public String toString() {
-        return String.format( "%s(%s)",getClass().getSimpleName(), annotation.getName());
-    }  
+        return ClassFilter.Util.toString(this);
+    }
+
+	@Override
+	public String[] args() {
+		return new String[] {annotation.getName()};
+	}  
+	
+
+	@Override
+	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
+		return ClassFilter.Util.filterClasses( collection,  this );
+	}
+
+	@Override
+	public Collection<String> filterNames(Collection<String> collection) {
+		return ClassFilter.Util.filterClassNames( collection,  this );
+	}
+    
 
 }

@@ -29,7 +29,7 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements Seri
 	 * 
 	 */
 	private static final long serialVersionUID = 525854048564445111L;
-
+    
     /**
      * Constructs a new Suffix class filter for a single extension.
      * 

@@ -64,4 +64,9 @@ public class AnnotationClassFilter  extends AbstractBaseClassFilter implements S
 		}
     }
 
+	@Override
+	public String[] args() {
+		return NO_ARGS;
+	}
+
 }

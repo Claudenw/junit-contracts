@@ -30,7 +30,10 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.parser.Parser;
 import org.xenei.log4j.recording.RecordingAppender;
+
 
 public class InterfaceReportTest {
 
@@ -100,8 +103,9 @@ public class InterfaceReportTest {
 	@Test
 	public void testSkipClass() throws MalformedURLException
 	{
-		String[] skipClasses = { "org.xenei.junit.contract.exampleTests.MissingClass", "org.xenei.junit.contract.exampleTests.CImpl3", "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" };
-		interfaceReport = new InterfaceReport(packages, skipClasses, classLoader);
+		ClassFilter filter = new Parser().parse( "Not( Or( Name( org.xenei.junit.contract.exampleTests.MissingClass ),Name( org.xenei.junit.contract.exampleTests.CImpl3 ), Name( org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA ) ) )");
+
+		interfaceReport = new InterfaceReport(packages, filter, classLoader);
 		
 		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
 		Set<String> names = getClassNames( classes );
@@ -123,13 +127,13 @@ public class InterfaceReportTest {
 	@Test
 	public void testBadClasses() throws MalformedURLException
 	{
-		String[] myPackages = { "org.xenei.junit.contract.exampleTests.", "org.xenei.junit.bad" };
-		String[] skipClasses = { "org.xenei.junit.contract.exampleTests.CImpl3", "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" };
+		String[] myPackages = { "org.xenei.junit.contract.exampleTests", "org.xenei.junit.bad" };
 		String[] expectedErrors = {
 				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
 				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract"		
 		};
-		interfaceReport = new InterfaceReport(myPackages, skipClasses, classLoader);
+		ClassFilter filter = new Parser().parse( "Not( Or( Name( org.xenei.junit.contract.exampleTests.CImpl3 ), Name( org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA ) ) )");
+		interfaceReport = new InterfaceReport(myPackages, filter, classLoader);
 		
 		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
 		Set<String> names = getClassNames( classes );

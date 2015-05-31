@@ -36,6 +36,12 @@ public class AbstractClassFilter  extends AbstractBaseClassFilter implements Ser
      */
     private AbstractClassFilter() {
     }
+    
+    @Override
+    public String[] args()
+    {
+    	return NO_ARGS;
+    }
 
     /**
      * Checks to see if the class is abstract.
@@ -63,5 +69,4 @@ public class AbstractClassFilter  extends AbstractBaseClassFilter implements Ser
 			return false;
 		}
     }
-    
 }

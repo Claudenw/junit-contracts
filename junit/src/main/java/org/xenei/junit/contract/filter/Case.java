@@ -52,7 +52,7 @@ public final class Case implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Factory method to create an IOCase from a name.
+     * Factory method to create a Case from a name.
      * 
      * @param name  the name to find
      * @return the IOCase object

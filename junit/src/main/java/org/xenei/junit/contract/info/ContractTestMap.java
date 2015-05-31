@@ -34,7 +34,11 @@ import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.filter.AndClassFilter;
 import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.ConditionalClassFilter;
 import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
+import org.xenei.junit.contract.filter.NameClassFilter;
+import org.xenei.junit.contract.filter.NotClassFilter;
+import org.xenei.junit.contract.filter.OrClassFilter;
 import org.xenei.junit.contract.filter.PrefixClassFilter;
 
 /**
@@ -48,18 +52,24 @@ public class ContractTestMap {
 	// the map of interface under test to the TestInfo for it.
 	private final Map<Class<?>, Set<TestInfo>> interfaceToInfoMap = new HashMap<Class<?>, Set<TestInfo>>();
 
-	private final static Set<String> skipInterfaces;
+	// classes we are going to remove from all processing.
+	private final static ClassFilter SKIP_FILTER;
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractTestMap.class);
 
 	static {
-		skipInterfaces = new HashSet<String>();
 		final String prop = System.getProperty("contracts.skipClasses");
 		if (prop != null) {
+			SKIP_FILTER = new OrClassFilter();
 			for (final String iFace : prop.split(",")) {
-				skipInterfaces.add(iFace);
+				((ConditionalClassFilter)SKIP_FILTER).addClassFilter( new NameClassFilter( iFace ));
 			}
+		}
+		else
+		{
+			// skip none.
+			SKIP_FILTER = ClassFilter.FALSE;
 		}
 	}
 
@@ -74,28 +84,35 @@ public class ContractTestMap {
 	 * @return contractTestClasses TestInfo objects for classes annotated with @Contract
 	 */
 	public static ContractTestMap populateInstance() {
-		return populateInstance(new Class<?>[0]);
+		return populateInstance( ClassFilter.TRUE, ClassFilter.FALSE );
+	}
+	
+	// the filters wer are going to ignore.
+	private static ClassFilter createIgnoreFilter(final ClassFilter ignoreFilter)
+	{
+		return new AndClassFilter( 
+				new NotClassFilter( SKIP_FILTER ),
+				new NotClassFilter( ignoreFilter ), 
+				new HasAnnotationClassFilter( Contract.class ),
+				new NotClassFilter( new HasAnnotationClassFilter( Ignore.class )));
 	}
 
-	public static ContractTestMap populateInstance(final Class<?>[] ignoreTests) {
-		final List<Class<?>> ignored = Arrays.asList(ignoreTests);
+//	public static ContractTestMap populateInstance(final ClassFilter packageFilter)
+//	{
+//		return populateInstance( packageFilter, ClassFilter.FALSE);
+//	}
+	
+	public static ContractTestMap populateInstance(final ClassFilter packageFilter, final ClassFilter ignoreFilter ) {
+		
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
-
-		for (final Class<?> clazz : ClassPathUtils.getClasses("")) {
-			final boolean skip = skipInterfaces.contains(clazz.getName())
-					|| ignored.contains(clazz);
-			if (!skip) {
-				// contract annotation is on the test class
-				// value of contract annotation is class under test
-				LOG.debug("seeking contracts for {}", clazz);
-				final Contract c = clazz.getAnnotation(Contract.class);
-				final Ignore ignore = clazz.getAnnotation(Ignore.class);
-				if ((c != null) && (ignore == null)) {
-					LOG.debug("adding {} {}", clazz, c);
-					retval.add(new TestInfo(clazz, c));
-				}
-			}
+		ClassFilter filter = new AndClassFilter( packageFilter, createIgnoreFilter(ignoreFilter));
+		for (final Class<?> clazz : ClassPathUtils.getClasses("", filter )) {
+			// contract annotation is on the test class
+			// value of contract annotation is class under test
+			final Contract c = clazz.getAnnotation(Contract.class);
+			LOG.debug("adding {} {}", clazz, c);
+			retval.add(new TestInfo(clazz, c));	
 		}
 		return retval;
 	}
@@ -111,9 +128,14 @@ public class ContractTestMap {
 	 * @return contractTestClasses TestInfo objects for classes annotated with @Contract
 	 */
 	public static ContractTestMap populateInstance(final ClassLoader classLoader) {
-		return populateInstance(classLoader, new String[] {
-				""
-		});
+		return populateInstance(classLoader, ClassFilter.FALSE, ClassFilter.TRUE);
+	}
+	
+public static ContractTestMap populateInstance(final ClassLoader classLoader,
+		final ClassFilter packageFilter, final ClassFilter ignoreFilter ) {
+		
+		ClassFilter filter = new AndClassFilter( packageFilter, createIgnoreFilter(ignoreFilter));
+		return populateInstance( classLoader, filter );
 	}
 
 	/**
@@ -142,7 +164,9 @@ public class ContractTestMap {
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
 
-		for (final Class<?> clazz : ClassPathUtils.getClasses(classLoader, "", filter)) {
+		ClassFilter fltr = new AndClassFilter( filter, new HasAnnotationClassFilter( Contract.class ));
+		
+		for (final Class<?> clazz : ClassPathUtils.getClasses(classLoader, "", fltr)) {
 			// contract annotation is on the test class
 			// value of contract annotation is class under test
 			final Contract c = clazz.getAnnotation(Contract.class);

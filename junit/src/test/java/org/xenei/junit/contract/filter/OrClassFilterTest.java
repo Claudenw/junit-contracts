@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class OrClassFilterTest {
 
@@ -62,7 +63,21 @@ public class OrClassFilterTest {
 	public void testToString()
 	{
 		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
-		assertEquals( "OrClassFilter(FalseClassFilter,TrueClassFilter)", filter.toString() );
+		assertEquals( "Or( False(), True() )", filter.toString() );
 	}
 
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter filter = new OrClassFilter( ClassFilter.FALSE, ClassFilter.TRUE);
+		
+		ClassFilter cf = p.parse( filter.toString() );
+		assertTrue( "wrong class type", cf instanceof OrClassFilter);
+		String[] args = cf.args();
+		assertEquals( ClassFilter.FALSE.toString(), args[0]);
+		assertEquals( ClassFilter.TRUE.toString(), args[1]);
+		
+	}
 }

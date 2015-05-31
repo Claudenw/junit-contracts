@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class NotClassFilterTest {
 	private Class<?> cls = String.class;
@@ -50,7 +51,18 @@ public class NotClassFilterTest {
 	public void testToString()
 	{
 		ClassFilter filter = new NotClassFilter( ClassFilter.FALSE);
-		assertEquals( "NotClassFilter(FalseClassFilter)", filter.toString() );
+		assertEquals( "Not( False() )", filter.toString() );
 	}
 
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( new NotClassFilter( ClassFilter.FALSE).toString() );
+		assertTrue( "Wrong class", cf instanceof NotClassFilter);
+		String[] args = cf.args();
+		assertEquals( ClassFilter.FALSE.toString(), args[0] );
+	
+	}
 }

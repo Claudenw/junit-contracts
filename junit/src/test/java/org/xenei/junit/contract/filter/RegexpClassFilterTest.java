@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class RegexpClassFilterTest {
 	
@@ -63,7 +64,26 @@ public class RegexpClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "RegexClassFilter(^.+xenei.+$)",filter_sens.toString() );
-		assertEquals( "RegexClassFilter(^.+Xenei.+$)",filter_insens.toString() );
+		assertEquals( "Regex( Sensitive, ^.+xenei.+$ )",filter_sens.toString() );
+		assertEquals( "Regex( Insensitive, ^.+Xenei.+$ )",filter_insens.toString() );
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter_sens.toString() );
+		assertTrue( "Wrong class", cf instanceof RegexClassFilter);
+		String[] args = cf.args();
+		assertEquals( Case.SENSITIVE.toString(), args[0] );
+		assertEquals( "^.+xenei.+$", args[1] );
+		
+		cf = p.parse( filter_insens.toString() );
+		assertTrue( "Wrong class", cf instanceof RegexClassFilter);
+		args = cf.args();
+		assertEquals( Case.INSENSITIVE.toString(), args[0] );
+		assertEquals( "^.+Xenei.+$", args[1] );
+		
 	}
 }

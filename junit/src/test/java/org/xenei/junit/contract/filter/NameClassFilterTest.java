@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class NameClassFilterTest {
 	
@@ -63,7 +64,26 @@ public class NameClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "NameClassFilter[S]("+t.getName()+")",filter_sens.toString() );
-		assertEquals( "NameClassFilter[I]("+t.getName()+")",filter_insens.toString() );
+		assertEquals( "Name( Sensitive, "+t.getName()+" )",filter_sens.toString() );
+		assertEquals( "Name( Insensitive, "+t.getName()+" )",filter_insens.toString() );
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter_sens.toString() );
+		assertTrue( "Wrong class", cf instanceof NameClassFilter);
+		String[] args = cf.args();
+		assertEquals( Case.SENSITIVE.toString(), args[0] );
+		assertEquals( t.getName(), args[1] );
+		
+		cf = p.parse( filter_insens.toString() );
+		assertTrue( "Wrong class", cf instanceof NameClassFilter);
+		args = cf.args();
+		assertEquals( Case.INSENSITIVE.toString(), args[0] );
+		assertEquals( t.getName(), args[1] );
+		
 	}
 }

@@ -47,16 +47,16 @@ public class AbstractStringClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "AbstractStringClassFilterTest$1[S]()", filter.toString() );
-		assertEquals( "AbstractStringClassFilterTest$2[S]()", filter_sens.toString() );
-		assertEquals( "AbstractStringClassFilterTest$3[I]()", filter_insens.toString() );
+		assertEquals( "( Sensitive )", filter.toString() );
+		assertEquals( "( Sensitive )", filter_sens.toString() );
+		assertEquals( "( Insensitive )", filter_insens.toString() );
 		
 		filter.addString( ClassFilter.class.getName());
 		filter_sens.addString( ClassFilter.class.getName());
 		filter_insens.addString( ClassFilter.class.getName());
-		assertEquals( "AbstractStringClassFilterTest$1[S]("+ClassFilter.class.getName()+")", filter.toString() );
-		assertEquals( "AbstractStringClassFilterTest$2[S]("+ClassFilter.class.getName()+")", filter_sens.toString() );
-		assertEquals( "AbstractStringClassFilterTest$3[I]("+ClassFilter.class.getName()+")", filter_insens.toString() );
+		assertEquals( "( Sensitive, "+ClassFilter.class.getName()+" )", filter.toString() );
+		assertEquals( "( Sensitive, "+ClassFilter.class.getName()+" )", filter_sens.toString() );
+		assertEquals( "( Insensitive, "+ClassFilter.class.getName()+" )", filter_insens.toString() );
 
 	}
 	

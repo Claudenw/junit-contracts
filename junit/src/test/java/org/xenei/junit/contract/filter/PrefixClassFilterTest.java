@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class PrefixClassFilterTest {
 	
@@ -63,7 +64,26 @@ public class PrefixClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "PrefixClassFilter[S](org.xenei)",filter_sens.toString() );
-		assertEquals( "PrefixClassFilter[I](org.Xenei)",filter_insens.toString() );
+		assertEquals( "Prefix( Sensitive, org.xenei )",filter_sens.toString() );
+		assertEquals( "Prefix( Insensitive, org.Xenei )",filter_insens.toString() );
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter_sens.toString() );
+		assertTrue( "Wrong class", cf instanceof PrefixClassFilter);
+		String[] args = cf.args();
+		assertEquals( Case.SENSITIVE.toString(), args[0] );
+		assertEquals( "org.xenei", args[1] );
+		
+		cf = p.parse( filter_insens.toString() );
+		assertTrue( "Wrong class", cf instanceof PrefixClassFilter);
+		args = cf.args();
+		assertEquals( Case.INSENSITIVE.toString(), args[0] );
+		assertEquals( "org.Xenei", args[1] );
+		
 	}
 }

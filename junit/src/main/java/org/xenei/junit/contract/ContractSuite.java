@@ -39,6 +39,8 @@ import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xenei.junit.contract.filter.ClassFilter;
+import org.xenei.junit.contract.filter.NameClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.DynamicSuiteInfo;
 import org.xenei.junit.contract.info.DynamicTestInfo;
@@ -76,7 +78,6 @@ import org.xenei.junit.contract.info.TestInfoErrorRunner;
  * requirements change. See Dynamic for more information.
  * </p>
  */
-//@Ignore("Not a real test")
 public class ContractSuite extends ParentRunner<Runner> {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ContractSuite.class);
@@ -100,7 +101,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 				.getAnnotation(ContractImpl.class);
 		// find all the contract annotated tests on the class path.
 		final ContractTestMap contractTestMap = ContractTestMap
-				.populateInstance(contractImpl.ignore());
+				.populateInstance( ClassFilter.TRUE, new NameClassFilter( contractImpl.ignore()));
 		final TestInfo testInfo = contractTestMap
 				.getInfoByTestClass(contractTest);
 		List<Runner> runners;

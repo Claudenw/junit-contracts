@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class WildcardClassFilterTest {
 	
@@ -63,25 +64,45 @@ public class WildcardClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "WildcardClassFilter[S](*xene?.*ClassFilter)",filter_sens.toString() );
-		assertEquals( "WildcardClassFilter[I](*Xene?.*ClassFilter)",filter_insens.toString() );
+		assertEquals( "Wildcard( Sensitive, *xene?.*ClassFilter )",filter_sens.toString() );
+		assertEquals( "Wildcard( Insensitive, *Xene?.*ClassFilter )",filter_insens.toString() );
 	}
 	
 	@Test
 	public void testDotPosition()
 	{
-		assertEquals( "^\\.org\\.xenei\\.$", WildcardClassFilter.makeRegex( ".org.xenei."));
+		assertEquals( "^\\Q.org.xenei.\\E$", WildcardClassFilter.makeRegex( ".org.xenei."));
 	}
 	
 	@Test
 	public void testAsteriskPosition()
 	{
-		assertEquals( "^.*org.*xenei.*$", WildcardClassFilter.makeRegex( "*org*xenei*"));
+		assertEquals( "^.*\\Qorg\\E.*\\Qxenei\\E.*$", WildcardClassFilter.makeRegex( "*org*xenei*"));
+		assertEquals( "^.*\\Q.bad.\\E.*$", WildcardClassFilter.makeRegex("*.bad.*"));
 	}
 	
 	@Test
 	public void testQuestionPosition()
 	{
-		assertEquals( "^.org.xenei.$", WildcardClassFilter.makeRegex( "?org?xenei?"));
+		assertEquals( "^.\\Qorg\\E.\\Qxenei\\E.$", WildcardClassFilter.makeRegex( "?org?xenei?"));
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter_sens.toString() );
+		assertTrue( "Wrong class", cf instanceof WildcardClassFilter);
+		String[] args = cf.args();
+		assertEquals( Case.SENSITIVE.toString(), args[0] );
+		assertEquals( "*xene?.*ClassFilter", args[1] );
+		
+		cf = p.parse( filter_insens.toString() );
+		assertTrue( "Wrong class", cf instanceof WildcardClassFilter);
+		args = cf.args();
+		assertEquals( Case.INSENSITIVE.toString(), args[0] );
+		assertEquals( "*Xene?.*ClassFilter", args[1] );
+		
 	}
 }

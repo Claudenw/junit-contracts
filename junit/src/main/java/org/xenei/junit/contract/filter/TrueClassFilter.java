@@ -63,4 +63,9 @@ public class TrueClassFilter extends AbstractBaseClassFilter implements Serializ
         return true;
     }
 
+	@Override
+	public String[] args() {
+		return NO_ARGS;
+	}
+
 }

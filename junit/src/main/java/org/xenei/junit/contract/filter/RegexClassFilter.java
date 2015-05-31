@@ -18,6 +18,7 @@
 package org.xenei.junit.contract.filter;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 
@@ -41,6 +42,12 @@ public class RegexClassFilter implements ClassFilter, Serializable {
      */
     public RegexClassFilter(String pattern) {
         this(Case.SENSITIVE, pattern);
+    }
+    
+    @Override
+    public String funcName()
+    {
+    	return "Regex";
     }
 
     /**
@@ -97,7 +104,7 @@ public class RegexClassFilter implements ClassFilter, Serializable {
      */
     @Override
     public boolean accept(String className) {
-        return pattern.matcher(className).matches();
+    	return pattern.matcher(className).matches();
     }
     
     /**
@@ -113,9 +120,24 @@ public class RegexClassFilter implements ClassFilter, Serializable {
      
      @Override
      public String toString() {
-         String[] parts = getClass().getName().split( "\\." );
-         return String.format( "%s(%s)", parts[parts.length-1], pattern);
-         
-         
+         return ClassFilter.Util.toString(this);   
      }
+
+	@Override
+	public String[] args() {
+		Case c = (pattern.flags() & Pattern.CASE_INSENSITIVE) != 0 ?
+				Case.INSENSITIVE : Case.SENSITIVE;
+		return new String[] { c.getName(),  pattern.pattern() };
+	}
+
+	@Override
+	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
+		return ClassFilter.Util.filterClasses( collection,  this );
+	}
+
+	@Override
+	public Collection<String> filterNames(Collection<String> collection) {
+		return ClassFilter.Util.filterClassNames( collection,  this );
+	}
+    
 }

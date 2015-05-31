@@ -18,6 +18,7 @@
 package org.xenei.junit.contract.tooling;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -54,7 +55,13 @@ import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.TestInfo;
 import org.xenei.junit.contract.filter.InterfaceClassFilter;
 import org.xenei.junit.contract.filter.OrClassFilter;
+import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * 
+ * Class to produce report data about the state of the contract tests.
+ *
+ */
 public class InterfaceReport {
 
 	/**
@@ -63,7 +70,10 @@ public class InterfaceReport {
 	 */
 	private final Collection<Class<?>> packageClasses;
 
-	private final ClassFilter skipClasses;
+	/**
+	 * A filter that describes the classes to skip
+	 */
+	private final ClassFilter filter;
 
 	/**
 	 * A map of all interfaces implemented in the packages that have contract
@@ -133,7 +143,14 @@ public class InterfaceReport {
 		return interfaceInfoMap;
 	}
 
-	public InterfaceReport(final String[] packages, final String[] skipClasses,
+	/**
+	 * Constructor.
+	 * @param packages The list of packages to process.  
+	 * @param skipClasses the list of classes to skip.
+	 * @param classLoader the class loader to use.
+	 * @throws MalformedURLException
+	 */
+	public InterfaceReport(final String[] packages, ClassFilter filter,
 			final ClassLoader classLoader) throws MalformedURLException {
 
 		if (packages.length == 0) {
@@ -145,15 +162,15 @@ public class InterfaceReport {
 		// this includes classes not in the specified packages
 		contractTestMap = ContractTestMap.populateInstance(classLoader,
 				packages);
-		if (skipClasses != null) {
-			this.skipClasses = new NotClassFilter( new WildcardClassFilter(skipClasses));
+		if (filter != null) {
+			this.filter = filter;
 		} else {
-			this.skipClasses = TrueClassFilter.TRUE;
+			this.filter = ClassFilter.TRUE;
 		}
 		
 		packageClasses = new HashSet<Class<?>>();
 		for (final String p : packages) {
-			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p, this.skipClasses));
+			packageClasses.addAll(ClassPathUtils.getClasses(classLoader, p, this.filter));
 		}
 
 		if (packageClasses.size() == 0) {
@@ -209,21 +226,17 @@ public class InterfaceReport {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
 				CLASS_NAME_COMPARATOR);
 		// only interested in concrete implementations
-
-		ClassFilter filter = new OrClassFilter( ClassFilter.ABSTRACT, ClassFilter.INTERFACE );
-		filter = new NotClassFilter( filter );
+		ClassFilter filter = new NotClassFilter( new OrClassFilter( ClassFilter.ABSTRACT, ClassFilter.INTERFACE ) );
 		
-		for (final Class<?> clazz : ClassPathUtils.filterClasses(packageClasses, filter )) {
-						
+		for (final Class<?> clazz : filter.filter(packageClasses )) {		
 			// we are only interested if there is no contract test for the
 			// class and there are parent tests
 			LOG.debug("checking {} for contract tests", clazz);
 			final Set<Class<?>> interfaces = ClassPathUtils
-					.getAllInterfaces(clazz, skipClasses );
+					.getAllInterfaces(clazz );
 			final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();
 
 			interfaces.retainAll(interfaceInfo.keySet());
-
 			// interfaces contains only contract test interfaces that clazz
 			// implements.
 			if (!interfaces.isEmpty()) {
@@ -233,7 +246,6 @@ public class InterfaceReport {
 					retval.add(clazz);
 				}
 			}
-			
 		}
 		return retval;
 	}
@@ -247,9 +259,17 @@ public class InterfaceReport {
 	 *            the command line arguments.
 	 * @throws ParseException
 	 * @throws MalformedURLException
+	 * @throws ClassNotFoundException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 */
 	public static void main(final String[] args) throws ParseException,
-	MalformedURLException {
+	MalformedURLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InstantiationException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
 		final CommandLine commands = new BasicParser()
 		.parse(getOptions(), args);
 
@@ -279,7 +299,7 @@ public class InterfaceReport {
 		}
 
 		final InterfaceReport ifReport = new InterfaceReport(
-				commands.getOptionValues("p"), commands.getOptionValues("s"),
+				commands.getOptionValues("p"), new Parser().parse( commands.getOptionValue("s")),
 				classLoader);
 
 		if (commands.hasOption("u")) {

@@ -42,6 +42,10 @@ public class AndClassFilter
     	super();
     }
 
+    @Override
+    public String funcName() {
+    	return "And";
+    }
     /**
      * Constructs a new instance of <code>AndClassFilter</code>
      * with the specified list of filters.

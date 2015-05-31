@@ -18,21 +18,47 @@
 
 package org.xenei.junit.contract.filter;
 
+import java.util.Collection;
+
 /**
  * Base class with simple toString implementation.
  *
  */
 public abstract class AbstractBaseClassFilter implements ClassFilter {
 
+	protected static final String[] NO_ARGS = new String[0];
+	
 	/**
-     * Provide a String representaion of this file filter.
+     * Provide a String representation of this file filter.
      *
-     * @return a String representaion
+     * @return a String representation
      */
-    @Override
+	@Override
     public String toString() {
-        return getClass().getSimpleName();
-    }  
+        return ClassFilter.Util.toString( this );
+    }
 
+    @Override
+    public String funcName() {
+    	String func = getClass().getSimpleName();
+    	if (func.endsWith("ClassFilter"))
+    	{
+    		return func.substring(0, func.length()-"ClassFilter".length());
+    	}
+    	if (func.endsWith("Filter"))
+    	{
+    		return func.substring(0, func.length()-"Filter".length());
+    	}
+    	return func;
+    }
 
+	@Override
+	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
+		return ClassFilter.Util.filterClasses( collection,  this );
+	}
+
+	@Override
+	public Collection<String> filterNames(Collection<String> collection) {
+		return ClassFilter.Util.filterClassNames( collection,  this );
+	}
 }

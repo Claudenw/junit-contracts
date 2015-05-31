@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class TrueClassFilterTest {
 	private ClassFilter filter = ClassFilter.TRUE;
@@ -40,7 +41,15 @@ public class TrueClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "TrueClassFilter",filter.toString() );
+		assertEquals( "True()",filter.toString() );
 	}
 
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter.toString() );
+		assertEquals( ClassFilter.TRUE, cf);
+	}
 }

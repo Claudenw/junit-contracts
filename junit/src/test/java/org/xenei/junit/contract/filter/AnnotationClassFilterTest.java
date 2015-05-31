@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTestRunner;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class AnnotationClassFilterTest {
 	private ClassFilter filter = ClassFilter.ANNOTATION;
@@ -45,7 +46,16 @@ public class AnnotationClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "AnnotationClassFilter",filter.toString() );
+		assertEquals( "Annotation()",filter.toString() );
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter.toString() );
+		assertEquals( ClassFilter.ANNOTATION, cf);
 	}
 
 }

@@ -20,6 +20,7 @@ package org.xenei.junit.contract.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +39,27 @@ public abstract class AbstractConditionalClassFilter implements
     {
     	classFilters = new ArrayList<ClassFilter>();
     }
+    
+    @Override
+    public String[] args()
+    {
+    	String[] retval = new String[classFilters.size()];
+    	for (int i=0;i<classFilters.size();i++)
+    	{
+    		retval[i] = classFilters.get(i).toString();
+    	}
+    	return retval;
+    }
+
+	@Override
+	public Collection<Class<?>> filter(Collection<Class<?>> collection) {
+		return ClassFilter.Util.filterClasses( collection,  this );
+	}
+
+	@Override
+	public Collection<String> filterNames(Collection<String> collection) {
+		return ClassFilter.Util.filterClassNames( collection,  this );
+	}
     
     protected boolean isFilterListEmpty()
     {
@@ -116,26 +138,9 @@ public abstract class AbstractConditionalClassFilter implements
 		this.classFilters.removeAll(Arrays.asList(classFilters)); 
 	}
 	
-	/**
-     * Provide a String representaion of this file filter.
-     *
-     * @return a String representaion
-     */
+    
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append( getClass().getSimpleName() )
-        .append("(");
-        if (classFilters != null) {
-            for (int i = 0; i < classFilters.size(); i++) {
-                if (i > 0) {
-                    buffer.append(",");
-                }
-                Object filter = classFilters.get(i);
-                buffer.append(filter == null ? "null" : filter.toString());
-            }
-        }
-        buffer.append(")");
-        return buffer.toString();
+        return ClassFilter.Util.toString( this );
     }
 }

@@ -41,6 +41,11 @@ public class OrClassFilter extends AbstractConditionalClassFilter implements Ser
     public OrClassFilter() {
        super();
     }
+    
+    @Override
+    public String funcName() {
+    	return "Or";
+    }
 
     /**
      * Constructs a new instance of <code>OrClassFilter</code>

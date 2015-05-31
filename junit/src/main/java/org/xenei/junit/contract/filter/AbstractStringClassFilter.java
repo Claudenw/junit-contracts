@@ -124,6 +124,18 @@ public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter 
     	this(caseSensitivity);
     	addStrings( strings );
     }
+    
+    @Override
+    public String[] args()
+    {
+    	String[] retval = new String[ strings.size()+1 ];
+    	retval[0] = caseSensitivity.getName();
+    	for (int i=0;i<strings.size(); i++)
+    	{
+    		retval[i+1] = strings.get(i);
+    	}
+    	return retval;
+    }
 
     public final void addString(String str)
     {
@@ -155,7 +167,7 @@ public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter 
     	 }
     }
     
-    protected final List<String> getStrings() {
+    public final List<String> getStrings() {
 		return Collections.unmodifiableList(this.strings);
 	}
     
@@ -172,20 +184,6 @@ public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter 
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        String[] parts = getClass().getName().split( "\\." );
-
-        String name = parts[parts.length-1];
-        buffer.append(String.format( "%s[%s](",name, caseSensitivity.toString().charAt(0)));
-        
-        for (int i = 0; i < strings.size(); i++) {
-            if (i > 0) {
-                buffer.append(",");
-            }
-            buffer.append(strings.get(i));
-        }
-        
-        buffer.append(")");
-        return buffer.toString();
+        return ClassFilter.Util.toString(this);
     }
 }

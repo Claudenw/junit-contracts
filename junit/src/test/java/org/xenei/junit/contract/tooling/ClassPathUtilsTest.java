@@ -21,10 +21,13 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Set;
 
 import org.junit.Test;
 import org.xenei.junit.contract.ClassPathUtils;
+import org.xenei.junit.contract.filter.PrefixClassFilter;
+import org.xenei.junit.contract.filter.WildcardClassFilter;
 
 public class ClassPathUtilsTest {
 
@@ -56,4 +59,37 @@ public class ClassPathUtilsTest {
 		assertEquals( 0, names.size() );
 	}
 
+	@Test
+	public void testFindClasses_StringString() throws IOException
+	{
+		URL url = ClassPathUtilsTest.class.getResource("/");
+		Set<String> names = ClassPathUtils.findClasses(url.toString(), "org.xenei.junit.bad");
+		assertEquals( 2, names.size() );
+	}
+	
+	@Test
+	public void testFindClasses_StringFilter() throws IOException
+	{
+		URL url = ClassPathUtilsTest.class.getResource("/org/xenei/junit");
+		Set<String> names = ClassPathUtils.findClasses(url.toString(), "org.xenei.junit", new PrefixClassFilter("org.xenei.junit.bad"));
+		assertEquals( 2, names.size() );
+		
+		url = ClassPathUtilsTest.class.getResource("/");
+		names = ClassPathUtils.findClasses(url.toString(), "org.xenei.junit", new PrefixClassFilter("org.xenei.junit.bad"));
+		assertEquals( 2, names.size() );
+	}
+	
+	@Test
+	public void testGetClasses_String() throws IOException
+	{
+		Collection<Class<?>> classes = ClassPathUtils.getClasses( "org.xenei.junit.bad");
+		assertEquals( 2, classes.size() );
+	}
+	
+	@Test
+	public void testGetClasses_Filter() throws IOException
+	{
+		Collection<Class<?>> classes = ClassPathUtils.getClasses( "org.xenei.junit", new WildcardClassFilter("*.bad.*"));
+		assertEquals( 2, classes.size() );
+	}
 }

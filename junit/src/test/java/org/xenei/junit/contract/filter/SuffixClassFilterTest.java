@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class SuffixClassFilterTest {
 	
@@ -63,7 +64,26 @@ public class SuffixClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "SuffixClassFilter[S](Filter)",filter_sens.toString() );
-		assertEquals( "SuffixClassFilter[I](filter)",filter_insens.toString() );
+		assertEquals( "Suffix( Sensitive, Filter )",filter_sens.toString() );
+		assertEquals( "Suffix( Insensitive, filter )",filter_insens.toString() );
+	}
+	
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter_sens.toString() );
+		assertTrue( "Wrong class", cf instanceof SuffixClassFilter);
+		String[] args = cf.args();
+		assertEquals( Case.SENSITIVE.toString(), args[0] );
+		assertEquals( "Filter", args[1] );
+		
+		cf = p.parse( filter_insens.toString() );
+		assertTrue( "Wrong class", cf instanceof SuffixClassFilter);
+		args = cf.args();
+		assertEquals( Case.INSENSITIVE.toString(), args[0] );
+		assertEquals( "filter", args[1] );
+		
 	}
 }

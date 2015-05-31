@@ -61,5 +61,10 @@ public class FalseClassFilter extends AbstractBaseClassFilter implements Seriali
      */
     public boolean accept(Class<?> clazz) {
         return false;
-    }  
+    }
+
+	@Override
+	public String[] args() {
+		return NO_ARGS;
+	}  
 }

@@ -74,7 +74,12 @@ public class NotClassFilter extends AbstractBaseClassFilter implements Serializa
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + filter.toString()  + ")";
+        return ClassFilter.Util.toString(this);
     }
+
+	@Override
+	public String[] args() {
+		return new String[] {filter.toString()};
+	}
     
 }

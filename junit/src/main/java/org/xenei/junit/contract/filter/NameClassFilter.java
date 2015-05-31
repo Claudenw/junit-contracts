@@ -18,6 +18,7 @@
 package org.xenei.junit.contract.filter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,6 +67,27 @@ public class NameClassFilter extends AbstractStringClassFilter implements Serial
         super(names);
     }
 
+    private static List<String> toNames( Class<?>... classes )
+    {
+    	List<String> retval = new ArrayList<String>();
+    	for (Class<?> cls : classes)
+    	{
+    		retval.add( cls.getName() );
+    	}
+    	return retval;
+    }
+    /**
+     * Constructs a new case-sensitive name class filter for an array of names.
+     * <p>
+     * The array is not cloned, so could be changed after constructing the
+     * instance. This would be inadvisable however.
+     * 
+     * @param names  the names to allow, must not be null
+     * @throws IllegalArgumentException if the names array is null
+     */
+    public NameClassFilter(Class<?>... classes) {
+        super(toNames( classes ));
+    }
     /**
      * Constructs a new name class filter for an array of names specifying case-sensitivity.
      * <p>

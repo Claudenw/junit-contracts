@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.exampleTests.A;
 import org.xenei.junit.contract.exampleTests.AT;
+import org.xenei.junit.contract.filter.parser.Parser;
 
 public class HasAnnotationClassFilterTest {
 	private ClassFilter filter = new HasAnnotationClassFilter( Contract.class );
@@ -47,7 +48,18 @@ public class HasAnnotationClassFilterTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals( "HasAnnotationClassFilter("+Contract.class.getName()+")", filter.toString() );
+		assertEquals( "HasAnnotation( "+Contract.class.getName()+" )", filter.toString() );
 	}
 
+	@Test
+	public void testParse() throws Exception
+	{
+		Parser p = new Parser();
+		
+		ClassFilter cf = p.parse( filter.toString() );
+		assertTrue( "Wrong type",  cf instanceof HasAnnotationClassFilter);
+		String[] args = cf.args();
+		assertEquals( 1, args.length);
+		assertEquals( Contract.class.getName(), args[0] );
+	}
 }
