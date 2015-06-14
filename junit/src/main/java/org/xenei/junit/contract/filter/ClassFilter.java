@@ -176,7 +176,6 @@ public interface ClassFilter {
 		 */
 		public static String parseArgs(String str, int pos) {
 			int cnt = 1;
-			List<String> lst = new ArrayList<String>();
 			for (int i = pos + 1; i < str.length(); i++) {
 				switch (str.charAt(i)) {
 				case '(':

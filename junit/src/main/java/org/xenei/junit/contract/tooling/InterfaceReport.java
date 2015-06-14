@@ -130,10 +130,13 @@ public class InterfaceReport {
 	/**
 	 * Constructor.
 	 * 
+	 * If the filter parameter is null it defaults to <code>true()</code> and all classes
+	 * are processed. 
+	 * 
 	 * @param packages
 	 *            The list of packages to process.
-	 * @param skipClasses
-	 *            the list of classes to skip.
+	 * @param filter
+	 *            the filter of classes to process.  may be null.
 	 * @param classLoader
 	 *            the class loader to use.
 	 * @throws MalformedURLException

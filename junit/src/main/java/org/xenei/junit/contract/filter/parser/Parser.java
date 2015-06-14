@@ -288,7 +288,6 @@ public class Parser {
 		private String parserStr;
 		private String name;
 		private Class<? extends ClassFilter> clazz;
-		private List<?> args;
 
 		ParserInfo(String parserStr) {
 			this.parserStr = parserStr.trim();

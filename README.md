@@ -16,10 +16,10 @@ Snapshot versions are hosted at:
 Modules 
 =======
 
-The contracts project comprises two modules: junit-contracts and maven-contracts.
+The contracts project comprises three modules: junit-contracts, contract-test-maven-plugin and contract-cmdline.
 
-junits-contracts
-----------------
+junit-contracts
+---------------
 
 <a href="./junit">junit-contracts</a> is the module that encompasses the annotations and junit test
 runners to execute the connection tests.
@@ -29,16 +29,32 @@ Release version
      Group Id: org.xenei 
      Artifact Id: junit-contracts 
 
-maven-contracts
-----------------
+contract-test-maven-plugin
+--------------------------
 
 <a href="./maven/">maven-contracts</a> is the module that encompasses the maven plugin that will report results and errors from running the tests.
 
 Release version
 
      Group Id: org.xenei 
-     Artifact Id: junit-contracts 
+     Artifact Id: contract-test-maven-plugin 
 
+contracts-cmdline
+-----------------
+
+<a href="./cmdLine/">contracts-cmdline</a> is the model that encompasses the command line tools that will generate reports equivalent ot the maven contracts plugin.
+
+Release version
+
+     Group Id: org.xenei 
+     Artifact Id: contract-cmd-line 
+
+Class Filters
+=============
+
+The junit-contracts module provides a set of classes to discover and filter classes on the classpath.  These may be generally useful. Among these is the ClassFilter which is patterned after the Java FileFilter class. 
+
+Class filters are constructed in the maven and command line modules via strings.  Each string is the string representation of a filter.  For example: _Not( Wildcard( "*Test*" ) )_ will match any class name that does not have the string "test".  For more information see the <a href="./classfilters">Class Filters</a> page. 
 
 Contract Tests 
 ==============
@@ -108,6 +124,6 @@ Samples and Examples
 ====================
 
 The test code contains a number of examples and is well [documented]
-(https://github.com/Claudenw/junit-contracts/blob/master/src/test/java/org/xenei/junit/contract/README.md) for use as such.
+(https://github.com/Claudenw/junit-contracts/blob/master/junit/src/test/java/org/xenei/junit/contract/README.md) for use as such.
 
 The sample code tree includes a sample for a Serializable contract test.
