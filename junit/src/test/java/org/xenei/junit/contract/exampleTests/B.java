@@ -24,6 +24,10 @@ package org.xenei.junit.contract.exampleTests;
  */
 public interface B {
 
+	/**
+	 * 
+	 * @return the B Bane
+	 */
 	public String getBName();
 
 }

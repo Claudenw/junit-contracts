@@ -24,6 +24,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test PrefixClassFilter
+ *
+ */
 public class PrefixClassFilterTest {
 
 	private final ClassFilter filter_sens;
@@ -32,11 +36,17 @@ public class PrefixClassFilterTest {
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Constructor.
+	 */
 	public PrefixClassFilterTest() {
 		filter_sens = new PrefixClassFilter(Case.SENSITIVE, "org.xenei");
 		filter_insens = new PrefixClassFilter(Case.INSENSITIVE, "org.Xenei");
 	}
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter_sens.accept(t));
@@ -46,6 +56,9 @@ public class PrefixClassFilterTest {
 		assertFalse(filter_insens.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -59,6 +72,9 @@ public class PrefixClassFilterTest {
 		assertFalse(filter_insens.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Prefix( Sensitive, org.xenei )", filter_sens.toString());
@@ -66,6 +82,12 @@ public class PrefixClassFilterTest {
 				filter_insens.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

@@ -24,6 +24,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test WildcardClassFilter
+ *
+ */
 public class WildcardClassFilterTest {
 
 	private final ClassFilter filter_sens;
@@ -32,6 +36,9 @@ public class WildcardClassFilterTest {
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Constructor.
+	 */
 	public WildcardClassFilterTest() {
 		filter_sens = new WildcardClassFilter(Case.SENSITIVE,
 				"*xene?.*ClassFilter");
@@ -39,6 +46,9 @@ public class WildcardClassFilterTest {
 				"*Xene?.*ClassFilter");
 	}
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter_sens.accept(t));
@@ -48,6 +58,9 @@ public class WildcardClassFilterTest {
 		assertFalse(filter_insens.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -61,6 +74,9 @@ public class WildcardClassFilterTest {
 		assertFalse(filter_insens.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Wildcard( Sensitive, *xene?.*ClassFilter )",
@@ -69,12 +85,19 @@ public class WildcardClassFilterTest {
 				filter_insens.toString());
 	}
 
+	/**
+	 * Test that the dot does not get expanded to regex expression.
+	 */
 	@Test
 	public void testDotPosition() {
 		assertEquals("^\\Q.org.xenei.\\E$",
 				WildcardClassFilter.makeRegex(".org.xenei."));
 	}
 
+	/**
+	 * Test that the asterisk is expanded to .* whereever it is found in the
+	 * string.
+	 */
 	@Test
 	public void testAsteriskPosition() {
 		assertEquals("^.*\\Qorg\\E.*\\Qxenei\\E.*$",
@@ -83,12 +106,22 @@ public class WildcardClassFilterTest {
 				WildcardClassFilter.makeRegex("*.bad.*"));
 	}
 
+	/**
+	 * Test that the question mark is expanded to . (dot) where ever it is found
+	 * in the string.
+	 */
 	@Test
 	public void testQuestionPosition() {
 		assertEquals("^.\\Qorg\\E.\\Qxenei\\E.$",
 				WildcardClassFilter.makeRegex("?org?xenei?"));
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

@@ -36,6 +36,8 @@ public class SuiteInfo extends TestInfo {
 	 *
 	 * @param testSuite
 	 *            the test suite definition class.
+	 * @param impl
+	 *            The ContractImpl annotation.
 	 */
 	public SuiteInfo(final Class<?> testSuite, final ContractImpl impl) {
 		super(testSuite, impl, MethodUtils.findAnnotatedGetter(testSuite,

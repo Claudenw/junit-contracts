@@ -38,7 +38,7 @@ import java.util.Collection;
  * <li>Have a <code>ContractImpl</code> annotation specifying the implementation
  * being tested</li>
  * <li>Include a <code>@Dynamic.Inject</code> annotated getter that returns an
- * IProducer<x> where "x" is the class specified in the ContractImpl</li>
+ * IProducer&lt;x&gt; where "x" is the class specified in the ContractImpl</li>
  * <li>Each <code>@RunWith(ContractSuite)</code> annotated class listed in
  * getSuiteClasses() must:
  * <ol>
@@ -65,6 +65,11 @@ import java.util.Collection;
 @NoContractTest
 public interface Dynamic {
 
+	/**
+	 * Get the set of set of classes in the test suite.
+	 * 
+	 * @return The set of classes in the test suite.
+	 */
 	public Collection<Class<?>> getSuiteClasses();
 
 	/**

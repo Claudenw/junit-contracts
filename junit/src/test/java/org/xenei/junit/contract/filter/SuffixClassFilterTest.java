@@ -24,6 +24,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test SuffixClassFilter
+ *
+ */
 public class SuffixClassFilterTest {
 
 	private final ClassFilter filter_sens;
@@ -32,11 +36,17 @@ public class SuffixClassFilterTest {
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Constructor
+	 */
 	public SuffixClassFilterTest() {
 		filter_sens = new SuffixClassFilter(Case.SENSITIVE, "Filter");
 		filter_insens = new SuffixClassFilter(Case.INSENSITIVE, "filter");
 	}
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter_sens.accept(t));
@@ -46,6 +56,9 @@ public class SuffixClassFilterTest {
 		assertFalse(filter_insens.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -59,12 +72,21 @@ public class SuffixClassFilterTest {
 		assertFalse(filter_insens.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Suffix( Sensitive, Filter )", filter_sens.toString());
 		assertEquals("Suffix( Insensitive, filter )", filter_insens.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

@@ -24,7 +24,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
-public class RegexpClassFilterTest {
+/**
+ * Test RegexClassFilter
+ *
+ */
+public class RegexClassFilterTest {
 
 	private final ClassFilter filter_sens;
 	private final ClassFilter filter_insens;
@@ -32,11 +36,17 @@ public class RegexpClassFilterTest {
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
-	public RegexpClassFilterTest() {
+	/**
+	 * Constructor
+	 */
+	public RegexClassFilterTest() {
 		filter_sens = new RegexClassFilter(Case.SENSITIVE, "^.+xenei.+$");
 		filter_insens = new RegexClassFilter(Case.INSENSITIVE, "^.+Xenei.+$");
 	}
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter_sens.accept(t));
@@ -46,6 +56,9 @@ public class RegexpClassFilterTest {
 		assertFalse(filter_insens.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -59,6 +72,9 @@ public class RegexpClassFilterTest {
 		assertFalse(filter_insens.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Regex( Sensitive, ^.+xenei.+$ )", filter_sens.toString());
@@ -66,6 +82,12 @@ public class RegexpClassFilterTest {
 				filter_insens.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

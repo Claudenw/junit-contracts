@@ -43,6 +43,9 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class BImplTest extends BT<BImpl> {
 
+	/**
+	 * Constructor.
+	 */
 	public BImplTest() {
 		// set the producer
 		setProducer(new IProducer<BImpl>() {
@@ -61,11 +64,17 @@ public class BImplTest extends BT<BImpl> {
 		});
 	}
 
+	/**
+	 * Clear the listener before the test.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify that the listener detected all the events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "BImplTest.producer.newInstance()", "bname",

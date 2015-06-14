@@ -25,17 +25,27 @@ import org.xenei.junit.contract.exampleTests.A;
 import org.xenei.junit.contract.exampleTests.AT;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test HasAnnotationClassFilter
+ *
+ */
 public class HasAnnotationClassFilterTest {
 	private ClassFilter filter = new HasAnnotationClassFilter(Contract.class);
 	private Class<?> t = AT.class;
 	private Class<?> f = A.class;
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter.accept(t));
 		assertFalse(filter.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -43,12 +53,21 @@ public class HasAnnotationClassFilterTest {
 		assertFalse(filter.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("HasAnnotation( " + Contract.class.getName() + " )",
 				filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

@@ -29,8 +29,18 @@ import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.filter.PrefixClassFilter;
 import org.xenei.junit.contract.filter.WildcardClassFilter;
 
+/**
+ * Test the ClassPathUtils.
+ *
+ */
 public class ClassPathUtilsTest {
 
+	/**
+	 * Verify that we can find the classes in a jar.
+	 * 
+	 * @throws IOException
+	 *             on error
+	 */
 	@Test
 	public void testFindClassesFromClassJar() throws IOException {
 		URL url = ClassPathUtilsTest.class.getResource("classes.jar");
@@ -44,6 +54,12 @@ public class ClassPathUtilsTest {
 		assertEquals(0, names.size());
 	}
 
+	/**
+	 * Test that we find no classes in javadoc jar.
+	 * 
+	 * @throws IOException
+	 *             on error
+	 */
 	@Test
 	public void testFindClassesFromJavadocJar() throws IOException {
 		URL url = ClassPathUtilsTest.class.getResource("javadoc.jar");
@@ -52,6 +68,12 @@ public class ClassPathUtilsTest {
 		assertEquals(0, names.size());
 	}
 
+	/**
+	 * Test that we find no classes from source jar.
+	 * 
+	 * @throws IOException
+	 *             on error.
+	 */
 	@Test
 	public void testFindClassesFromSourceJar() throws IOException {
 		URL url = ClassPathUtilsTest.class.getResource("sources.jar");
@@ -60,6 +82,12 @@ public class ClassPathUtilsTest {
 		assertEquals(0, names.size());
 	}
 
+	/**
+	 * Test that we can find classes with directory and package name.
+	 * 
+	 * @throws IOException
+	 *             on exception.
+	 */
 	@Test
 	public void testFindClasses_StringString() throws IOException {
 		URL url = ClassPathUtilsTest.class.getResource("/");
@@ -68,8 +96,14 @@ public class ClassPathUtilsTest {
 		assertEquals(2, names.size());
 	}
 
+	/**
+	 * Test that we can find classes with directory, package name and filter.
+	 * 
+	 * @throws IOException
+	 *             on error.
+	 */
 	@Test
-	public void testFindClasses_StringFilter() throws IOException {
+	public void testFindClasses_StringStringFilter() throws IOException {
 		URL url = ClassPathUtilsTest.class.getResource("/org/xenei/junit");
 		Set<String> names = ClassPathUtils
 				.findClasses(url.toString(), "org.xenei.junit",
@@ -82,6 +116,12 @@ public class ClassPathUtilsTest {
 		assertEquals(2, names.size());
 	}
 
+	/**
+	 * Test that we can find classes with package name only.
+	 * 
+	 * @throws IOException
+	 *             on error.
+	 */
 	@Test
 	public void testGetClasses_String() throws IOException {
 		Collection<Class<?>> classes = ClassPathUtils
@@ -89,8 +129,14 @@ public class ClassPathUtilsTest {
 		assertEquals(2, classes.size());
 	}
 
+	/**
+	 * Test that we can find classes with package name and filter.
+	 * 
+	 * @throws IOException
+	 *             on error.
+	 */
 	@Test
-	public void testGetClasses_Filter() throws IOException {
+	public void testGetClasses_StringFilter() throws IOException {
 		Collection<Class<?>> classes = ClassPathUtils.getClasses(
 				"org.xenei.junit", new WildcardClassFilter("*.bad.*"));
 		assertEquals(2, classes.size());

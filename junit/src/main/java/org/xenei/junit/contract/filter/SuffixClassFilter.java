@@ -119,10 +119,9 @@ public class SuffixClassFilter extends AbstractStringClassFilter implements
 	/**
 	 * Checks to see if the class name ends with the suffix.
 	 * 
-	 * @param file
-	 *            the File directory
-	 * @param name
-	 *            the filename
+	 * @param className
+	 *            the class name to check
+	 * 
 	 * @return true if the filename ends with one of our suffixes
 	 */
 	@Override

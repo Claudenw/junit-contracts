@@ -44,8 +44,8 @@ public class OrClassFilter extends AbstractConditionalClassFilter implements
 	 * @throws IllegalArgumentException
 	 *             if any filter is null.
 	 */
-	public OrClassFilter(final Collection<ClassFilter> classFilters) {
-		super(classFilters);
+	public OrClassFilter(final Collection<ClassFilter> filters) {
+		super(filters);
 	}
 
 	/**

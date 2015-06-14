@@ -22,10 +22,17 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test NotClassFilter.
+ *
+ */
 public class NotClassFilterTest {
 	private Class<?> cls = String.class;
 	private String str = cls.getName();
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		ClassFilter filter = new NotClassFilter(ClassFilter.FALSE);
@@ -35,6 +42,9 @@ public class NotClassFilterTest {
 		assertFalse(filter.accept(cls));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		ClassFilter filter = new NotClassFilter(ClassFilter.FALSE);
@@ -45,12 +55,21 @@ public class NotClassFilterTest {
 
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		ClassFilter filter = new NotClassFilter(ClassFilter.FALSE);
 		assertEquals("Not( False() )", filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

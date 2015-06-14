@@ -22,11 +22,18 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test OrClassFilter
+ *
+ */
 public class OrClassFilterTest {
 
 	private Class<?> cls = String.class;
 	private String str = cls.getName();
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
@@ -43,6 +50,9 @@ public class OrClassFilterTest {
 		assertTrue(filter.accept(cls));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
@@ -59,6 +69,9 @@ public class OrClassFilterTest {
 		assertTrue(filter.accept(str));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		ClassFilter filter = new OrClassFilter(ClassFilter.FALSE,
@@ -66,6 +79,12 @@ public class OrClassFilterTest {
 		assertEquals("Or( False(), True() )", filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

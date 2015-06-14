@@ -67,17 +67,25 @@ public class CImplContractTest {
 
 	/**
 	 * The method to inject the producer into the test classes.
+	 * 
+	 * @return The producer that we want to test with.
 	 */
 	@Contract.Inject
 	public IProducer<CImpl> getProducer() {
 		return producer;
 	}
 
+	/**
+	 * Clear the listener for the next test.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify that the listener saw all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "CImplContractTest.producer.newInstance()",

@@ -1,32 +1,34 @@
 package org.xenei.junit.contract.exampleTests;
 
+/**
+ * An implementation of F
+ *
+ */
 public class FImpl implements F {
 
+	/**
+	 * Constructor.
+	 */
 	public FImpl() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String getCName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getFName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

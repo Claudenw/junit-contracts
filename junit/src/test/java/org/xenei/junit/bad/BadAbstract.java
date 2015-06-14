@@ -18,20 +18,39 @@
 package org.xenei.junit.bad;
 
 /**
- * Class to test that the @Ignore annotation works
+ * Class to test that the @Ignore annotation works and that the
+ * system can properly detect an abstract @Contract annotated class
+ * as an error.
+ * 
  */
 import org.junit.Ignore;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.IProducer;
 import org.xenei.junit.contract.exampleTests.A;
 
+/**
+ * An implementation of an A contract test that is abstract.
+ * 
+ * THIS CONSTRUCT IS NOT ALLOWED AND IS ONLY USED FOR TESTING THE DETECTION OF
+ * SUCH A CONDITION.
+ *
+ */
 @Contract(A.class)
 @Ignore
 public abstract class BadAbstract {
 
+	/**
+	 * Constructor
+	 */
 	public BadAbstract() {
 	}
 
+	/**
+	 * set the producer
+	 * 
+	 * @param producer
+	 *            The producer we are testing.
+	 */
 	@Contract.Inject
 	public final void setProducer(IProducer<A> producer) {
 	}

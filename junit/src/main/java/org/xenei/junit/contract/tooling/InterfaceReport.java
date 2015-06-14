@@ -17,7 +17,6 @@
 
 package org.xenei.junit.contract.tooling;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -90,6 +89,11 @@ public class InterfaceReport {
 		}
 	};
 
+	/**
+	 * Get a collection of InterfaceInfo objects for the entire test suite.
+	 * 
+	 * @return The colleciton of InterfaceInfo objects.
+	 */
 	public Collection<InterfaceInfo> getInterfaceInfoCollection() {
 		return getInterfaceInfoMap().values();
 	}
@@ -130,19 +134,18 @@ public class InterfaceReport {
 	/**
 	 * Constructor.
 	 * 
-	 * If the filter parameter is null it defaults to <code>true()</code> and all classes
-	 * are processed. 
+	 * If the filter parameter is null it defaults to <code>true()</code> and
+	 * all classes are processed.
 	 * 
 	 * @param packages
 	 *            The list of packages to process.
 	 * @param filter
-	 *            the filter of classes to process.  may be null.
+	 *            the filter of classes to process. may be null.
 	 * @param classLoader
 	 *            the class loader to use.
-	 * @throws MalformedURLException
 	 */
 	public InterfaceReport(final String[] packages, ClassFilter filter,
-			final ClassLoader classLoader) throws MalformedURLException {
+			final ClassLoader classLoader) {
 
 		if (packages.length == 0) {
 			throw new IllegalArgumentException(
@@ -173,12 +176,21 @@ public class InterfaceReport {
 		contractImplMap = ContractImplMap.populateInstance(packageClasses);
 	}
 
+	/**
+	 * Get the collection of Class objects that were included in the packages.
+	 * 
+	 * @return The collection of Class objects that were included in the
+	 *         packages.
+	 */
 	public Collection<Class<?>> getPackageClasses() {
 		return packageClasses;
 	}
 
 	/**
-	 * Get the set of errors encountered when discovering contract tests.
+	 * Get the set of errors encountered when discovering contract tests. This
+	 * is a list of all errors for all tests.
+	 * 
+	 * @return The list of Throwable objects that represent errors.
 	 *
 	 */
 	public List<Throwable> getErrors() {
@@ -212,7 +224,7 @@ public class InterfaceReport {
 	 * Search for classes that extend interfaces with contract tests but that
 	 * don't have an implementation of the test producer.
 	 *
-	 * @return
+	 * @return the set of Classes that do not have contract tests.
 	 */
 	public Set<Class<?>> getUnImplementedTests() {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
@@ -246,7 +258,7 @@ public class InterfaceReport {
 	/**
 	 * Get the filter
 	 * 
-	 * @return
+	 * @return The filter used to filter classes.
 	 */
 	public ClassFilter getClassFilter() {
 		return filter;

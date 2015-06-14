@@ -65,24 +65,33 @@ public class AImplContractTest {
 
 	};
 
+	/**
+	 * Constructor
+	 */
 	public AImplContractTest() {
 	}
 
 	/**
 	 * The method to get the producer to inject it into tests
 	 * 
-	 * @return
+	 * @return The producer of AImpl objects
 	 */
 	@Contract.Inject
 	public IProducer<AImpl> getProducer() {
 		return producer;
 	}
 
+	/**
+	 * clear the listener so we can start afresh.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Test thet the listener found the proper events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "AImplContractTest.producer.newInstance()",

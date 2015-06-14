@@ -120,8 +120,8 @@ public class PrefixClassFilter extends AbstractStringClassFilter implements
 	/**
 	 * Checks to see if the filename starts with the prefix.
 	 * 
-	 * @param file
-	 *            the File to check
+	 * @param className
+	 *            the class name to check.
 	 * @return true if the filename starts with one of our prefixes
 	 */
 	@Override

@@ -66,17 +66,25 @@ public class DImplContractTest {
 
 	/**
 	 * The method that will create the producer to be injected into the tests.
+	 * 
+	 * @return The producer that we will inject into the tests.
 	 */
 	@Contract.Inject
 	public IProducer<DImpl> getProducer() {
 		return producer;
 	}
 
+	/**
+	 * Clear the Listener for tests.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify that the listener saw all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "DImplContractTest.producer.newInstance()",

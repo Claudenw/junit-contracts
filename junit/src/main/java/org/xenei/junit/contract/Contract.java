@@ -26,10 +26,14 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare a test is the contract test for an interface.
  * <p>
- * For example <code><pre>
+ * For example
  * 
- * @Contract( Foo.class ) public class FooT {...} </pre></code> Declares
- *            <code>FooT</code> as a contract test for <code>Foo</code>
+ * <pre>
+ * 
+ * &#64;Contract( Foo.class ) public class FooT {...}
+ * </pre>
+ * 
+ * Declares <code>FooT</code> as a contract test for <code>Foo</code>
  * 
  */
 @Target(ElementType.TYPE)
@@ -37,6 +41,8 @@ import java.lang.annotation.Target;
 public @interface Contract {
 	/**
 	 * The class that the annotated class is the contract test for.
+	 * 
+	 * @return The class this is a contract test for.
 	 */
 	Class<?> value();
 

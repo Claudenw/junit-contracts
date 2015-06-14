@@ -61,6 +61,7 @@ public class ClassPathUtils {
 	 *            The package name for classes found inside the base directory
 	 * @return The classes
 	 * @throws IOException
+	 *             on error.
 	 */
 	public static Set<String> findClasses(final String directory,
 			final String packageName) throws IOException {
@@ -175,8 +176,7 @@ public class ClassPathUtils {
 			}
 		}
 		// if it is not a directory we don't process it here as we are looking
-		// for directories
-		// that start with the packageName.
+		// for directories that start with the packageName.
 	}
 
 	/**
@@ -184,10 +184,13 @@ public class ClassPathUtils {
 	 * 
 	 * @param directory
 	 *            The directory or jar file to search.
+	 * @param packageName
+	 *            The list of packages to look for.
 	 * @param filter
 	 *            The filter to apply to results.
 	 * @return list of class names that match the filter.
 	 * @throws IOException
+	 *             on error.
 	 */
 	public static Set<String> findClasses(final String directory,
 			String packageName, final ClassFilter filter) throws IOException {
@@ -207,18 +210,28 @@ public class ClassPathUtils {
 
 	/**
 	 * Find all classes accessible from the context class loader which belong to
-	 * the given package and subpackages.
+	 * the given package and sub packages.
 	 *
 	 * An empty or null packageName = all packages.
 	 *
 	 * @param packageName
 	 *            The base package or class name.
-	 * @return The classes
+	 * @return A collection of Class objects.
 	 */
 	public static Collection<Class<?>> getClasses(final String packageName) {
 		return getClasses(packageName, new PrefixClassFilter(packageName));
 	}
 
+	/**
+	 * Get a collection of classes in the package name that meet the filter.
+	 * Classes will be loaded from the current thread class loader.
+	 * 
+	 * @param packageName
+	 *            The package name to locate.
+	 * @param filter
+	 *            the ClassFilter to filter the results with.
+	 * @return A collection of Class objects.
+	 */
 	public static Collection<Class<?>> getClasses(final String packageName,
 			ClassFilter filter) {
 		final ClassLoader classLoader = Thread.currentThread()
@@ -231,17 +244,17 @@ public class ClassPathUtils {
 	}
 
 	/**
-	 * Find all classes accessible from the classloader which belong to the
-	 * given package and subpackages.
+	 * Find all classes accessible from the class loader which belong to the
+	 * given package and sub packages.
 	 *
 	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
 	 * support use of JAR files
 	 *
 	 * @param classLoader
-	 *            The classloader to load the classes from.
+	 *            The class loader to load the classes from.
 	 * @param packageName
 	 *            The base package or class name
-	 * @return The classes
+	 * @return A collection of Class objects
 	 */
 	public static Collection<Class<?>> getClasses(
 			final ClassLoader classLoader, final String packageName) {
@@ -250,17 +263,19 @@ public class ClassPathUtils {
 	}
 
 	/**
-	 * Find all classes accessible from the classloader which belong to the
-	 * given package and subpackages.
+	 * Find all classes accessible from the class loader which belong to the
+	 * given package and sub packages.
 	 *
 	 * Adapted from http://snippets.dzone.com/posts/show/4831 and extended to
 	 * support use of JAR files
 	 *
 	 * @param classLoader
-	 *            The classloader to load the classes from.
+	 *            The class loader to load the classes from.
+	 * @param packageName
+	 *            The package name to locate the classes in.
 	 * @param filter
 	 *            The filter for the classes.
-	 * @return The classes
+	 * @return A collection of Class objects
 	 */
 	public static Collection<Class<?>> getClasses(
 			final ClassLoader classLoader, final String packageName,
@@ -288,13 +303,6 @@ public class ClassPathUtils {
 		if (resources.hasMoreElements()) {
 			while (resources.hasMoreElements()) {
 				final URL resource = resources.nextElement();
-				// int start = resource.getPath().lastIndexOf( dirName );
-				// if (start == -1)
-				// {
-				// throw new IllegalStateException(
-				// String.format("%s is not in %s", dirName,
-				// resource.getPath()));
-				// }
 				String dir = resource.getPath();
 				if (!directories.contains(dir)) {
 					directories.add(dir);
@@ -330,6 +338,15 @@ public class ClassPathUtils {
 		return classes;
 	}
 
+	/**
+	 * Return the set of classes from the collection that pass the filter.
+	 * 
+	 * @param classes
+	 *            The collection of classes to filter.
+	 * @param filter
+	 *            The filter to use.
+	 * @return the set of Class objects that pass the filter.
+	 */
 	public static Set<Class<?>> filterClasses(Collection<Class<?>> classes,
 			ClassFilter filter) {
 		Set<Class<?>> retval = new HashSet<Class<?>>();
@@ -341,6 +358,15 @@ public class ClassPathUtils {
 		return retval;
 	}
 
+	/**
+	 * Return the set of classes from the collection that pass the filter.
+	 * 
+	 * @param classNames
+	 *            the collection of class names.
+	 * @param filter
+	 *            The filter to apply.
+	 * @return the set of class names that pass the filter.
+	 */
 	public static Set<String> filterClassNames(Collection<String> classNames,
 			ClassFilter filter) {
 		Set<String> retval = new HashSet<String>();
@@ -387,6 +413,8 @@ public class ClassPathUtils {
 	 *
 	 * @param clazz
 	 *            The class to find interfaces for.
+	 * @param filter
+	 *            The filter to apply.
 	 * @return set of interfaces implemented by clazz.
 	 */
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz,

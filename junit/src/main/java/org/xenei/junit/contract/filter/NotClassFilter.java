@@ -51,7 +51,8 @@ public class NotClassFilter extends AbstractBaseClassFilter implements
 	 * Returns the logical NOT of the underlying filter's return value for the
 	 * same File.
 	 * 
-	 * @param class the Class to check
+	 * @param clazz
+	 *            the Class to check
 	 * @return true if the enclosed filter returns false
 	 */
 	@Override
@@ -63,7 +64,7 @@ public class NotClassFilter extends AbstractBaseClassFilter implements
 	 * Returns the logical NOT of the underlying filter's return value for the
 	 * same arguments.
 	 * 
-	 * @param classNname
+	 * @param className
 	 *            the class name to check.
 	 * @return true if the enclosed filter returns false
 	 */

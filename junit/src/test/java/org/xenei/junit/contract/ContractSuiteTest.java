@@ -30,8 +30,18 @@ import org.mockito.ArgumentCaptor;
 import org.xenei.junit.bad.BadAbstract;
 import org.xenei.junit.bad.BadNoInject;
 
+/**
+ * Test ContractSuite
+ *
+ */
 public class ContractSuiteTest {
 
+	/**
+	 * Test that @Contract annotated classes may not be abstract.
+	 * 
+	 * @throws Throwable
+	 *             on error
+	 */
 	@Test
 	public void testBadAbstract() throws Throwable {
 		final RunnerBuilder builder = mock(RunnerBuilder.class);
@@ -62,6 +72,13 @@ public class ContractSuiteTest {
 
 	}
 
+	/**
+	 * Test that @Contract classes must have a @Contract.Inject annotation on a
+	 * public non-abstract declared setter method.
+	 * 
+	 * @throws Throwable
+	 *             on error.
+	 */
 	@Test
 	public void testBadNoInject() throws Throwable {
 		final RunnerBuilder builder = mock(RunnerBuilder.class);
@@ -100,6 +117,10 @@ public class ContractSuiteTest {
 		}
 	}
 
+	/**
+	 * A contract implementation for BadNoInject class.
+	 *
+	 */
 	@ContractImpl(value = BadNoInject.class)
 	public static class BadNoInjectTest {
 		// the producer to use for all the tests
@@ -117,12 +138,17 @@ public class ContractSuiteTest {
 
 		/**
 		 * The method to inject the producer into the test classes.
+		 * 
+		 * @return the BadNoInject implementation.
 		 */
 		@Contract.Inject
 		public IProducer<BadNoInject> getProducer() {
 			return producer;
 		}
 
+		/**
+		 * A contract test to meet the test requirements.
+		 */
 		@ContractTest
 		public void forceTest() {
 			// just a test to meet the requirements.
@@ -130,6 +156,9 @@ public class ContractSuiteTest {
 
 	}
 
+	/**
+	 * A Contract test for the BadAbstract class
+	 */
 	@ContractImpl(value = BadAbstract.class)
 	public static class BadAbstractTest {
 		// the producer to use for all the tests
@@ -148,6 +177,8 @@ public class ContractSuiteTest {
 
 		/**
 		 * The method to inject the producer into the test classes.
+		 * 
+		 * @return The BadAbstract class to inject.
 		 */
 		@Contract.Inject
 		public IProducer<BadAbstract> getProducer() {

@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * This class creates a thread local version of itself so that the static
  * methods work in a thread safe way.
- * 
+ * </p>
  */
 public class Listener {
 
@@ -38,7 +38,7 @@ public class Listener {
 	/**
 	 * Get the the list of strings.
 	 * 
-	 * @return
+	 * @return The list of strings added.
 	 */
 	public static List<String> get() {
 		return history.get();

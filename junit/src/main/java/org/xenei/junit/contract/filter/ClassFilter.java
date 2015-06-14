@@ -20,17 +20,31 @@ package org.xenei.junit.contract.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Interface that defines a ClassFilter.
  *
  */
 public interface ClassFilter {
+	/**
+	 * The instance of the true() class filter.
+	 */
 	public static final ClassFilter TRUE = TrueClassFilter.TRUE;
+	/**
+	 * The instance of the false() class filter.
+	 */
 	public static final ClassFilter FALSE = FalseClassFilter.FALSE;
+	/**
+	 * The instance of the annotation() class filter.
+	 */
 	public static final ClassFilter ANNOTATION = AnnotationClassFilter.ANNOTATION;
+	/**
+	 * The instance of the abstract() class filter.
+	 */
 	public static final ClassFilter ABSTRACT = AbstractClassFilter.ABSTRACT;
+	/**
+	 * The instance of the interface() class filter.
+	 */
 	public static final ClassFilter INTERFACE = InterfaceClassFilter.INTERFACE;
 
 	/**

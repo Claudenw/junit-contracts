@@ -22,25 +22,44 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test the FalseClassFilter().
+ *
+ */
 public class FalseClassFilterTest {
 	private ClassFilter filter = ClassFilter.FALSE;
 	private Class<?> cls = String.class;
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertFalse(filter.accept(cls));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		assertFalse(filter.accept(cls));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("False()", filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

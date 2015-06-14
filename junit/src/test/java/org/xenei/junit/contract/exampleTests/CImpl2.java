@@ -43,6 +43,11 @@ public class CImpl2 implements C {
 		return "CImpl2";
 	}
 
+	/**
+	 * An extra method in this implementation that is not defined in C.
+	 * 
+	 * @return the string "called Extra Method";
+	 */
 	public String extraMethod() {
 		return "called Extra Method";
 	}

@@ -45,19 +45,18 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	private final Method getter;
 
 	/**
-	 * Create a test runner within the ContractTestSuite
+	 * Create a test runner within the ContractTestSuite.
 	 * 
-	 * @param wrapper
-	 *            The concerte wrapper on the abstract class that we are
-	 *            running.
-	 * @param setterClass
-	 *            The class that has the setter method.
 	 * @param getterObj
-	 *            The instance of the class that has the producer interface.
-	 * @param getter
-	 *            The method on the getterObj that returns the producer
-	 *            interface..
+	 *            The object on which we will execute the method that gets the
+	 *            producer.
+	 * @param parentTestInfo
+	 *            The test info for the parent.
+	 * @param testInfo
+	 *            The test info for this test.
+	 * 
 	 * @throws InitializationError
+	 *             on error.
 	 */
 	public ContractTestRunner(Object getterObj, TestInfo parentTestInfo,
 			TestInfo testInfo) throws InitializationError {
@@ -71,17 +70,11 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	/**
 	 * Create a test runner for stand alone test
 	 * 
-	 * @param wrapper
-	 *            The concerte wrapper on the abstract class that we are
-	 *            running.
-	 * @param setterClass
-	 *            The class that has the setter method.
-	 * @param getterObj
-	 *            The instance of the class that has the producer interface.
-	 * @param getter
-	 *            The method on the getterObj that returns the producer
-	 *            interface..
+	 * @param testClass
+	 *            The ContractTest annoated class.
+	 * 
 	 * @throws InitializationError
+	 *             on error.
 	 */
 	public ContractTestRunner(Class<?> testClass) throws InitializationError {
 		super(testClass);
@@ -96,15 +89,18 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 * getter class.
 	 * 
 	 * @throws InvocationTargetException
+	 *             if the testClass can not be initialized with
+	 *             <code>newInstance()</code>
 	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws InitializationError
+	 *             if any of the classes can not be initialized or the dynamic
+	 *             method can not be called.
+	 * @throws InvocationTargetException
+	 *             if any of the classes can not be initialized or the dynamic
+	 *             method can not be called.
 	 */
 	@Override
 	protected Object createTest() throws InstantiationException,
-			IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, InitializationError {
+			IllegalAccessException, InvocationTargetException {
 		Object retval = getTestClass().getOnlyConstructor().newInstance();
 		if (parentTestInfo != null) {
 			if (parentTestInfo instanceof DynamicTestInfo) {

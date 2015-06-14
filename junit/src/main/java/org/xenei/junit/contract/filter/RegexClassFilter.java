@@ -124,8 +124,8 @@ public class RegexClassFilter implements ClassFilter, Serializable {
 	/**
 	 * Checks to see if the class name matches the regular expression.
 	 *
-	 * @param className
-	 *            the class name to match
+	 * @param clazz
+	 *            the class to match
 	 * @return true if the filename matches one of the regular expressions
 	 */
 	@Override

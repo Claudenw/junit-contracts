@@ -86,12 +86,13 @@ public class ContractTestMap {
 	/**
 	 * Populate and return a ContractTestMap with all the contract tests on the
 	 * class path.
+	 * 
+	 * Contract tests must be annotated with @Contract and must not be annotated
+	 * with @Ignore
+	 * 
+	 * Uses the current thread context class loader.
 	 *
-	 * Will add to list of errors for tests that do not have proper annotations.
-	 *
-	 * @param errors
-	 *            A list of errors.
-	 * @return contractTestClasses TestInfo objects for classes annotated with @Contract
+	 * @return A newly constructed ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance() {
 		return populateInstance(ClassFilter.TRUE, ClassFilter.FALSE);
@@ -105,6 +106,21 @@ public class ContractTestMap {
 						new HasAnnotationClassFilter(Ignore.class)));
 	}
 
+	/**
+	 * Populate an instance of ContractTestMap based on the package filter and
+	 * the class filter.
+	 * 
+	 * Contract tests must be annotated with @Contract and must not be annotated
+	 * with @Ignore
+	 * 
+	 * Uses the current thread context class loader.
+	 *
+	 * @param packageFilter
+	 *            The ClassFilter object to filter package names by.
+	 * @param ignoreFilter
+	 *            The ClassFilter object to specify classes to ignore.
+	 * @return A newly constructed ContractTestMap.
+	 */
 	public static ContractTestMap populateInstance(
 			final ClassFilter packageFilter, final ClassFilter ignoreFilter) {
 
@@ -123,10 +139,10 @@ public class ContractTestMap {
 	}
 
 	/**
-	 * Populate and return a ContractTestMap with all the contract tests on the
-	 * classpath.
+	 * Populate and return a ContractTestMap using the specified class loader.
 	 *
-	 * Will add to list of errors for tests that do not have proper annotations.
+	 * Contract tests must be annotated with @Contract and must not be annotated
+	 * with @Ignore
 	 *
 	 * @param classLoader
 	 *            The class loader to load classes from.
@@ -137,6 +153,20 @@ public class ContractTestMap {
 				ClassFilter.TRUE);
 	}
 
+	/**
+	 * Create an instance of ContractTestMap using the specified class loader.
+	 * 
+	 * Contract tests must be annotated with @Contract and must not be annotated
+	 * with @Ignore
+	 * 
+	 * @param classLoader
+	 *            The class loader to use
+	 * @param packageFilter
+	 *            The ClassFilter object to filter package names by.
+	 * @param ignoreFilter
+	 *            The ClassFilter object to specify classes to ignore.
+	 * @return A newly constructed ContractTestMap.
+	 */
 	public static ContractTestMap populateInstance(
 			final ClassLoader classLoader, final ClassFilter packageFilter,
 			final ClassFilter ignoreFilter) {
@@ -147,7 +177,11 @@ public class ContractTestMap {
 	}
 
 	/**
-	 *
+	 * Create an instance of ContractTestMap using the specified class loader.
+	 * 
+	 * Contract tests must be annotated with @Contract and must not be annotated
+	 * with @Ignore
+	 * 
 	 * @param classLoader
 	 *            The class loader to use.
 	 * @param packages
@@ -160,11 +194,14 @@ public class ContractTestMap {
 	}
 
 	/**
-	 *
+	 * Create a ContractTestMap with using the specified class loader. Contract
+	 * tests must be annotated with @Contract and must not be annotated with @Ignore
+	 * 
 	 * @param classLoader
 	 *            The class loader to use.
-	 * @param packages
-	 *            A list of package names to report
+	 * @param filter
+	 *            The Class filter to filter the classes with.
+	 * 
 	 * @return A ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance(
@@ -284,9 +321,9 @@ public class ContractTestMap {
 	}
 
 	/**
-	 * A list of all test Infos.
+	 * A list of all TestInfo objects.
 	 *
-	 * @return
+	 * @return the list of all TestInfo objects.
 	 */
 	public Collection<TestInfo> listTestInfo() {
 		return classToInfoMap.values();

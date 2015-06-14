@@ -34,6 +34,9 @@ public class InterfaceInfo {
 
 	/**
 	 * Constructor
+	 * 
+	 * @param name
+	 *            The interface class.
 	 */
 	public InterfaceInfo(final Class<?> name) {
 		this.name = name;
@@ -53,7 +56,7 @@ public class InterfaceInfo {
 	/**
 	 * Get the set of tests for the interface.
 	 * 
-	 * @return
+	 * @return the set of Class object representing the tests.
 	 */
 	public Set<Class<?>> getTests() {
 		return tests;

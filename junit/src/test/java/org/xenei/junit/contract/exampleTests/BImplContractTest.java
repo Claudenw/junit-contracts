@@ -48,7 +48,9 @@ import org.xenei.junit.contract.IProducer;
 @ContractImpl(BImpl.class)
 public class BImplContractTest {
 
-	// the producer we will use
+	/**
+	 * the producer we will inject into contract tests
+	 */
 	private IProducer<BImpl> producer = new IProducer<BImpl>() {
 
 		@Override
@@ -63,22 +65,33 @@ public class BImplContractTest {
 		}
 	};
 
+	/**
+	 * Constructor
+	 */
 	public BImplContractTest() {
 	}
 
 	/**
 	 * The method to get the producer and inject it in the tests
+	 * 
+	 * @return Our producer to inject into contract tests.
 	 */
 	@Contract.Inject
 	public IProducer<BImpl> getProducer() {
 		return producer;
 	}
 
+	/**
+	 * reset the listener for the test.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Ensure that the listener detected all the events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "BImplContractTest.producer.newInstance()",

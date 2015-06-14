@@ -34,6 +34,9 @@ import org.xenei.junit.contract.IProducer;
  * track that the tests are run correctly and in the proper order. This would
  * not be used in a production test but are part of our testing of
  * junit-contracts.
+ * 
+ * @param <T>
+ *            The class that we are testing. Must extend B.
  */
 
 // Define this as the contract test for the B interface
@@ -42,6 +45,12 @@ public class BT<T extends B> {
 
 	private IProducer<T> producer;
 
+	/**
+	 * Set the producer that is used in this test.
+	 * 
+	 * @param producer
+	 *            The producer to use for this test.
+	 */
 	@Contract.Inject
 	public final void setProducer(IProducer<T> producer) {
 		this.producer = producer;
@@ -51,11 +60,17 @@ public class BT<T extends B> {
 		return producer;
 	}
 
+	/**
+	 * Test getBName()
+	 */
 	@ContractTest
 	public void testGetBName() {
 		Listener.add(getProducer().newInstance().getBName());
 	}
 
+	/**
+	 * Clean up the producer.
+	 */
 	@After
 	public final void cleanupBT() {
 		getProducer().cleanUp();

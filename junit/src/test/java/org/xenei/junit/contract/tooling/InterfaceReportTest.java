@@ -34,6 +34,10 @@ import org.xenei.junit.contract.filter.ClassFilter;
 import org.xenei.junit.contract.filter.parser.Parser;
 import org.xenei.log4j.recording.RecordingAppender;
 
+/**
+ * Test the InterfaceReport
+ *
+ */
 public class InterfaceReportTest {
 
 	private InterfaceReport interfaceReport;
@@ -53,6 +57,10 @@ public class InterfaceReportTest {
 		return retval;
 	}
 
+	/**
+	 * setup for the test. Create an appending recorder so we can verify
+	 * logging.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		appender = new RecordingAppender();
@@ -60,11 +68,17 @@ public class InterfaceReportTest {
 		root.addAppender(appender);
 	}
 
+	/**
+	 * Clear the recording appender after tests.
+	 */
 	@After
 	public void afterTest() {
 		appender.clear();
 	}
 
+	/**
+	 * Clean up after all test by removing the recording appender.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		Logger root = Logger.getRootLogger();
@@ -72,6 +86,12 @@ public class InterfaceReportTest {
 		appender.close();
 	}
 
+	/**
+	 * Test that all the expected unimplemented tests are found.
+	 * 
+	 * @throws MalformedURLException
+	 *             on error.
+	 */
 	@Test
 	public void testPlain() throws MalformedURLException {
 		interfaceReport = new InterfaceReport(packages, null, classLoader);
@@ -96,8 +116,14 @@ public class InterfaceReportTest {
 
 	}
 
+	/**
+	 * Test that filter properly filters classes.
+	 * 
+	 * @throws MalformedURLException
+	 *             on error
+	 */
 	@Test
-	public void testSkipClass() throws MalformedURLException {
+	public void testFilterClass() throws MalformedURLException {
 		ClassFilter filter = new Parser()
 				.parse("Not( Or( Name( org.xenei.junit.contract.exampleTests.MissingClass ),Name( org.xenei.junit.contract.exampleTests.CImpl3 ), Name( org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA ) ) )");
 
@@ -120,8 +146,14 @@ public class InterfaceReportTest {
 		assertEquals(0, errors.size());
 	}
 
+	/**
+	 * Test that error reporting reports bad classes.
+	 * 
+	 * @throws MalformedURLException
+	 *             on error.
+	 */
 	@Test
-	public void testBadClasses() throws MalformedURLException {
+	public void testErrorReport() throws MalformedURLException {
 		String[] myPackages = { "org.xenei.junit.contract.exampleTests",
 				"org.xenei.junit.bad" };
 		String[] expectedErrors = {

@@ -87,17 +87,25 @@ public class CImpl2ContractTest {
 
 	/**
 	 * The method to inject the producer into the test classes.
+	 * 
+	 * @return The producer we are injecting into the test classes.
 	 */
 	@Contract.Inject
 	public IProducer<CImpl2> getProducer() {
 		return producer;
 	}
 
+	/**
+	 * Clear the listener before the test
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify that the Listener recorded all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		final String[] expected = {

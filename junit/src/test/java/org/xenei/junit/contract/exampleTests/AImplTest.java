@@ -43,6 +43,9 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class AImplTest extends AT<AImpl> {
 
+	/**
+	 * Constructor
+	 */
 	public AImplTest() {
 		// set the producer
 		setProducer(new IProducer<AImpl>() {
@@ -61,11 +64,17 @@ public class AImplTest extends AT<AImpl> {
 		});
 	}
 
+	/**
+	 * Clear the listener so we can start again
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify the listener detected all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "AImplTest.producer.newInstance()", "aname",

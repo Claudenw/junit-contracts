@@ -26,10 +26,10 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare a test method for an interface.
  * <p>
- * For example <code><pre>
+ * For example <code>
  * 
- * @ContractTest public void testX() {...} </pre></code> Declares
- *               <code>testX</code> as a contract test method in the suite
+ * &#64;ContractTest public void testX() {...} </code> Declares
+ * <code>testX</code> as a contract test method in the suite
  * 
  */
 @Target(ElementType.METHOD)

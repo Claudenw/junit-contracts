@@ -103,8 +103,8 @@ public class NameClassFilter extends AbstractStringClassFilter implements
 	 * @throws IllegalArgumentException
 	 *             if the names array is null
 	 */
-	public NameClassFilter(Class<?>... classes) {
-		super(toNames(classes));
+	public NameClassFilter(Class<?>... names) {
+		super(toNames(names));
 	}
 
 	/**

@@ -1,26 +1,30 @@
 package org.xenei.junit.contract.exampleTests;
 
+/**
+ * An implementation of C
+ *
+ */
 public class CImpl3 implements C {
 
+	/**
+	 * Constructor
+	 */
 	public CImpl3() {
-		// TODO Auto-generated constructor stub
+		// does nothing
 	}
 
 	@Override
 	public String getCName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

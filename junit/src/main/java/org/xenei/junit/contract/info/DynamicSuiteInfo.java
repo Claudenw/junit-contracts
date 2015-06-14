@@ -58,6 +58,11 @@ public class DynamicSuiteInfo extends SuiteInfo {
 		}
 	}
 
+	/**
+	 * Get the method that returns the Dynamic IProducer.
+	 * 
+	 * @return the method that returns the Dynamic IProducer.
+	 */
 	public Method getDynamicInjector() {
 		return dynamicInjector;
 	}

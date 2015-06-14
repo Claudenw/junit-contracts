@@ -24,28 +24,47 @@ import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTestRunner;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test AnnotationClassFilter.
+ *
+ */
 public class AnnotationClassFilterTest {
 	private ClassFilter filter = ClassFilter.ANNOTATION;
 	private Class<?> t = Contract.class;
 	private Class<?> f = ContractTestRunner.class;
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter.accept(t));
 		assertFalse(filter.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		assertTrue(filter.accept(t.getName()));
 		assertFalse(filter.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Annotation()", filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

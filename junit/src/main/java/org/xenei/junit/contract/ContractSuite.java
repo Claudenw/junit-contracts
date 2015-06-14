@@ -51,27 +51,28 @@ import org.xenei.junit.contract.info.TestInfoErrorRunner;
 /**
  * Class that runs the Contract annotated tests.
  *
- * Used with <code>@RunWith( ContractSuite.class )</code> this class scans the
- * classes on the class path to find all the test implementations that should be
- * run by this test suite.
+ * Used with <code>&#64;RunWith( ContractSuite.class )</code> this class scans
+ * the classes on the class path to find all the test implementations that
+ * should be run by this test suite.
  * <p>
- * Tests annotated with <code>@RunWith( ContractSuite.class )</code> must:
+ * Tests annotated with <code>&#64;RunWith( ContractSuite.class )</code> must:
+ * </p>
  * <ol>
  * <li>Have a <code>ContractImpl</code> annotation specifying the implementation
  * being tested</li>
  * <li>Include a <code>@Contract.Inject</code> annotated getter that returns an
- * IProducer<x> where "x" is the class specified in the ContractImpl</li>
+ * IProducer&lt;x&gt; where "x" is the class specified in the ContractImpl</li>
  * </ol>
  * <p>
  * The ContractSuite will:
+ * </p>
  * <ol>
  * <li>Instantiate the class annotated with
  * <code>@RunWith( ContractSuite.class )</code></li>
  * <li>Find all the Contract tests for the class specified by ContractImpl and
  * add them to the test suite</li>
- * <li>execute all of the @ContractTest annotated tests</li>
+ * <li>execute all of the &#64;ContractTest annotated tests</li>
  * </ol>
- * </p>
  * <p>
  * <b>NOTE:</b>If the class annotated with
  * <code>@RunWith( ContractSuite.class )</code> implements Dynamic the above
@@ -91,10 +92,19 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 *            the root class
 	 * @param builder
 	 *            builds runners for classes in the suite
-	 * @throws Throwable
+	 * @throws InitializationError
+	 *             if super class can not be instantiated with contractTest.
+	 * @throws IllegalAccessException
+	 *             if the contractTest can not be initialized with
+	 *             <code>newInstance()</code>
+	 * @throws InstantiationException
+	 *             if the contractTest can not be initialized with
+	 *             <code>newInstance()</code>
 	 */
 	public ContractSuite(final Class<?> contractTest,
-			final RunnerBuilder builder) throws Throwable {
+			final RunnerBuilder builder) throws InitializationError,
+			InstantiationException, IllegalAccessException {
+
 		super(contractTest);
 
 		final ContractImpl contractImpl = contractTest

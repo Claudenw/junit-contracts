@@ -53,7 +53,7 @@ public class InterfaceClassFilter extends AbstractBaseClassFilter implements
 	/**
 	 * Checks to see if the class is an interface.
 	 *
-	 * @param clazzName
+	 * @param className
 	 *            the class name to check
 	 * @return true if the class is an interface
 	 */

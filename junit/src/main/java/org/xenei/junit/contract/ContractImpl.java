@@ -26,32 +26,31 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare the type the ContractSuite is testing.
  * <p>
- * For example <code><pre>
- * 
- * @RunWith( ContractSuite.class )
- * @ContractImpl( FooImpl.class ) public class Foo_Test {...} </pre></code>
- *                <p>
- *                Declares <code>FooImpl</code> as the implementation that the
- *                contract suite should be built for.
- *                </p>
- *                <p>
- *                The value of the annotation (FooImpl.class) in the above
- *                example) defines the class that will be scanned for
- *                interfaces. The set of contract tests are then scanned looking
- *                for tests for those interfaces. Tests from all matching
- *                Contract tests are then added to the current test class.
- *                </p>
- *                <p>
- *                <b>NOTE:</b> In some cases only the interface is known, not
- *                the implementation. In these cases a testing interface may be
- *                created and that class used in the ContractImpl annotation.
- *                For example assume that you want to test an interface A.
- *                create an interface:
- *                <code><pre>interface ATester extends A{};</code>
+ * For example
  * 
  * <pre>
- * and in the ContractImpl annotation use ATester.class
- *                </p>
+ * 
+ * &#64;RunWith( ContractSuite.class )
+ * &#64;ContractImpl( FooImpl.class ) public class Foo_Test {...}
+ * </pre>
+ * <p>
+ * Declares <code>FooImpl</code> as the implementation that the contract suite
+ * should be built for.
+ * </p>
+ * <p>
+ * The value of the annotation (FooImpl.class) in the above example) defines the
+ * class that will be scanned for interfaces. The set of contract tests are then
+ * scanned looking for tests for those interfaces. Tests from all matching
+ * Contract tests are then added to the current test class.
+ * </p>
+ * <p>
+ * <b>NOTE:</b> In some cases only the interface is known, not the
+ * implementation. In these cases a testing interface may be created and that
+ * class used in the ContractImpl annotation. For example assume that you want
+ * to test an interface A. create an interface:
+ * <code>interface ATester extends A{};</code> and in the ContractImpl
+ * annotation use ATester.class
+ * </p>
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -59,17 +58,23 @@ public @interface ContractImpl {
 	/**
 	 * The Implementation class that should be scanned for interfaces that have
 	 * Contract tests defined.
+	 * 
+	 * @return The class the implementation class.
 	 */
 	Class<?> value();
 
 	/**
-	 * The list of interface classes whos tests that should be skipped.
+	 * The list of interface classes for which tests should be skipped.
+	 * 
+	 * @return The interfaces to skip.
 	 */
 	Class<?>[] skip() default {};
 
 	/**
 	 * The list of implementations to skip. These are implementations of
 	 * interface tests.
+	 * 
+	 * @return the list of interface test implementations to skip.
 	 */
 	Class<?>[] ignore() default {};
 }

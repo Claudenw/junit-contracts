@@ -75,20 +75,23 @@ public class Parser {
 	 * Parses the class filter string into a ClassFilter object.
 	 * <p>
 	 * Strings are of the form:
+	 * </p>
 	 * 
 	 * <pre>
 	 * FilterName( arg[,arg[,arg[,...]]] )
 	 * </pre>
-	 * 
+	 * <p>
 	 * Where FilterName is the name of the desired filter class without the
 	 * "ClassFilter" ending. (e.g. True() for the class TrueClassFilter).
-	 * 
+	 * </p>
+	 * <p>
 	 * The result is a prefix notation function. For example:
+	 * </p>
 	 * 
 	 * <pre>
 	 * Or(Interface(), Not(Prefix(org.xenei)))
 	 * </pre>
-	 * 
+	 * <p>
 	 * is a function that accepts classes that are either interfaces or whos
 	 * fully qualified java name does not start with "org.xenei"
 	 * </p>
@@ -99,6 +102,7 @@ public class Parser {
 	 * </p>
 	 * 
 	 * @param filterStr
+	 *            The filter definition to parse.
 	 * @return The ClassFilter
 	 * @throws IllegalArgumentException
 	 *             If the filter can not be build.

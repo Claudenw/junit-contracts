@@ -21,23 +21,36 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * Test the AbstractClassFilter.
+ *
+ */
 public class AbstractClassFilterTest {
 	private ClassFilter filter = ClassFilter.ABSTRACT;
 	private Class<?> t = AbstractBaseClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter.accept(t));
 		assertFalse(filter.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		assertTrue(filter.accept(t.getName()));
 		assertFalse(filter.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Abstract()", filter.toString());

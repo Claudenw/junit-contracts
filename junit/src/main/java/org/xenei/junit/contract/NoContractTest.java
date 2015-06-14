@@ -26,16 +26,14 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare a contract test is not required for this interface.
  * <p>
- * For example <code><pre>
+ * For example <code>
  * 
- * @NoContractTest public interface Foo {...} </pre></code>
+ * &#64;NoContractTest public interface Foo {...} </code>
  * 
- *                 Declares that <code>Foo</code> does not require a contract
- *                 test.
+ * Declares that <code>Foo</code> does not require a contract test.
  *
- *                 This is primarily used to filter out interfaces in the
- *                 Interface reports.
- * 
+ * This is primarily used to filter out interfaces in the Interface reports.
+ * </p>
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

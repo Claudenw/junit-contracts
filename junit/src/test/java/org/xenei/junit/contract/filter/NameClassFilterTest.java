@@ -24,6 +24,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test NameClassFilter
+ *
+ */
 public class NameClassFilterTest {
 
 	private final ClassFilter filter_sens;
@@ -32,11 +36,17 @@ public class NameClassFilterTest {
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Constructor.
+	 */
 	public NameClassFilterTest() {
 		filter_sens = new NameClassFilter(Case.SENSITIVE, t.getName());
 		filter_insens = new NameClassFilter(Case.INSENSITIVE, t.getName());
 	}
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter_sens.accept(t));
@@ -46,6 +56,9 @@ public class NameClassFilterTest {
 		assertFalse(filter_insens.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 
@@ -59,6 +72,9 @@ public class NameClassFilterTest {
 		assertFalse(filter_insens.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Name( Sensitive, " + t.getName() + " )",
@@ -67,6 +83,12 @@ public class NameClassFilterTest {
 				filter_insens.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

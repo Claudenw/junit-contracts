@@ -18,14 +18,25 @@
 package org.xenei.junit.bad;
 
 /**
- * Class to test that the ignore option works.
+ * Class to test that a missing @Contract.Inject is detected
  */
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.exampleTests.A;
 
+/**
+ * A Contract test for A that does not have an @Contract.Inject annotated
+ * method.
+ * 
+ * THIS CONSTRUCT IS NOT ALLOWED AND IS ONLY USED FOR TESTING THE DETECTION OF
+ * SUCH A CONDITION.
+ *
+ */
 @Contract(A.class)
 public class BadNoInject {
 
+	/**
+	 * Constructor.
+	 */
 	public BadNoInject() {
 	}
 

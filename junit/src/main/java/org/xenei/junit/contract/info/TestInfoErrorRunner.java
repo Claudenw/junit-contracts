@@ -23,17 +23,38 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.slf4j.Logger;
 
+/**
+ * An Runner to produce a complete error report.
+ * 
+ * TestInfo will collect a set of Throwable objects. This runner displays them
+ * all at once.
+ * 
+ */
 public class TestInfoErrorRunner extends Runner {
 
 	private final TestInfo testInfo;;
 
 	private final Class<?> fTestClass;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param testClass
+	 *            The class under test.
+	 * @param testInfo
+	 *            The TestInfo that has the errors.
+	 */
 	public TestInfoErrorRunner(final Class<?> testClass, final TestInfo testInfo) {
 		fTestClass = testClass;
 		this.testInfo = testInfo;
 	}
 
+	/**
+	 * Log all the errors (if any) to the provided logger.
+	 * 
+	 * @param log
+	 *            The logger to log the errors to.
+	 */
 	public void logErrors(final Logger log) {
 		for (final Throwable t : testInfo.getErrors()) {
 			log.error(t.toString());

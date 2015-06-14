@@ -43,6 +43,9 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class DImplTest extends DT<DImpl> {
 
+	/**
+	 * Constructor
+	 */
 	public DImplTest() {
 		setProducer(new IProducer<DImpl>() {
 
@@ -60,11 +63,17 @@ public class DImplTest extends DT<DImpl> {
 		});
 	}
 
+	/**
+	 * Clear the listener for tests.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify the listener saw all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "DImplTest.producer.newInstance()", "dname",

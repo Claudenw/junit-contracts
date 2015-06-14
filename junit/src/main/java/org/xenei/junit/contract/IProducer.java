@@ -35,6 +35,8 @@ public interface IProducer<T> {
 
 	/**
 	 * Return a new instance of T. May be called more than once.
+	 * 
+	 * @return The instance of T
 	 */
 	public T newInstance();
 

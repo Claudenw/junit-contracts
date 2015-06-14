@@ -71,6 +71,8 @@ public class DTImplSuite implements Dynamic {
 	 * The method that indicates the master producer for the dynamic tests. This
 	 * producer will be injected into all of the other ContractSuite run tests
 	 * in this suite.
+	 * 
+	 * @return The producer that will be injected.
 	 */
 	@Dynamic.Inject
 	public IProducer<DImpl> getInjected() {
@@ -107,6 +109,7 @@ public class DTImplSuite implements Dynamic {
 		 * The setter that accepts the producer from the enclosing test.
 		 * 
 		 * @param producerD
+		 *            the producer of DImpl objects.
 		 */
 		@Contract.Inject
 		public void setProducer(IProducer<DImpl> producerD) {
@@ -118,6 +121,8 @@ public class DTImplSuite implements Dynamic {
 		 * producer needed for this test.
 		 * 
 		 * In this case just returns the producer passed in the setter.
+		 * 
+		 * @return The producer passed in the setter.
 		 */
 		@Contract.Inject
 		public IProducer<DImpl> getProducer() {
@@ -144,12 +149,13 @@ public class DTImplSuite implements Dynamic {
 	 * <li>Therefore, passing A.class to the ContractImpl will not find any
 	 * tests as there are no super interfaces of A.</li>
 	 * </ol>
+	 * <p>
 	 * The solution is to create an interface that extends the interface we want
 	 * to test ("ForceA" in this case) so that the ContractImpl will find it.
 	 * </p>
 	 * <p>
-	 * Effectively this class converts the IProducer<DImpl> into a IProducer<A>
-	 * for the contract tests.
+	 * Effectively this class converts the IProducer&lt;DImpl&gt; into a
+	 * IProducer&lt;A&gt; for the contract tests.
 	 * </p>
 	 * <p>
 	 * This is protected to keep some test runners from executing it outside the
@@ -192,7 +198,7 @@ public class DTImplSuite implements Dynamic {
 
 				@Override
 				public void cleanUp() {
-					// TODO Auto-generated method stub
+					// does nothing
 
 				}
 			};
@@ -201,7 +207,7 @@ public class DTImplSuite implements Dynamic {
 		/**
 		 * The method called by the test implementations to get the producer.
 		 * 
-		 * @return
+		 * @return the producer of A objects.
 		 */
 		@Contract.Inject
 		public IProducer<A> getProducer() {
@@ -229,12 +235,13 @@ public class DTImplSuite implements Dynamic {
 	 * <li>Therefore, passing B.class to the ContractImpl will not find any
 	 * tests as there are no super interfaces of B.</li>
 	 * </ol>
+	 * <p>
 	 * The solution is to create an interface that extends the interface we want
 	 * to test ("ForceB" in this case) so that the ContractImpl will find it.
 	 * </p>
 	 * <p>
-	 * Effectively this class converts the IProducer<DImpl> into a IProducer<B>
-	 * for the contract tests.
+	 * Effectively this class converts the IProducer&lt;DImpl&gt; into a
+	 * IProducer&lt;B&gt; for the contract tests.
 	 * </p>
 	 * <p>
 	 * This is protected to keep some test runners from executing it outside the
@@ -272,7 +279,7 @@ public class DTImplSuite implements Dynamic {
 
 				@Override
 				public void cleanUp() {
-					// TODO Auto-generated method stub
+					// does nothing.
 
 				}
 			};
@@ -281,7 +288,7 @@ public class DTImplSuite implements Dynamic {
 		/**
 		 * The method called by the test implementations to get the producer.
 		 * 
-		 * @return
+		 * @return The producer of B objects
 		 */
 		@Contract.Inject
 		public IProducer<B> getProducer() {

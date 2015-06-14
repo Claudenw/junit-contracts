@@ -130,22 +130,11 @@ public class TestInfo implements Comparable<TestInfo> {
 		return errors.size() > 0;
 	}
 
-	// /**
-	// * Test contract test has a single constructor that takes parameter as an
-	// * argument
-	// */
-	// private boolean hasInjection(Class<?> cls) {
-	// Constructor<?>[] constructors = contractTest.getConstructors();
-	// // not Foo NonStatic InnerClass()
-	// boolean retval = !(contractTest.isMemberClass() && !isStatic(contractTest
-	// .getModifiers()))
-	// // has one constructor
-	// && (constructors.length == 1)
-	// // constructor has no argument
-	// && (constructors[0].getParameterTypes().length == 0);
-	// return retval;
-	// }
-
+	/**
+	 * Get an array of classes to skip.
+	 * 
+	 * @return The classes that should not be tested.
+	 */
 	public Class<?>[] getSkipTests() {
 		return skipTests;
 	}

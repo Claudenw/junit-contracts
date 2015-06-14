@@ -120,10 +120,10 @@ public abstract class AbstractStringClassFilter extends AbstractBaseClassFilter 
 	 * Constructs a new name class filter for a collection of names specifying
 	 * case-sensitivity.
 	 * 
-	 * @param names
-	 *            the names to allow, must not be null
 	 * @param caseSensitivity
 	 *            how to handle case sensitivity, null means case-sensitive
+	 * @param strings
+	 *            the strings to check against.
 	 * @throws IllegalArgumentException
 	 *             if the name list is null
 	 * @throws ClassCastException

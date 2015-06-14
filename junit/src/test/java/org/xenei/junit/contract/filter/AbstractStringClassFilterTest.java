@@ -24,6 +24,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * Class to test AbstractStringClassFilter.
+ *
+ */
 public class AbstractStringClassFilterTest {
 	private AbstractStringClassFilter filter = new AbstractStringClassFilter(
 			"foo") {
@@ -50,6 +54,9 @@ public class AbstractStringClassFilterTest {
 		}
 	};
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("( Sensitive, foo )", filter.toString());
@@ -68,6 +75,9 @@ public class AbstractStringClassFilterTest {
 
 	}
 
+	/**
+	 * Test that addStrings( String... ) works.
+	 */
 	@Test
 	public void testAddStrings() {
 		filter.addStrings("fu", "bar", "baz");
@@ -75,7 +85,13 @@ public class AbstractStringClassFilterTest {
 		assertTrue("missing fu", filter.getStrings().contains("fu"));
 		assertTrue("missing bar", filter.getStrings().contains("bar"));
 		assertTrue("missing baz", filter.getStrings().contains("baz"));
+	}
 
+	/**
+	 * Test that addStrings( List&lt;String&gt; ) works.
+	 */
+	@Test
+	public void testAddStrings_list() {
 		List<String> lst = new ArrayList<String>();
 		lst.add("fu");
 		lst.add("bar");

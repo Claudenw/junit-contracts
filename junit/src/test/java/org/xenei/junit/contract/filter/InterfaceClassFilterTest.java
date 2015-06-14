@@ -22,28 +22,47 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.xenei.junit.contract.filter.parser.Parser;
 
+/**
+ * Test InterfaceClassFilter
+ *
+ */
 public class InterfaceClassFilterTest {
 	private ClassFilter filter = ClassFilter.INTERFACE;
 	private Class<?> t = ClassFilter.class;
 	private Class<?> f = String.class;
 
+	/**
+	 * Test that accept(Class) works
+	 */
 	@Test
 	public void testAcceptClass() {
 		assertTrue(filter.accept(t));
 		assertFalse(filter.accept(f));
 	}
 
+	/**
+	 * Test that accept(String) works.
+	 */
 	@Test
 	public void testAccceptString() {
 		assertTrue(filter.accept(t.getName()));
 		assertFalse(filter.accept(f.getName()));
 	}
 
+	/**
+	 * Test that toString() works.
+	 */
 	@Test
 	public void testToString() {
 		assertEquals("Interface()", filter.toString());
 	}
 
+	/**
+	 * Test that the parser parses string representation correctly.
+	 * 
+	 * @throws Exception
+	 *             on any Exception.
+	 */
 	@Test
 	public void testParse() throws Exception {
 		Parser p = new Parser();

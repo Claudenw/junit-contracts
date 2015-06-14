@@ -43,6 +43,9 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class CImplTest extends CT<CImpl> {
 
+	/**
+	 * Constructor.
+	 */
 	public CImplTest() {
 		setProducer(new IProducer<CImpl>() {
 
@@ -60,11 +63,17 @@ public class CImplTest extends CT<CImpl> {
 		});
 	}
 
+	/**
+	 * Clear the listener for tests.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		Listener.clear();
 	}
 
+	/**
+	 * Verify that the listener saw all the expected events.
+	 */
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "CImplTest.producer.newInstance()", "cname",
