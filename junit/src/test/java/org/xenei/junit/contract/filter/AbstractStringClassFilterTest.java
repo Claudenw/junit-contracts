@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,30 +30,44 @@ import org.junit.Test;
  *
  */
 public class AbstractStringClassFilterTest {
-	private AbstractStringClassFilter filter = new AbstractStringClassFilter(
-			"foo") {
+	
+	private AbstractStringClassFilter filter;
+	
+	private AbstractStringClassFilter filter_sens;
+	
+	private AbstractStringClassFilter filter_insens;
+	
+	/**
+	 * Recreate the filters.
+	 */
+	@Before
+	public void setupAbstractStringClassFilterTest()
+	{
+		filter = new AbstractStringClassFilter(
+				"foo") {
 
-		@Override
-		public boolean accept(String className) {
-			return true;
-		}
-	};
-	private AbstractStringClassFilter filter_sens = new AbstractStringClassFilter(
-			Case.SENSITIVE, "foo") {
+			@Override
+			public boolean accept(String className) {
+				return true;
+			}
+		};
+		filter_sens = new AbstractStringClassFilter(
+				Case.SENSITIVE, "foo") {
 
-		@Override
-		public boolean accept(String className) {
-			return true;
-		}
-	};
-	private AbstractStringClassFilter filter_insens = new AbstractStringClassFilter(
-			Case.INSENSITIVE, "foo") {
+			@Override
+			public boolean accept(String className) {
+				return true;
+			}
+		};
+		filter_insens = new AbstractStringClassFilter(
+				Case.INSENSITIVE, "foo") {
 
-		@Override
-		public boolean accept(String className) {
-			return true;
-		}
-	};
+			@Override
+			public boolean accept(String className) {
+				return true;
+			}
+		};
+	}
 
 	/**
 	 * Test that toString() works.
@@ -82,6 +97,7 @@ public class AbstractStringClassFilterTest {
 	public void testAddStrings() {
 		filter.addStrings("fu", "bar", "baz");
 		assertEquals(4, filter.getStrings().size());
+		assertTrue("missing foo (from constructor)", filter.getStrings().contains("foo"));
 		assertTrue("missing fu", filter.getStrings().contains("fu"));
 		assertTrue("missing bar", filter.getStrings().contains("bar"));
 		assertTrue("missing baz", filter.getStrings().contains("baz"));
@@ -97,7 +113,8 @@ public class AbstractStringClassFilterTest {
 		lst.add("bar");
 		lst.add("baz");
 		filter_sens.addStrings(lst);
-		assertEquals(4, filter.getStrings().size());
+		assertEquals(4, filter_sens.getStrings().size());
+		assertTrue("missing foo (from constructor)", filter_sens.getStrings().contains("foo"));
 		assertTrue("missing fu", filter_sens.getStrings().contains("fu"));
 		assertTrue("missing bar", filter_sens.getStrings().contains("bar"));
 		assertTrue("missing baz", filter_sens.getStrings().contains("baz"));
