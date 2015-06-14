@@ -18,7 +18,6 @@
 package org.xenei.junit.contract;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,7 +37,7 @@ import org.xenei.junit.contract.filter.parser.Parser;
  *
  */
 public class CmdLine {
-	
+
 	/**
 	 * Run the interface report generation.
 	 *
@@ -47,21 +46,12 @@ public class CmdLine {
 	 * @param args
 	 *            the command line arguments.
 	 * @throws ParseException
+	 *             if command line can not be parse.
 	 * @throws MalformedURLException
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws InstantiationException
-	 * @throws SecurityException
-	 * @throws NoSuchFieldException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
+	 *             if the directories are not specified properly.
 	 */
 	public static void main(final String[] args) throws ParseException,
-			MalformedURLException, IllegalArgumentException,
-			IllegalAccessException, NoSuchFieldException, SecurityException,
-			InstantiationException, InvocationTargetException,
-			NoSuchMethodException, ClassNotFoundException {
+			MalformedURLException {
 		final CommandLine commands = new BasicParser()
 				.parse(getOptions(), args);
 
@@ -91,19 +81,16 @@ public class CmdLine {
 		}
 
 		ClassFilter filter = null;
-		if (commands.hasOption("c"))
-		{
-			 filter = new Parser().parse(commands
-						.getOptionValue("c"));
+		if (commands.hasOption("c")) {
+			filter = new Parser().parse(commands.getOptionValue("c"));
 		}
 		final InterfaceReport ifReport = new InterfaceReport(
-				commands.getOptionValues("p"), filter , classLoader);
+				commands.getOptionValues("p"), filter, classLoader);
 
 		if (commands.hasOption("u")) {
 			System.out.println("Untested Interfaces");
-			
-			ClassFilter f = new Parser().parse(commands
-					.getOptionValue("u"));
+
+			ClassFilter f = new Parser().parse(commands.getOptionValue("u"));
 			for (final Class<?> c : f.filter(ifReport.getUntestedInterfaces())) {
 				System.out.println(c.getCanonicalName());
 			}
@@ -112,8 +99,7 @@ public class CmdLine {
 
 		if (commands.hasOption("i")) {
 			System.out.println("Missing contract test implementations");
-			ClassFilter f = new Parser().parse(commands
-					.getOptionValue("i"));
+			ClassFilter f = new Parser().parse(commands.getOptionValue("i"));
 			for (final Class<?> c : f.filter(ifReport.getUnImplementedTests())) {
 				System.out.println(c.getName());
 			}
@@ -137,9 +123,15 @@ public class CmdLine {
 		retval.addOption("p", "package", true, "Package to be scanned");
 		retval.addOption("d", "directory", true,
 				"Directory to be scanned for classes");
-		retval.addOption("u", "untested", true,
+		retval.addOption(
+				"u",
+				"untested",
+				true,
 				"Filter for classes to include in the untested class report.  If not set no untested class report is generated.  Suggest: true()");
-		retval.addOption("i", "implementation", false,
+		retval.addOption(
+				"i",
+				"implementation",
+				false,
 				"Filter for classes to include in the missing implementation class report.  If not set no missing implementation class report is generated.  Suggest: true()");
 		retval.addOption("e", "errors", false,
 				"Produce contract test configuration error report");
@@ -148,7 +140,7 @@ public class CmdLine {
 				"classFilter",
 				true,
 				"A class filter function. Classes that pass the filter will be included.  Default to true() ");
-		
+
 		return retval;
 	}
 
