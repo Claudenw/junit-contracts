@@ -173,9 +173,6 @@ public class ContractMojo extends AbstractMojo {
 		InterfaceReport ir;
 		try {
 			ir = new InterfaceReport(packages, filter, buildClassLoader());
-		} catch (final MalformedURLException e1) {
-			throw new MojoExecutionException(
-					"Could not create Interface report class", e1);
 		} catch (IllegalArgumentException e1) {
 			throw new MojoExecutionException(
 					"Could not create Interface report class", e1);

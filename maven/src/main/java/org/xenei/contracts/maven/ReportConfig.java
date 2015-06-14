@@ -13,6 +13,9 @@ public class ReportConfig {
 	private boolean failOnError = false;
 	private ClassFilter filter = ClassFilter.TRUE;
 
+	/**
+	 * Constructor
+	 */
 	public ReportConfig() {
 	}
 
@@ -70,8 +73,8 @@ public class ReportConfig {
 	 * string will result in all classes passing the test.
 	 * 
 	 * @param filter
-	 *            The string representation of the filter.
-	 * @throws IllegalArgumentException
+	 *            The string representation of the filter. May be null.
+	 * @throws IllegalArgumentException if the filter can not be parsed.
 	 */
 	public void setFilter(String filter) throws IllegalArgumentException {
 		if (StringUtils.isBlank(filter)) {

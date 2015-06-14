@@ -1,5 +1,7 @@
 .classpath
-.settings
+**/.settings/
 .project
 /bin
 /target
+**.releaseBackup
+release.properties
