@@ -19,7 +19,7 @@
 	<parent>
 		<artifactId>contracts</artifactId>
 		<relativePath>..</relativePath>
-		<version>0.1.3-SNAPSHOT</version>
+		<version>0.1.3</version>
 		<groupId>org.xenei</groupId>
 	</parent>
 
