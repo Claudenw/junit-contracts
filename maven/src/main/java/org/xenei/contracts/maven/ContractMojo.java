@@ -152,42 +152,46 @@ public class ContractMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		boolean success = true;
 
-		if ((packages == null) || (packages.length == 0)) {
-			getLog().error("At least one package must be specified");
-			throw new MojoExecutionException(
-					"At least one package must be specified");
-		}
-
-		if (getLog().isInfoEnabled()) {
-			for (final String s : packages) {
-				getLog().info("Processing package: " + s);
-			}
-			getLog().info("Skip filter: " + filter);
-		}
-
-		myDir = new File(target, "contract-reports");
-		if (!myDir.exists()) {
-			myDir.mkdirs();
-		}
-
-		InterfaceReport ir;
 		try {
-			ir = new InterfaceReport(packages, filter, buildClassLoader());
-		} catch (IllegalArgumentException e1) {
-			throw new MojoExecutionException(
-					"Could not create Interface report class", e1);
-		}
+			if ((packages == null) || (packages.length == 0)) {
+				getLog().error("At least one package must be specified");
+				throw new MojoExecutionException(
+						"At least one package must be specified");
+			}
 
-		doReportInterfaces(ir);
+			if (getLog().isInfoEnabled()) {
+				for (final String s : packages) {
+					getLog().info("Processing package: " + s);
+				}
+				getLog().info("Skip filter: " + filter);
+			}
 
-		success &= doReportUntested(ir.getUntestedInterfaces());
+			myDir = new File(target, "contract-reports");
+			if (!myDir.exists()) {
+				myDir.mkdirs();
+			}
 
-		success &= doReportUnimplemented(ir.getUnImplementedTests());
+			InterfaceReport ir;
+			try {
+				ir = new InterfaceReport(packages, filter, buildClassLoader());
+			} catch (IllegalArgumentException e1) {
+				throw new MojoExecutionException(
+						"Could not create Interface report class", e1);
+			}
 
-		success &= doReportErrors(ir.getErrors());
+			doReportInterfaces(ir);
 
-		if (!success) {
-			throw new MojoExecutionException(failureMessage.toString());
+			success &= doReportUntested(ir.getUntestedInterfaces());
+
+			success &= doReportUnimplemented(ir.getUnImplementedTests());
+
+			success &= doReportErrors(ir.getErrors());
+
+			if (!success) {
+				throw new MojoExecutionException(failureMessage.toString());
+			}
+		} catch (RuntimeException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 
