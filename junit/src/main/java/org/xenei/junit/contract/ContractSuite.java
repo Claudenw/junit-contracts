@@ -323,8 +323,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 			}
 		}
 		if (runners.size() == 0) {
-			parentTestInfo.addError(new InitializationError("No tests for "
-					+ testClass));
+			LOG.error("No tests for "+ testClass);
 		}
 
 	}
