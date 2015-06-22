@@ -248,25 +248,44 @@ public class WildcardClassFilter extends AbstractBaseClassFilter implements
 	private static void parseWildAsterisk(StringBuilder sb, String s) {
 		String[] blocks = s.split("\\*");
 		Iterator<String> iter = Arrays.asList(blocks).iterator();
-		escapeString(sb, iter.next());
-		while (iter.hasNext()) {
-			sb = escapeString(sb.append(".*"), iter.next());
+		if (iter.hasNext())
+		{
+			escapeString(sb, iter.next());
+			while (iter.hasNext()) {
+				sb = escapeString(sb.append(".*"), iter.next());
+			}
+			if (s.endsWith("*")) {
+				sb.append(".*");
+			}
 		}
-		if (s.endsWith("*")) {
-			sb.append(".*");
+		else
+		{
+			if (s.equals("*"))
+			{
+				sb.append(".*");
+			}
 		}
 	}
 
 	private static StringBuilder parseWildQuestion(StringBuilder sb, String s) {
 		String[] blocks = s.split("\\?");
 		Iterator<String> iter = Arrays.asList(blocks).iterator();
-		parseWildAsterisk(sb, iter.next());
-		while (iter.hasNext()) {
-			sb.append(".");
+		if (iter.hasNext())
+		{
 			parseWildAsterisk(sb, iter.next());
+			while (iter.hasNext()) {
+				sb.append(".");
+				parseWildAsterisk(sb, iter.next());
+			}
+			if (s.endsWith("?")) {
+				sb.append(".");
+			}
 		}
-		if (s.endsWith("?")) {
-			sb.append(".");
+		else {
+			if (s.equals("?"))
+			{
+				sb.append(".");
+			}
 		}
 		return sb;
 	}

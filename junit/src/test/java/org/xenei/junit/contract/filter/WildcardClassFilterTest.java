@@ -107,6 +107,18 @@ public class WildcardClassFilterTest {
 	}
 
 	/**
+	 * Test that the asterisk is expanded to .* whereever it is found in the
+	 * string.
+	 */
+	@Test
+	public void testSingleWildcards() {
+		assertEquals("^.*$",
+				WildcardClassFilter.makeRegex("*"));
+		assertEquals("^.$",
+				WildcardClassFilter.makeRegex("?"));
+	}
+	
+	/**
 	 * Test that the question mark is expanded to . (dot) where ever it is found
 	 * in the string.
 	 */
