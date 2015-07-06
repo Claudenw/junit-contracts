@@ -18,6 +18,7 @@
 package org.xenei.junit.contract.tooling;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -170,7 +171,7 @@ public class InterfaceReport {
 
 		if (packageClasses.size() == 0) {
 			throw new IllegalArgumentException("No classes found in "
-					+ packages);
+					+ Arrays.asList(packages));
 		}
 
 		contractImplMap = ContractImplMap.populateInstance(packageClasses);

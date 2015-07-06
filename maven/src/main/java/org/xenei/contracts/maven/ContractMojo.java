@@ -82,6 +82,12 @@ public class ContractMojo extends AbstractMojo {
 	private ReportConfig unimplemented;
 
 	/**
+	 * If there are errors in the ContractMojo should the build be failed.
+	 * Defaults to true;
+	 */
+	@Parameter
+	private boolean failOnError = true;
+	/**
 	 * Report configuration for errors generated during run.
 	 */
 	@Parameter
@@ -148,15 +154,43 @@ public class ContractMojo extends AbstractMojo {
 		this.unimplemented = unimplemented;
 	}
 
+	/**
+	 * If true the build will fail if there is an error in the mojo. Defaults to
+	 * <code>true</code>
+	 * 
+	 * @param failOnError
+	 *            if true the build will fail on error.
+	 */
+	public void setFailOnError(boolean failOnError) {
+		this.failOnError = failOnError;
+	}
+	
+	private void mojoError( String err ) throws MojoExecutionException
+	{
+		getLog().error(err);
+		if (failOnError)
+		{
+			throw new MojoExecutionException(err);
+		}
+	}
+
+	private void mojoError( String err, Throwable throwable ) throws MojoExecutionException
+	{
+		getLog().error(err, throwable);
+		if (failOnError)
+		{
+			throw new MojoExecutionException(err, throwable);
+		}
+	}
+
 	@Override
 	public void execute() throws MojoExecutionException {
 		boolean success = true;
 
 		try {
 			if ((packages == null) || (packages.length == 0)) {
-				getLog().error("At least one package must be specified");
-				throw new MojoExecutionException(
-						"At least one package must be specified");
+				mojoError( "At least one package must be specified");
+				return;
 			}
 
 			if (getLog().isInfoEnabled()) {
@@ -175,8 +209,8 @@ public class ContractMojo extends AbstractMojo {
 			try {
 				ir = new InterfaceReport(packages, filter, buildClassLoader());
 			} catch (IllegalArgumentException e1) {
-				throw new MojoExecutionException(
-						"Could not create Interface report class", e1);
+				mojoError("Could not create Interface report class", e1);
+				return;
 			}
 
 			doReportInterfaces(ir);
@@ -188,10 +222,10 @@ public class ContractMojo extends AbstractMojo {
 			success &= doReportErrors(ir.getErrors());
 
 			if (!success) {
-				throw new MojoExecutionException(failureMessage.toString());
+				mojoError(failureMessage.toString());
 			}
 		} catch (RuntimeException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+			mojoError(e.getMessage(), e);
 		}
 	}
 
