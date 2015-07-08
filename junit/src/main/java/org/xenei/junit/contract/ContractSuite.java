@@ -323,7 +323,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 			}
 		}
 		if (runners.size() == 0) {
-			LOG.error("No tests for "+ testClass);
+			LOG.info("No tests for "+ testClass);
 		}
 
 	}
@@ -340,7 +340,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 	@Override
 	protected void runChild(final Runner child, final RunNotifier notifier) {
-		LOG.info("Running: {} ", child);
+		LOG.debug("Running: {} ", child);
 		child.run(notifier);
 	}
 

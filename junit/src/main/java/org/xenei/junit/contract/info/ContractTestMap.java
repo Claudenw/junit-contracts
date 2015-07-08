@@ -98,7 +98,7 @@ public class ContractTestMap {
 		return populateInstance(ClassFilter.TRUE, ClassFilter.FALSE);
 	}
 
-	// the filters wer are going to ignore.
+	// the filters we are going to ignore.
 	private static ClassFilter createIgnoreFilter(final ClassFilter ignoreFilter) {
 		return new AndClassFilter(new NotClassFilter(SKIP_FILTER),
 				new NotClassFilter(ignoreFilter), new HasAnnotationClassFilter(
@@ -265,7 +265,7 @@ public class ContractTestMap {
 	public Set<TestInfo> getInfoByInterfaceClass(final Class<?> contract) {
 		final Set<TestInfo> ti = interfaceToInfoMap.get(contract);
 		if (ti == null) {
-			LOG.info(String
+			LOG.debug(String
 					.format("Found no tests for interface %s.", contract));
 			return Collections.emptySet();
 		}
@@ -311,7 +311,7 @@ public class ContractTestMap {
 				.getSkipTests());
 		for (final Class<?> clazz : implClasses) {
 			if (skipList.contains(clazz)) {
-				LOG.info(String.format("Skipping %s for %s", clazz,
+				LOG.debug(String.format("Skipping %s for %s", clazz,
 						contractClassInfo));
 			} else {
 				testClasses.addAll(getInfoByInterfaceClass(clazz));
