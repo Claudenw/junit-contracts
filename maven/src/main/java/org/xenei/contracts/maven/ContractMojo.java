@@ -167,20 +167,22 @@ public class ContractMojo extends AbstractMojo {
 	
 	private void mojoError( String err ) throws MojoExecutionException
 	{
-		getLog().error(err);
 		if (failOnError)
 		{
+			getLog().error(err);
 			throw new MojoExecutionException(err);
 		}
+		getLog().info(err);
 	}
 
 	private void mojoError( String err, Throwable throwable ) throws MojoExecutionException
 	{
-		getLog().error(err, throwable);
 		if (failOnError)
 		{
+			getLog().error(err, throwable);
 			throw new MojoExecutionException(err, throwable);
 		}
+		getLog().info(err, throwable);
 	}
 
 	@Override
