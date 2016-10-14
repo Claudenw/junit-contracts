@@ -49,7 +49,7 @@ import org.xenei.junit.contract.IProducer;
  */
 // run as a contract test
 @RunWith(ContractSuite.class)
-// testing the CImpl class.
+// testing the DImpl class.
 @ContractImpl(value = DImpl.class, ignore = { BadNoInject.class })
 public class DTImplSuite implements Dynamic {
 

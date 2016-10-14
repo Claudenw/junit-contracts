@@ -47,7 +47,7 @@ import java.util.Collection;
  * <li>Include a <code>@Contract.Inject</code> annotated getter that returns the
  * producer required for the test.</li>
  * </ol>
- * In general these classes convert the <code>@Dynamic.Inject</code> annottated
+ * In general these classes convert the <code>@Dynamic.Inject</code> annotated
  * producer into a producer that the underlying test can use.</li>
  * </ol>
  * <p>
