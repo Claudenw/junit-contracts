@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>junit-contracts</artifactId>
-	<version>0.1.6-SNAPSHOT</version>
 	<name>Xenei Contract Tests - JUnit Suite</name>
 	<description>Code to create test suites that run suites of contract tests based on 
   class hierarchy</description>
@@ -19,8 +18,8 @@
 	<parent>
 		<artifactId>contracts</artifactId>
 		<relativePath>..</relativePath>
-		<version>0.1.6-SNAPSHOT</version>
 		<groupId>org.xenei</groupId>
+		<version>0.1.6-SNAPSHOT</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -93,18 +92,10 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.studio</groupId>
-			<artifactId>org.apache.logging.log4j</artifactId>
-			<scope>test</scope>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.xenei.logging</groupId>
@@ -119,6 +110,10 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

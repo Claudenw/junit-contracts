@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Ignore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.filter.AndClassFilter;
@@ -54,8 +54,8 @@ public class ContractTestMap {
 	// classes we are going to remove from all processing.
 	private final static ClassFilter SKIP_FILTER;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ContractTestMap.class);
+	private static final Log LOG = LogFactory
+			.getLog(ContractTestMap.class);
 
 	static {
 		final String prop = System.getProperty("contracts.skipClasses");
@@ -132,7 +132,7 @@ public class ContractTestMap {
 			// contract annotation is on the test class
 			// value of contract annotation is class under test
 			final Contract c = clazz.getAnnotation(Contract.class);
-			LOG.debug("adding {} {}", clazz, c);
+			LOG.debug(String.format("adding %s %s", clazz, c));
 			retval.add(new TestInfo(clazz, c));
 		}
 		return retval;

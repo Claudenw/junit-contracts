@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xenei.junit.contract.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
@@ -74,8 +74,8 @@ public class InterfaceReport {
 
 	private final ContractImplMap contractImplMap;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ContractTestMap.class);
+	private static final Log LOG = LogFactory
+			.getLog(ContractTestMap.class);
 
 	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter(
 			ClassFilter.INTERFACE, new NotClassFilter(ClassFilter.ANNOTATION),
@@ -237,7 +237,7 @@ public class InterfaceReport {
 		for (final Class<?> clazz : filter.filter(packageClasses)) {
 			// we are only interested if there is no contract test for the
 			// class and there are parent tests
-			LOG.debug("checking {} for contract tests", clazz);
+			LOG.debug(String.format("checking %s for contract tests", clazz));
 			final Set<Class<?>> interfaces = ClassPathUtils
 					.getAllInterfaces(clazz);
 			final Map<Class<?>, InterfaceInfo> interfaceInfo = getInterfaceInfoMap();

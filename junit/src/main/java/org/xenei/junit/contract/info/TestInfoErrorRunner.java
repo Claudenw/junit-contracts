@@ -21,7 +21,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.slf4j.Logger;
+import org.apache.commons.logging.Log;
 
 /**
  * An Runner to produce a complete error report.
@@ -55,7 +55,7 @@ public class TestInfoErrorRunner extends Runner {
 	 * @param log
 	 *            The logger to log the errors to.
 	 */
-	public void logErrors(final Logger log) {
+	public void logErrors(final Log log) {
 		for (final Throwable t : testInfo.getErrors()) {
 			log.error(t.toString());
 		}

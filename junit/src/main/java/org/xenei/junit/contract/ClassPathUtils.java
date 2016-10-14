@@ -34,10 +34,10 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.AndFileFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.filter.ClassFilter;
 import org.xenei.junit.contract.filter.PrefixClassFilter;
 
@@ -47,8 +47,8 @@ import org.xenei.junit.contract.filter.PrefixClassFilter;
  */
 public class ClassPathUtils {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ClassPathUtils.class);
+	private static final Log LOG = LogFactory
+			.getLog(ClassPathUtils.class);
 
 	/**
 	 * Recursive method used to find all classes in a given directory and
@@ -311,7 +311,7 @@ public class ClassPathUtils {
 						for (final String clazz : findClasses(dir, packageName,
 								filter)) {
 							try {
-								LOG.debug("Adding class {}", clazz);
+								LOG.debug(String.format("Adding class %s", clazz));
 								classes.add(Class.forName(clazz, false,
 										classLoader));
 							} catch (final ClassNotFoundException e) {

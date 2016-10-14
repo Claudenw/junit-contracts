@@ -37,8 +37,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xenei.junit.contract.filter.ClassFilter;
 import org.xenei.junit.contract.filter.NameClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
@@ -80,8 +80,8 @@ import org.xenei.junit.contract.info.TestInfoErrorRunner;
  * </p>
  */
 public class ContractSuite extends ParentRunner<Runner> {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ContractSuite.class);
+	private static final Log LOG = LogFactory
+			.getLog(ContractSuite.class);
 	private final List<Runner> fRunners;
 
 	/**
@@ -340,7 +340,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 
 	@Override
 	protected void runChild(final Runner child, final RunNotifier notifier) {
-		LOG.debug("Running: {} ", child);
+		LOG.debug(String.format("Running: %s ", child));
 		child.run(notifier);
 	}
 
