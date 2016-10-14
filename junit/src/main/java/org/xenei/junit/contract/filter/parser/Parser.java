@@ -107,6 +107,7 @@ public class Parser {
 	 * @throws IllegalArgumentException
 	 *             If the filter can not be build.
 	 */
+	@SuppressWarnings("unchecked")
 	public ClassFilter parse(String filterStr) throws IllegalArgumentException {
 		ParserInfo info = new ParserInfo(filterStr);
 
