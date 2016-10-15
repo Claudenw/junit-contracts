@@ -1,6 +1,20 @@
 junit-contracts: A suite of tools to make contract testing easier 
 =================================================================
 
+Overview
+--------
+
+Contract tests allow developers to verify implementations of interfaces meet the requirements of the interface designer.  In java this can be problematic due to its single inheritance nature.  This package is a <a href="http://junit.org/junit4/">junit 4</a> based implementation of a contract testing framework.  This means that it runs within junit without modification.
+
+Tutorials and Presentations
+---------------------------
+
+<a href="http://events.linuxfoundation.org/sites/events/files/slides/cloudstack.pdf">Junit-contracts: A Contract Testing Tool</a>, presented at CloudStack Collaboration Conference Europe, October 8-9, 2015, Dublin, Ireland. <a href="https://www.youtube.com/watch?v=WRf-RwWxf-w">Video available on YouTube</a>.
+
+<a href="http://www.drdobbs.com/testing/simplifying-contract-testing/240167128">Simplifying Contract Testing</a>. Claude N. Warren, Jr., in Dr. Dobb's Journal, May 06, 2014.
+
+Also see "How It Works" below.
+
 Maven Repository Info 
 ---------------------
 
