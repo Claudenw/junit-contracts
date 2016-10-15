@@ -68,7 +68,7 @@ Class Filters
 
 The junit-contracts module provides a set of classes to discover and filter classes on the classpath.  These may be generally useful. Among these is the ClassFilter which is patterned after the Java FileFilter class. 
 
-Class filters are constructed in the maven and command line modules via strings.  Each string is the string representation of a filter.  For example: _Not( Wildcard( "*Test*" ) )_ will match any class name that does not have the string "test".  For more information see the <a href="./classfilters">Class Filters</a> page. 
+Class filters are constructed in the maven and command line modules via strings.  Each string is the string representation of a filter.  For example: _Not( Wildcard( "*Test*" ) )_ will match any class name that does not have the string "test".  For more information see the <a href="classfilters.md">Class Filters</a> page. 
 
 Contract Tests 
 ==============
