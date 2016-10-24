@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.xenei</groupId>
 		<artifactId>contracts</artifactId>
-		<version>0.1.6</version>
+		<version>0.1.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>contracts-cmdLine</artifactId>
 	<dependencies>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.xenei</groupId>
 			<artifactId>junit-contracts</artifactId>
-			<version>0.1.6</version>
+			<version>0.1.7-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<name>Xenei Contract Tests - Command Line Tool</name>
