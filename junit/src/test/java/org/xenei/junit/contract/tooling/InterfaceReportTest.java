@@ -30,8 +30,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.parser.Parser;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.parser.Parser;
 import org.xenei.log4j.recording.RecordingAppender;
 
 /**
@@ -124,7 +124,7 @@ public class InterfaceReportTest {
 	 */
 	@Test
 	public void testFilterClass() throws MalformedURLException {
-		ClassFilter filter = new Parser()
+		ClassPathFilter filter = new Parser()
 				.parse("Not( Or( Name( org.xenei.junit.contract.exampleTests.MissingClass ),Name( org.xenei.junit.contract.exampleTests.CImpl3 ), Name( org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA ) ) )");
 
 		interfaceReport = new InterfaceReport(packages, filter, classLoader);
@@ -159,7 +159,7 @@ public class InterfaceReportTest {
 		String[] expectedErrors = {
 				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
 				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract" };
-		ClassFilter filter = new Parser()
+		ClassPathFilter filter = new Parser()
 				.parse("Not( Or( Name( org.xenei.junit.contract.exampleTests.CImpl3 ), Name( org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA ) ) )");
 		interfaceReport = new InterfaceReport(myPackages, filter, classLoader);
 
@@ -170,7 +170,6 @@ public class InterfaceReportTest {
 				.contains("org.xenei.junit.contract.exampleTests.EImpl"));
 		assertTrue(names
 				.contains("org.xenei.junit.contract.exampleTests.FImpl"));
-
 		classes = interfaceReport.getUntestedInterfaces();
 		names = getClassNames(classes);
 		assertEquals(1, names.size());

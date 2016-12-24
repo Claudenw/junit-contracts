@@ -30,17 +30,17 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xenei.junit.contract.ClassPathUtils;
+import org.xenei.classpathutils.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.NoContractTest;
-import org.xenei.junit.contract.filter.AndClassFilter;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
-import org.xenei.junit.contract.filter.NotClassFilter;
+import org.xenei.classpathutils.filter.AndClassFilter;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.HasAnnotationClassFilter;
+import org.xenei.classpathutils.filter.NotClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.TestInfo;
-import org.xenei.junit.contract.filter.OrClassFilter;
+import org.xenei.classpathutils.filter.OrClassFilter;
 
 /**
  * 
@@ -58,7 +58,7 @@ public class InterfaceReport {
 	/**
 	 * A filter that describes the classes to skip
 	 */
-	private final ClassFilter filter;
+	private final ClassPathFilter filter;
 
 	/**
 	 * A map of all interfaces implemented in the packages that have contract
@@ -77,8 +77,8 @@ public class InterfaceReport {
 	private static final Log LOG = LogFactory
 			.getLog(ContractTestMap.class);
 
-	private static final ClassFilter INTERESTING_CLASSES = new AndClassFilter(
-			ClassFilter.INTERFACE, new NotClassFilter(ClassFilter.ANNOTATION),
+	private static final ClassPathFilter INTERESTING_CLASSES = new AndClassFilter(
+			ClassPathFilter.INTERFACE_CLASS, new NotClassFilter(ClassPathFilter.ANNOTATION_CLASS),
 			new NotClassFilter(new HasAnnotationClassFilter(
 					NoContractTest.class)));
 
@@ -145,7 +145,7 @@ public class InterfaceReport {
 	 * @param classLoader
 	 *            the class loader to use.
 	 */
-	public InterfaceReport(final String[] packages, ClassFilter filter,
+	public InterfaceReport(final String[] packages, ClassPathFilter filter,
 			final ClassLoader classLoader) {
 
 		if (packages.length == 0) {
@@ -160,7 +160,7 @@ public class InterfaceReport {
 		if (filter != null) {
 			this.filter = filter;
 		} else {
-			this.filter = ClassFilter.TRUE;
+			this.filter = ClassPathFilter.TRUE;
 		}
 
 		packageClasses = new HashSet<Class<?>>();
@@ -231,10 +231,10 @@ public class InterfaceReport {
 		final Set<Class<?>> retval = new TreeSet<Class<?>>(
 				CLASS_NAME_COMPARATOR);
 		// only interested in concrete implementations
-		ClassFilter filter = new NotClassFilter(new OrClassFilter(
-				ClassFilter.ABSTRACT, ClassFilter.INTERFACE));
+		ClassPathFilter filter = new NotClassFilter(new OrClassFilter(
+				ClassPathFilter.ABSTRACT_CLASS, ClassPathFilter.INTERFACE_CLASS));
 
-		for (final Class<?> clazz : filter.filter(packageClasses)) {
+		for (final Class<?> clazz : filter.filterClasses(packageClasses)) {
 			// we are only interested if there is no contract test for the
 			// class and there are parent tests
 			LOG.debug(String.format("checking %s for contract tests", clazz));
@@ -261,7 +261,7 @@ public class InterfaceReport {
 	 * 
 	 * @return The filter used to filter classes.
 	 */
-	public ClassFilter getClassFilter() {
+	public ClassPathFilter getClassFilter() {
 		return filter;
 	}
 

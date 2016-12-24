@@ -30,15 +30,15 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xenei.junit.contract.ClassPathUtils;
+import org.xenei.classpathutils.ClassPathUtils;
 import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.filter.AndClassFilter;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.HasAnnotationClassFilter;
-import org.xenei.junit.contract.filter.NameClassFilter;
-import org.xenei.junit.contract.filter.NotClassFilter;
-import org.xenei.junit.contract.filter.OrClassFilter;
-import org.xenei.junit.contract.filter.PrefixClassFilter;
+import org.xenei.classpathutils.filter.AndClassFilter;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.HasAnnotationClassFilter;
+import org.xenei.classpathutils.filter.NameClassFilter;
+import org.xenei.classpathutils.filter.NotClassFilter;
+import org.xenei.classpathutils.filter.OrClassFilter;
+import org.xenei.classpathutils.filter.PrefixClassFilter;
 
 /**
  * A map like object that maintains information about test classes and the
@@ -52,7 +52,7 @@ public class ContractTestMap {
 	private final Map<Class<?>, Set<TestInfo>> interfaceToInfoMap = new HashMap<Class<?>, Set<TestInfo>>();
 
 	// classes we are going to remove from all processing.
-	private final static ClassFilter SKIP_FILTER;
+	private final static ClassPathFilter SKIP_FILTER;
 
 	private static final Log LOG = LogFactory
 			.getLog(ContractTestMap.class);
@@ -60,7 +60,7 @@ public class ContractTestMap {
 	static {
 		final String prop = System.getProperty("contracts.skipClasses");
 		if (prop != null) {
-			ClassFilter cf = null;
+			ClassPathFilter cf = null;
 
 			for (final String iFace : prop.split(",")) {
 				if (cf == null) {
@@ -71,7 +71,7 @@ public class ContractTestMap {
 								iFace.trim()));
 					} else {
 						((OrClassFilter) cf)
-								.addClassFilter(new NameClassFilter(iFace
+								.addFilter(new NameClassFilter(iFace
 										.trim()));
 					}
 				}
@@ -79,7 +79,7 @@ public class ContractTestMap {
 			SKIP_FILTER = cf;
 		} else {
 			// skip none.
-			SKIP_FILTER = ClassFilter.FALSE;
+			SKIP_FILTER = ClassPathFilter.FALSE;
 		}
 	}
 
@@ -95,12 +95,12 @@ public class ContractTestMap {
 	 * @return A newly constructed ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance() {
-		return populateInstance(ClassFilter.TRUE, ClassFilter.FALSE);
+		return populateInstance(ClassPathFilter.TRUE, ClassPathFilter.FALSE);
 	}
 
 	// the filters we are going to ignore.
-	private static ClassFilter createIgnoreFilter(final ClassFilter ignoreFilter) {
-		return new AndClassFilter(new NotClassFilter(SKIP_FILTER),
+	private static ClassPathFilter createIgnoreFilter(final ClassPathFilter ignoreFilter) {
+		return new AndClassFilter(
 				new NotClassFilter(ignoreFilter), new HasAnnotationClassFilter(
 						Contract.class), new NotClassFilter(
 						new HasAnnotationClassFilter(Ignore.class)));
@@ -116,18 +116,18 @@ public class ContractTestMap {
 	 * Uses the current thread context class loader.
 	 *
 	 * @param packageFilter
-	 *            The ClassFilter object to filter package names by.
+	 *            The ClassPathFilter object to filter package names by.
 	 * @param ignoreFilter
-	 *            The ClassFilter object to specify classes to ignore.
+	 *            The ClassPathFilter object to specify classes to ignore.
 	 * @return A newly constructed ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance(
-			final ClassFilter packageFilter, final ClassFilter ignoreFilter) {
+			final ClassPathFilter packageFilter, final ClassPathFilter ignoreFilter) {
 
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
-		ClassFilter filter = new AndClassFilter(packageFilter,
-				createIgnoreFilter(ignoreFilter));
+		ClassPathFilter filter = new AndClassFilter(packageFilter,
+				createIgnoreFilter(ignoreFilter), SKIP_FILTER);
 		for (final Class<?> clazz : ClassPathUtils.getClasses("", filter)) {
 			// contract annotation is on the test class
 			// value of contract annotation is class under test
@@ -149,8 +149,8 @@ public class ContractTestMap {
 	 * @return contractTestClasses TestInfo objects for classes annotated with @Contract
 	 */
 	public static ContractTestMap populateInstance(final ClassLoader classLoader) {
-		return populateInstance(classLoader, ClassFilter.FALSE,
-				ClassFilter.TRUE);
+		return populateInstance(classLoader, ClassPathFilter.FALSE,
+				ClassPathFilter.TRUE);
 	}
 
 	/**
@@ -162,16 +162,16 @@ public class ContractTestMap {
 	 * @param classLoader
 	 *            The class loader to use
 	 * @param packageFilter
-	 *            The ClassFilter object to filter package names by.
+	 *            The ClassPathFilter object to filter package names by.
 	 * @param ignoreFilter
-	 *            The ClassFilter object to specify classes to ignore.
+	 *            The ClassPathFilter object to specify classes to ignore.
 	 * @return A newly constructed ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance(
-			final ClassLoader classLoader, final ClassFilter packageFilter,
-			final ClassFilter ignoreFilter) {
+			final ClassLoader classLoader, final ClassPathFilter packageFilter,
+			final ClassPathFilter ignoreFilter) {
 
-		ClassFilter filter = new AndClassFilter(packageFilter,
+		ClassPathFilter filter = new AndClassFilter(packageFilter,
 				createIgnoreFilter(ignoreFilter));
 		return populateInstance(classLoader, filter);
 	}
@@ -205,11 +205,11 @@ public class ContractTestMap {
 	 * @return A ContractTestMap.
 	 */
 	public static ContractTestMap populateInstance(
-			final ClassLoader classLoader, final ClassFilter filter) {
+			final ClassLoader classLoader, final ClassPathFilter filter) {
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
 
-		ClassFilter fltr = new AndClassFilter(filter,
+		ClassPathFilter fltr = new AndClassFilter(filter,
 				new HasAnnotationClassFilter(Contract.class));
 
 		for (final Class<?> clazz : ClassPathUtils.getClasses(classLoader, "",

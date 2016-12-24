@@ -39,8 +39,8 @@ import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.NameClassFilter;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.NameClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.DynamicSuiteInfo;
 import org.xenei.junit.contract.info.DynamicTestInfo;
@@ -110,12 +110,12 @@ public class ContractSuite extends ParentRunner<Runner> {
 		final ContractImpl contractImpl = contractTest
 				.getAnnotation(ContractImpl.class);
 		// find all the contract annotated tests on the class path.
-		ClassFilter ignoreFilter = ClassFilter.FALSE;
+		ClassPathFilter ignoreFilter = ClassPathFilter.FALSE;
 		if (contractImpl.ignore().length > 0) {
-			ignoreFilter = new NameClassFilter(contractImpl.ignore());
+			ignoreFilter = new NameClassFilter().addClasses(contractImpl.ignore());
 		}
 		final ContractTestMap contractTestMap = ContractTestMap
-				.populateInstance(ClassFilter.TRUE, ignoreFilter);
+				.populateInstance(ClassPathFilter.TRUE, ignoreFilter);
 		final TestInfo testInfo = contractTestMap
 				.getInfoByTestClass(contractTest);
 		List<Runner> runners;

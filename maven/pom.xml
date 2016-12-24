@@ -157,6 +157,10 @@
 			<artifactId>maven-compat</artifactId>
 			<version>3.2.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.xenei</groupId>
+			<artifactId>classpath-utils</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

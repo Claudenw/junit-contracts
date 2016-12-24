@@ -28,8 +28,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xenei.junit.contract.tooling.InterfaceReport;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.parser.Parser;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.parser.Parser;
 
 /**
  * 
@@ -80,7 +80,7 @@ public class CmdLine {
 			classLoader = new URLClassLoader(urls, classLoader);
 		}
 
-		ClassFilter filter = null;
+		ClassPathFilter filter = null;
 		if (commands.hasOption("c")) {
 			filter = new Parser().parse(commands.getOptionValue("c"));
 		}
@@ -90,8 +90,8 @@ public class CmdLine {
 		if (commands.hasOption("u")) {
 			System.out.println("Untested Interfaces");
 
-			ClassFilter f = new Parser().parse(commands.getOptionValue("u"));
-			for (final Class<?> c : f.filter(ifReport.getUntestedInterfaces())) {
+			ClassPathFilter f = new Parser().parse(commands.getOptionValue("u"));
+			for (final Class<?> c : f.filterClasses(ifReport.getUntestedInterfaces())) {
 				System.out.println(c.getCanonicalName());
 			}
 			System.out.println("End of Report");
@@ -99,8 +99,8 @@ public class CmdLine {
 
 		if (commands.hasOption("i")) {
 			System.out.println("Missing contract test implementations");
-			ClassFilter f = new Parser().parse(commands.getOptionValue("i"));
-			for (final Class<?> c : f.filter(ifReport.getUnImplementedTests())) {
+			ClassPathFilter f = new Parser().parse(commands.getOptionValue("i"));
+			for (final Class<?> c : f.filterClasses(ifReport.getUnImplementedTests())) {
 				System.out.println(c.getName());
 			}
 			System.out.println("End of Report");

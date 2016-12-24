@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.junit.Test;
-import org.xenei.junit.contract.ClassPathUtils;
-import org.xenei.junit.contract.filter.PrefixClassFilter;
-import org.xenei.junit.contract.filter.WildcardClassFilter;
+import org.xenei.classpathutils.ClassPathUtils;
+import org.xenei.classpathutils.filter.PrefixClassFilter;
+import org.xenei.classpathutils.filter.WildcardClassFilter;
 
 /**
  * Test the ClassPathUtils.
