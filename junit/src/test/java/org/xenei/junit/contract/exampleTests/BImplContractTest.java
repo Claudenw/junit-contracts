@@ -97,8 +97,7 @@ public class BImplContractTest {
 		String[] expected = { "BImplContractTest.producer.newInstance()",
 				"bname", "BImplContractTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+		Assert.assertEquals(Arrays.asList(expected), Listener.get());
 
 	}
 
