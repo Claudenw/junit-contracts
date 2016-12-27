@@ -127,7 +127,7 @@ public class ContractTestMap {
 		final ContractTestMap retval = new ContractTestMap();
 		// get all the classes that are Contract tests
 		ClassPathFilter filter = new AndClassFilter(packageFilter,
-				createIgnoreFilter(ignoreFilter), SKIP_FILTER);
+				createIgnoreFilter(new OrClassFilter(ignoreFilter, SKIP_FILTER)));
 		for (final Class<?> clazz : ClassPathUtils.getClasses("", filter)) {
 			// contract annotation is on the test class
 			// value of contract annotation is class under test
