@@ -196,7 +196,7 @@ public class ClassPathUtils {
 			String packageName, final ClassFilter filter) throws IOException {
 		final Set<String> classes = new HashSet<String>();
 		if (directory.startsWith("file:")) {
-			if (directory.contains("!")) {
+			if (directory.contains("!") || directory.endsWith( ".jar")) {
 				handleJar(classes, directory, filter);
 			} else {
 				scanDir(classes, packageName,
