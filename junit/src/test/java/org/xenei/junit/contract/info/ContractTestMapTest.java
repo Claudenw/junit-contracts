@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
-import org.xenei.classpathutils.ClassPathFilter;
 import org.xenei.classpathutils.filter.NameClassFilter;
 import org.xenei.junit.bad.BadAbstract;
-import org.xenei.junit.bad.BadNoInject;
 import org.xenei.junit.contract.exampleTests.A;
 import org.xenei.junit.contract.exampleTests.AImpl;
 import org.xenei.junit.contract.exampleTests.AT;
@@ -118,15 +116,14 @@ public class ContractTestMapTest {
 		Set<TestInfo> answer = new HashSet<TestInfo>();
 		map.getAnnotatedClasses(answer, ti);
 		List<String> lst = new ArrayList<String>();
-		for (TestInfo t : answer)
-		{
-			lst.add( t.toString());
+		for (TestInfo t : answer) {
+			lst.add(t.toString());
 		}
-		
+
 		Assert.assertTrue("Missing AT", lst.contains(ti.toString()));
-		Assert.assertTrue("Missing BadAbstract", lst.contains( "[BadAbstract testing A]"));
-		Assert.assertTrue("Missing BadNoInject", lst.contains( "[BadNoInject testing A]"));
-		Assert.assertEquals( 3, lst.size() );
+		Assert.assertTrue("Missing BadAbstract", lst.contains("[BadAbstract testing A]"));
+		Assert.assertTrue("Missing BadNoInject", lst.contains("[BadNoInject testing A]"));
+		Assert.assertEquals(3, lst.size());
 
 	}
 
@@ -135,19 +132,18 @@ public class ContractTestMapTest {
 	 */
 	@Test
 	public void getAnnotatedClassesTestWithFilter() {
-		map = new ContractTestMap( new NameClassFilter( BadAbstract.class.getName()));
+		map = new ContractTestMap(new NameClassFilter(BadAbstract.class.getName()));
 		TestInfo ti = map.getInfoByTestClass(AT.class);
 		Set<TestInfo> answer = new HashSet<TestInfo>();
 		map.getAnnotatedClasses(answer, ti);
 		List<String> lst = new ArrayList<String>();
-		for (TestInfo t : answer)
-		{
-			lst.add( t.toString());
+		for (TestInfo t : answer) {
+			lst.add(t.toString());
 		}
-		
-		Assert.assertTrue("Missing AT", lst.contains(ti.toString()));		
-		Assert.assertTrue("Missing BadNoInject", lst.contains( "[BadNoInject testing A]"));
-		Assert.assertEquals( 2, lst.size() );
+
+		Assert.assertTrue("Missing AT", lst.contains(ti.toString()));
+		Assert.assertTrue("Missing BadNoInject", lst.contains("[BadNoInject testing A]"));
+		Assert.assertEquals(2, lst.size());
 
 	}
 

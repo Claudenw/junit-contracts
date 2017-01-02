@@ -27,7 +27,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.xenei.junit.bad.BadAbstract;
 import org.xenei.junit.bad.BadNoInject;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;

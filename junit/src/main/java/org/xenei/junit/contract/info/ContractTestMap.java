@@ -36,7 +36,6 @@ import org.xenei.junit.contract.Contract;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.ClassAnnotationMatchProcessor;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 /**
  * A map like object that maintains information about test classes and the
@@ -48,8 +47,6 @@ public class ContractTestMap {
 	private final Map<Class<?>, TestInfo> classToInfoMap;
 	// the map of interface under test to the TestInfo for it.
 	private final Map<Class<?>, Set<TestInfo>> interfaceToInfoMap;
-	// result of scanning
-	private final ScanResult scanResult;
 	// classes we are going to remove from all processing.
 	private final ClassPathFilter skipFilter;
 
@@ -117,7 +114,7 @@ public class ContractTestMap {
 		};
 
 		scanner.matchClassesWithAnnotation(Contract.class, mp);
-		scanResult = scanner.scan();
+		scanner.scan();
 	}
 
 	/**
