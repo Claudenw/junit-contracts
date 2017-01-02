@@ -35,6 +35,11 @@ Snapshot versions are hosted at:
 
      https://oss.sonatype.org/content/repositories/snapshots/
 
+License
+=======
+
+The Xenei code in this project is all licensed under the Apache V2 license.  However, the jar 
+includes classes from <a href="https://github.com/lukehutch/fast-classpath-scanner">fast-classpath-scanner</a> by <a href="https://github.com/lukehutch">Luke Hutchison</a> which is licensed under the MIT license.  The MIT and the Apache licenses are included in the jar.
 
 Removing Bad Tests
 ==================

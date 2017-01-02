@@ -1,0 +1,8 @@
+
+
+The Xenei code in this project is all licensed under the Apache V2 license. However, 
+the jar includes classes from fast-classpath-scanner by Luke Hutchison which is licensed 
+under the MIT license. The MIT and the Apache licenses are included in the jar.
+
+https://github.com/lukehutch/fast-classpath-scanner 
+https://github.com/lukehutch
