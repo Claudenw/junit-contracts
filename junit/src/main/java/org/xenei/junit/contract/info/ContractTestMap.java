@@ -124,7 +124,6 @@ public class ContractTestMap {
 	 *            the info to add
 	 */
 	public void add(final TestInfo info) {
-
 		classToInfoMap.put(info.getContractTestClass(), info);
 		Set<TestInfo> tiSet = interfaceToInfoMap.get(info.getClassUnderTest());
 		if (tiSet == null) {
@@ -172,10 +171,11 @@ public class ContractTestMap {
 	 */
 	public Set<Class<?>> getAllInterfaces(Class<?> clazz) {
 		Set<Class<?>> result = new HashSet<Class<?>>();
-		return getAllInterfaces(result, clazz);
+		getAllInterfaces(result, clazz);
+		return result;
 	}
 
-	private Set<Class<?>> getAllInterfaces(Set<Class<?>> set, Class<?>... clazz) {
+	private void getAllInterfaces(Set<Class<?>> set, Class<?>... clazz) {
 		if (clazz != null) {
 
 			for (Class<?> c : clazz) {
@@ -188,7 +188,6 @@ public class ContractTestMap {
 				}
 			}
 		}
-		return set;
 	}
 
 	/**
@@ -209,7 +208,6 @@ public class ContractTestMap {
 	public Set<TestInfo> getAnnotatedClasses(final Set<TestInfo> testClasses, final TestInfo contractClassInfo) {
 
 		Collection<Class<?>> lst = getAllInterfaces(contractClassInfo.getClassUnderTest());
-
 		for (Class<?> clazz : lst) {
 			testClasses.addAll(getInfoByInterfaceClass(clazz));
 		}

@@ -1,8 +1,8 @@
 package org.xenei.contracts.maven;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.parser.Parser;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.parser.Parser;
 
 /**
  * Configuration for a report
@@ -11,7 +11,7 @@ import org.xenei.junit.contract.filter.parser.Parser;
 public class ReportConfig {
 	private boolean reporting = true;
 	private boolean failOnError = false;
-	private ClassFilter filter = ClassFilter.TRUE;
+	private ClassPathFilter filter = ClassPathFilter.TRUE;
 
 	/**
 	 * Constructor
@@ -63,7 +63,7 @@ public class ReportConfig {
 	 * 
 	 * @return the filter.
 	 */
-	public ClassFilter getFilter() {
+	public ClassPathFilter getFilter() {
 		return filter;
 	}
 
@@ -78,7 +78,7 @@ public class ReportConfig {
 	 */
 	public void setFilter(String filter) throws IllegalArgumentException {
 		if (StringUtils.isBlank(filter)) {
-			this.filter = ClassFilter.TRUE;
+			this.filter = ClassPathFilter.TRUE;
 		} else {
 			this.filter = new Parser().parse(filter);
 		}
