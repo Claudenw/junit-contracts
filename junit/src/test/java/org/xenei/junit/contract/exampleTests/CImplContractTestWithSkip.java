@@ -18,6 +18,7 @@
 
 package org.xenei.junit.contract.exampleTests;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,20 +82,31 @@ public class CImplContractTestWithSkip {
 	public static void beforeClass() {
 		Listener.clear();
 	}
-
+	
+	private static void verifyTest( List<String> expectedTests, List<String> results) {
+		Assert.assertEquals( "CImplContractTest.producer.newInstance()", results.get(0));
+		Assert.assertTrue( expectedTests.contains( results.get(1)));
+		expectedTests.remove( results.get(1));
+		Assert.assertEquals( "CImplContractTest.producer.cleanUp()", results.get(2));
+		
+	}
 	/**
-	 * Verify that the listener saw all the expected events.
+	 * Verify that the Listener recorded all the expected events.
 	 */
 	@AfterClass
 	public static void afterClass() {
-		String[] expected = { "CImplContractTest.producer.newInstance()",
-				"cname", "CImplContractTest.producer.cleanUp()",
-				"CImplContractTest.producer.newInstance()",
-				"cname version of bname",
-				"CImplContractTest.producer.cleanUp()" };
-
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+		final String[] testNames = {"cname", "cname version of bname" };
+		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
+		
+		
+		final List<String> l = Listener.get();
+		
+		for (int i=0;i<testNames.length;i++)
+		{
+			int j = i*3;
+			verifyTest( expectedTests, l.subList(j, j+3));
+		}
+		
 
 	}
 }

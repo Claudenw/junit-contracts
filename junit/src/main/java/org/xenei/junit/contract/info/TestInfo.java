@@ -36,7 +36,7 @@ public class TestInfo implements Comparable<TestInfo> {
 	// the test class
 	private final Class<?> contractTest;
 	// the class under test
-	private final Class<?> interfaceUnderTest;
+	private final Class<?> classUnderTest;
 	// the list of tests to skip
 	private final Class<?>[] skipTests;
 	// the list of errors.
@@ -60,15 +60,15 @@ public class TestInfo implements Comparable<TestInfo> {
 	protected TestInfo(final Class<?> testSuite, final ContractImpl impl,
 			final Method m) {
 		this.contractTest = testSuite;
-		this.interfaceUnderTest = impl.value();
+		this.classUnderTest = impl.value();
 		this.skipTests = impl.skip();
 		this.method = m;
 		this.hash = toString().hashCode();
 		this.errors = new ArrayList<Throwable>();
-		if ((!interfaceUnderTest.isInterface())
-				&& Modifier.isAbstract(interfaceUnderTest.getModifiers())) {
+		if ((!classUnderTest.isInterface())
+				&& Modifier.isAbstract(classUnderTest.getModifiers())) {
 			errors.add(new IllegalStateException(
-					"Classes annotated with @Contract (" + interfaceUnderTest
+					"Classes annotated with @Contract (" + classUnderTest
 							+ ") must not be abstract"));
 		}
 	}
@@ -93,7 +93,7 @@ public class TestInfo implements Comparable<TestInfo> {
 	 */
 	public TestInfo(final Class<?> contractTest, final Contract c) {
 		this.contractTest = contractTest;
-		this.interfaceUnderTest = c.value();
+		this.classUnderTest = c.value();
 		this.skipTests = new Class<?>[0];
 		this.method = MethodUtils.findAnnotatedSetter(contractTest,
 				Contract.Inject.class);
@@ -140,21 +140,21 @@ public class TestInfo implements Comparable<TestInfo> {
 	}
 
 	/**
-	 * Get the package name of the interface under test..
+	 * Get the package name of the cla under test..
 	 *
 	 * @return The contract class package name.
 	 */
-	public String getInterfacePackageName() {
-		return interfaceUnderTest.getPackage().getName();
+	public String getClassUnderTestPackageName() {
+		return classUnderTest.getPackage().getName();
 	}
 
 	/**
-	 * Get the simple name of the interface under test.
+	 * Get the simple name of the class under test.
 	 *
 	 * @return Contract class simple name.
 	 */
-	public String getSimpleInterfaceName() {
-		return interfaceUnderTest.getSimpleName();
+	public String getSimpleClassUnderTestName() {
+		return classUnderTest.getSimpleName();
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class TestInfo implements Comparable<TestInfo> {
 	 * @return the contract class canonical name.
 	 */
 	public String getContractName() {
-		return interfaceUnderTest.getCanonicalName();
+		return classUnderTest.getCanonicalName();
 	}
 
 	/**
@@ -212,12 +212,12 @@ public class TestInfo implements Comparable<TestInfo> {
 	}
 
 	/**
-	 * Get interface under test.
+	 * Get class under test.
 	 *
 	 * @return The contract class.
 	 */
-	public Class<?> getInterfaceClass() {
-		return interfaceUnderTest;
+	public Class<?> getClassUnderTest() {
+		return classUnderTest;
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class TestInfo implements Comparable<TestInfo> {
 	@Override
 	public String toString() {
 		return String.format("[%s testing %s]", getSimpleTestName(),
-				getSimpleInterfaceName());
+				getSimpleClassUnderTestName());
 	}
 
 	@Override

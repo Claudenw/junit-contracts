@@ -19,6 +19,7 @@
 package org.xenei.junit.contract;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -39,8 +41,11 @@ import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xenei.junit.contract.filter.ClassFilter;
-import org.xenei.junit.contract.filter.NameClassFilter;
+import org.xenei.classpathutils.ClassPathFilter;
+import org.xenei.classpathutils.filter.AndClassFilter;
+import org.xenei.classpathutils.filter.HasAnnotationClassFilter;
+import org.xenei.classpathutils.filter.NameClassFilter;
+import org.xenei.classpathutils.filter.OrClassFilter;
 import org.xenei.junit.contract.info.ContractTestMap;
 import org.xenei.junit.contract.info.DynamicSuiteInfo;
 import org.xenei.junit.contract.info.DynamicTestInfo;
@@ -110,12 +115,18 @@ public class ContractSuite extends ParentRunner<Runner> {
 		final ContractImpl contractImpl = contractTest
 				.getAnnotation(ContractImpl.class);
 		// find all the contract annotated tests on the class path.
-		ClassFilter ignoreFilter = ClassFilter.FALSE;
+		ClassPathFilter ignoreFilter = new HasAnnotationClassFilter(Ignore.class);
 		if (contractImpl.ignore().length > 0) {
-			ignoreFilter = new NameClassFilter(contractImpl.ignore());
+			
+			List<String> lst = new ArrayList<String>();
+			for (Class<?> c : contractImpl.ignore())
+			{
+				lst.add( c.getName() );
+			}
+			ignoreFilter = new OrClassFilter( ignoreFilter, new NameClassFilter(lst));
 		}
-		final ContractTestMap contractTestMap = ContractTestMap
-				.populateInstance(ClassFilter.TRUE, ignoreFilter);
+		
+		final ContractTestMap contractTestMap = new ContractTestMap( ignoreFilter );
 		final TestInfo testInfo = contractTestMap
 				.getInfoByTestClass(contractTest);
 		List<Runner> runners;
@@ -304,12 +315,14 @@ public class ContractSuite extends ParentRunner<Runner> {
 			runners.add(bcr);
 		}
 
-		// get all the annotated classes that test interfaces that
-		// parentTestInfo
-		// implements and iterate over them
+		/* get all the annotated classes that test the interfaces that
+		 parentTestInfo
+		 implements and iterate over them */
 		for (final TestInfo testInfo : contractTestMap.getAnnotatedClasses(
 				testClasses, parentTestInfo)) {
 
+			if (! Arrays.asList(parentTestInfo.getSkipTests()).contains(testInfo.getClassUnderTest()))
+			{
 			if (testInfo.getErrors().size() > 0) {
 
 				final TestInfoErrorRunner runner = new TestInfoErrorRunner(
@@ -320,6 +333,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 			} else {
 				runners.add(new ContractTestRunner(baseObj, parentTestInfo,
 						testInfo));
+			}
 			}
 		}
 		if (runners.size() == 0) {

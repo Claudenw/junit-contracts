@@ -18,6 +18,7 @@
 
 package org.xenei.junit.contract.exampleTests;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.xenei.junit.bad.BadAbstract;
 import org.xenei.junit.bad.BadNoInject;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
@@ -103,25 +105,30 @@ public class CImpl2ContractTest {
 		Listener.clear();
 	}
 
+	private static void verifyTest( List<String> expectedTests, List<String> results) {
+		Assert.assertEquals( "CImpl2ContractTest.producer.newInstance()", results.get(0));
+		Assert.assertTrue( expectedTests.contains( results.get(1)));
+		expectedTests.remove( results.get(1));
+		Assert.assertEquals( "CImpl2ContractTest.producer.cleanUp()", results.get(2));
+		
+	}
 	/**
 	 * Verify that the Listener recorded all the expected events.
 	 */
 	@AfterClass
 	public static void afterClass() {
-		final String[] expected = {
-				"CImpl2ContractTest.producer.newInstance()",
-				"called Extra Method", "CImpl2ContractTest.producer.cleanUp()",
-				"CImpl2ContractTest.producer.newInstance()", "cname",
-				"CImpl2ContractTest.producer.cleanUp()",
-				"CImpl2ContractTest.producer.newInstance()",
-				"cname version of aname",
-				"CImpl2ContractTest.producer.cleanUp()",
-				"CImpl2ContractTest.producer.newInstance()",
-				"cname version of bname",
-				"CImpl2ContractTest.producer.cleanUp()" };
-
+		final String[] testNames = {"called Extra Method","cname", "cname version of aname", "cname version of bname" };
+		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
+		
+		
 		final List<String> l = Listener.get();
-		Assert.assertEquals(Arrays.asList(expected), l);
+		
+		for (int i=0;i<testNames.length;i++)
+		{
+			int j = i*3;
+			verifyTest( expectedTests, l.subList(j, j+3));
+		}
+		
 
 	}
 }
