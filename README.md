@@ -6,6 +6,12 @@ Overview
 
 Contract tests allow developers to verify implementations of interfaces meet the requirements of the interface designer.  In java this can be problematic due to its single inheritance nature.  This package is a <a href="http://junit.org/junit4/">junit 4</a> based implementation of a contract testing framework.  This means that it runs within junit without modification.
 
+Multiple `@Contract`s can be defined for multiple interfaces, and for each `@ContractImplementation`,
+junit-contract will run all the matching contract tests:
+
+![Screenshot of junit-contracts in Eclipse](docs/junit-contracts.png)
+
+
 Tutorials and Presentations
 ---------------------------
 
@@ -142,11 +148,13 @@ The test code contains a number of examples and is well [documented]
 
 The sample code tree includes a sample for a Serializable contract test.
 
-Multiple interfaces
--------------------
+Motivation
+----------
 
 Here's an example of how using junit-contracts one could organize tests for interfaces like 
-[java.util.Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html) and friends:
+[java.util.Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html) and friends. Normally
+you would write the `@Contract`s for your own interfaces, but we'll use the JDK provided
+interfaces as an example as they are fairly well known.
 
 With junit-contract we can write tests for each interface separetely, providing 
 a `@Contract.Inject` setter for the implementation to be tested:
@@ -366,4 +374,6 @@ public class TreeSetTest {
 }
 ```
 
-With junit-contracts we can now run all the combinations of tests that are possible for each of the `@ContractImpl`, which would run in isolation. 
+With junit-contracts we can now run all the combinations of tests that are possible for each of the `@ContractImpl`, which would run in isolation:
+
+![Screenshot of junit-contracts in Eclipse](docs/junit-contracts.png)
