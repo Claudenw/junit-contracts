@@ -9,7 +9,7 @@ Contract tests allow developers to verify implementations of interfaces meet the
 Multiple `@Contract`s can be defined for multiple interfaces, and for each `@ContractImplementation`,
 junit-contract will run all the matching contract tests:
 
-![Screenshot of junit-contracts in Eclipse](docs/junit-contracts.png)
+![Screenshot of junit-contracts in Eclipse](docs/multitests.png)
 
 
 Tutorials and Presentations
