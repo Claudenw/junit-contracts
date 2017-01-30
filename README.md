@@ -141,3 +141,229 @@ The test code contains a number of examples and is well [documented]
 (https://github.com/Claudenw/junit-contracts/tree/master/junit/src/test/java/org/xenei/junit/contract/exampleTests) for use as such.
 
 The sample code tree includes a sample for a Serializable contract test.
+
+Multiple interfaces
+-------------------
+
+Here's an example of how using junit-contracts one could organize tests for interfaces like 
+[java.util.Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html) and friends:
+
+With junit-contract we can write tests for each interface separetely, providing 
+a `@Contract.Inject` setter for the implementation to be tested:
+
+
+```java
+package contracts;
+import static org.junit.Assert.*;
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+
+@Contract(Collection.class)
+public class IterableTest {
+    private Iterable<Object> it;
+    
+    @Contract.Inject
+    public void setIterable(Iterable<Object> it) {
+        this.it = it;
+    }
+    
+    @ContractTest
+    public void hasNext() throws Exception {
+        assertFalse(it.iterator().hasNext());
+    }
+    
+    @ContractTest
+    public void doubleIterator() throws Exception {
+        it.iterator();
+        it.iterator();
+    }
+    
+    @ContractTest
+    public void nextFails() throws Exception {
+        try {
+           it.iterator().next();
+           fail("Didn't throw NoSuchElementException");
+        } catch (NoSuchElementException ex) { 
+            // expected
+        }
+    }
+}
+```
+
+```java
+package contracts;
+import static org.junit.Assert.*;
+import java.util.Collection;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+
+@Contract(Collection.class)
+public class CollectionTest {
+    
+    private Collection<Object> c;
+    
+    @Contract.Inject
+    public void setCollection(Collection<Object> c) {
+        this.c = c;
+    }
+    
+    @ContractTest
+    public void empty() throws Exception {
+        assertTrue(c.isEmpty());
+    }
+    
+    @ContractTest
+    public void size() throws Exception {
+        assertEquals(0, c.size());        
+    }
+}
+```
+
+This means we can keep separation of concern - we are not requiring `CollectionTest` to subclass `IterableTest`. Let's see why this is useful:
+
+```java
+package contracts;
+
+import static org.junit.Assert.*;
+import java.util.Set;
+import org.junit.Before;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+
+@Contract(Set.class)
+public class SetTest {
+
+    private Set<Object> c;
+
+    @Contract.Inject
+    public void setSet(Set<Object> c) {
+        this.c = c;
+
+    }
+
+    @Before
+    public void populate() {
+        c.add("Hello");
+    }
+
+    @ContractTest
+    public void contains() throws Exception {
+        assertTrue(c.contains(("Hello")));
+        assertFalse(c.contains("World"));
+    }
+
+    @ContractTest
+    public void add() throws Exception {
+        c.add("World");
+        assertTrue(c.contains("World"));
+    }
+}
+```
+
+The above `SetTest` can't subclass `CollectionTest` because it has a `@Before` method that populates the set - this would break `CollectionTest.empty()` which expects an empty collection. With junit-contracts each `@Contract` is executed in isolation and don't share state with the other tests.
+
+So let's test it with [HashSet](https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html):
+
+```java
+package contracttests;
+import java.util.HashSet;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(HashSet.class)
+public class HashSetTest {
+ 
+    @Contract.Inject
+    public HashSet<Object> makedashSet() {
+        return new HashSet<Object>();        
+    }
+}
+```
+
+and with [LinkedHashSet](https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashSet.html):
+
+```java
+package contracttests;
+import java.util.LinkedHashSet;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(LinkedHashSet.class)
+public class LinkedHashSetTest {
+ 
+    @Contract.Inject
+    public LinkedHashSet<Object> makeLinkedHashSet() {
+        return new LinkedHashSet<Object>();        
+    }
+}
+```
+
+Running the above two Tests will execute all the matching `@Contract` tests.  This means we can have "optional" tests by interface:
+
+
+```java
+package contracts;
+import static org.junit.Assert.*;
+import java.util.SortedSet;
+import org.junit.Before;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+
+@Contract(SortedSet.class)
+public class SortedSetTest {
+    
+    private SortedSet<Object> c;
+    
+    @Contract.Inject
+    public void setSet(SortedSet<Object> c) {
+        this.c = c;
+    }
+
+    @Before
+    public void populate() {
+        // Deliberately not added in order
+        c.add("c");
+        c.add("a");        
+        c.add("b");    
+    }
+    
+    @ContractTest
+    public void first() throws Exception {        
+        assertEquals("a", c.first());
+        assertEquals("c", c.last());
+    }
+}
+```
+
+This has a separate, incompatible `@Before` method that is otherwise hard to align with `SetTest`. We'll test it with [TreeSet](https://docs.oracle.com/javase/8/docs/api/java/util/TreeSet.html):
+
+
+```java
+package contracttests;
+import java.util.HashSet;
+import java.util.TreeSet;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(HashSet.class)
+public class TreeSetTest {
+ 
+    @Contract.Inject
+    public TreeSet<Object> makeLinkedHashSet() {
+        return new TreeSet<Object>();        
+    }
+}
+```
+
+With junit-contracts we can now run all the combinations of tests that are possible for each of the `@ContractImpl`, which would run in isolation. 
