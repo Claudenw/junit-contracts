@@ -476,7 +476,7 @@ public class DBSet<T> implements Set<T> {
 		this.stmt = null;
 	}
 	
-	// implement let to reader	
+	// implementation left to the reader	
 }
 ```
 Contract Test for DBSet
