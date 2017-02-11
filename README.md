@@ -146,7 +146,7 @@ Samples and Examples
 The test code contains a number of examples and is well [documented]
 (https://github.com/Claudenw/junit-contracts/tree/master/junit/src/test/java/org/xenei/junit/contract/exampleTests) for use as such.
 
-The sample code tree includes a sample for a Serializable contract test.
+The sample code tree includes the concrete tests in the Motivation section below.
 
 Motivation
 ----------
@@ -156,76 +156,106 @@ Here's an example of how using junit-contracts one could organize tests for inte
 you would write the `@Contract`s for your own interfaces, but we'll use the JDK provided
 interfaces as an example as they are fairly well known.
 
-With junit-contract we can write tests for each interface separetely, providing 
+With junit-contract we can write tests for each interface separately, providing 
 a `@Contract.Inject` setter for the implementation to be tested:
 
 
 ```java
-package contracts;
 import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.NoSuchElementException;
+
+import org.junit.After;
+import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
-@Contract(Collection.class)
+@Contract(Iterable.class)
 public class IterableTest {
-    private Iterable<Object> it;
-    
-    @Contract.Inject
-    public void setIterable(Iterable<Object> it) {
-        this.it = it;
-    }
-    
-    @ContractTest
-    public void hasNext() throws Exception {
-        assertFalse(it.iterator().hasNext());
-    }
-    
-    @ContractTest
-    public void doubleIterator() throws Exception {
-        it.iterator();
-        it.iterator();
-    }
-    
-    @ContractTest
-    public void nextFails() throws Exception {
-        try {
-           it.iterator().next();
-           fail("Didn't throw NoSuchElementException");
-        } catch (NoSuchElementException ex) { 
-            // expected
-        }
-    }
+	private IProducer<Iterable<Object>> producer;
+	private Iterable<Object> it;
+
+	@Contract.Inject
+	public void setIterable(IProducer<Iterable<Object>> producer) {
+		this.producer = producer;
+	}
+
+	@Before
+	public void populate() {
+		it = producer.newInstance();
+	}
+
+	@After
+	public void cleanup() {
+		producer.cleanUp();
+	}
+
+	@ContractTest
+	public void hasNext() throws Exception {
+		assertFalse(it.iterator().hasNext());
+	}
+
+	@ContractTest
+	public void doubleIterator() throws Exception {
+		it.iterator();
+		it.iterator();
+	}
+
+	@ContractTest
+	public void nextFails() throws Exception {
+		try {
+			it.iterator().next();
+			fail("Didn't throw NoSuchElementException");
+		} catch (NoSuchElementException ex) {
+			// expected
+		}
+	}
 }
 ```
 
 ```java
 package contracts;
+
 import static org.junit.Assert.*;
 import java.util.Collection;
+
+import org.junit.After;
+import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 @Contract(Collection.class)
 public class CollectionTest {
-    
-    private Collection<Object> c;
-    
-    @Contract.Inject
-    public void setCollection(Collection<Object> c) {
-        this.c = c;
-    }
-    
-    @ContractTest
-    public void empty() throws Exception {
-        assertTrue(c.isEmpty());
-    }
-    
-    @ContractTest
-    public void size() throws Exception {
-        assertEquals(0, c.size());        
-    }
+
+	private IProducer<Collection<Object>> producer;
+	private Collection<Object> c;
+
+	@Contract.Inject
+	public void setCollection(IProducer<Collection<Object>> producer) {
+		this.producer = producer;
+	}
+
+	@Before
+	public void populate() {
+		c = producer.newInstance();
+	}
+
+	@After
+	public void cleanup() {
+		producer.cleanUp();
+	}
+
+	@ContractTest
+	public void empty() throws Exception {
+		assertTrue(c.isEmpty());
+	}
+
+	@ContractTest
+	public void size() throws Exception {
+		assertEquals(0, c.size());
+	}
 }
 ```
 
@@ -236,26 +266,36 @@ package contracts;
 
 import static org.junit.Assert.*;
 import java.util.Set;
+
+import org.junit.After;
 import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 @Contract(Set.class)
 public class SetTest {
 
+    private IProducer<Set<Object>> producer;
     private Set<Object> c;
 
     @Contract.Inject
-    public void setSet(Set<Object> c) {
-        this.c = c;
+    public void setSet(IProducer<Set<Object>> producer) {
+        this.producer = producer;
 
     }
 
     @Before
     public void populate() {
+        c = producer.newInstance();
         c.add("Hello");
     }
 
+    @After
+    public void cleanup() {
+    	producer.cleanUp();
+    }
+     
     @ContractTest
     public void contains() throws Exception {
         assertTrue(c.contains(("Hello")));
@@ -276,20 +316,32 @@ So let's test it with [HashSet](https://docs.oracle.com/javase/8/docs/api/java/u
 
 ```java
 package contracttests;
+
 import java.util.HashSet;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
+import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(HashSet.class)
 public class HashSetTest {
- 
-    @Contract.Inject
-    public HashSet<Object> makedashSet() {
-        return new HashSet<Object>();        
-    }
+
+	IProducer<HashSet<Object>> producer = new IProducer<HashSet<Object>>() {
+		public HashSet<Object> newInstance() {
+			return new HashSet<Object>();
+		}
+
+		public void cleanUp() {
+			// no cleanup required.
+		}
+	};
+
+	@Contract.Inject
+	public IProducer<HashSet<Object>> makedashSet() {
+		return producer;
+	}
 }
 ```
 
@@ -297,20 +349,32 @@ and with [LinkedHashSet](https://docs.oracle.com/javase/8/docs/api/java/util/Lin
 
 ```java
 package contracttests;
+
 import java.util.LinkedHashSet;
 import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
+import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
 @ContractImpl(LinkedHashSet.class)
 public class LinkedHashSetTest {
- 
-    @Contract.Inject
-    public LinkedHashSet<Object> makeLinkedHashSet() {
-        return new LinkedHashSet<Object>();        
-    }
+
+	IProducer<LinkedHashSet<Object>> producer = new IProducer<LinkedHashSet<Object>>() {
+		public LinkedHashSet<Object> newInstance() {
+			return new LinkedHashSet<Object>();
+		}
+
+		public void cleanUp() {
+			// no cleanup required.
+		}
+	};
+
+	@Contract.Inject
+	public IProducer<LinkedHashSet<Object>> makedashSet() {
+		return producer;
+	}
 }
 ```
 
@@ -319,34 +383,45 @@ Running the above two Tests will execute all the matching `@Contract` tests.  Th
 
 ```java
 package contracts;
+
 import static org.junit.Assert.*;
 import java.util.SortedSet;
+
+import org.junit.After;
 import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 @Contract(SortedSet.class)
 public class SortedSetTest {
-    
-    private SortedSet<Object> c;
-    
-    @Contract.Inject
-    public void setSet(SortedSet<Object> c) {
-        this.c = c;
-    }
 
-    @Before
-    public void populate() {
-        // Deliberately not added in order
-        c.add("c");
-        c.add("a");        
-        c.add("b");    
-    }
-    
-    @ContractTest
-    public void first() throws Exception {        
-        assertEquals("a", c.first());
-        assertEquals("c", c.last());
+	private IProducer<SortedSet<Object>> producer;
+	private SortedSet<Object> c;
+
+	@Contract.Inject
+	public void setSet(IProducer<SortedSet<Object>> producer) {
+		this.producer = producer;
+	}
+
+	@Before
+	public void populate() {
+		c = producer.newInstance();
+		// Deliberately not added in order
+		c.add("c");
+		c.add("a");
+		c.add("b");
+	}
+
+	@After
+	public void cleanup() {
+		producer.cleanUp();
+	}
+
+	@ContractTest
+	public void first() throws Exception {
+		assertEquals("a", c.first());
+	     assertEquals("c", c.last());
     }
 }
 ```
@@ -362,14 +437,25 @@ import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
+import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(HashSet.class)
+@ContractImpl(TreeSet.class)
 public class TreeSetTest {
  
+    IProducer<TreeSet<Object>> producer = new IProducer<TreeSet<Object>>() {
+    	public TreeSet<Object> newInstance() {
+    		return new TreeSet<Object>();
+    	}
+    	
+    	public void cleanUp() {
+    		// no cleanup required.
+    	}
+    };
+    
     @Contract.Inject
-    public TreeSet<Object> makeLinkedHashSet() {
-        return new TreeSet<Object>();        
+    public IProducer<TreeSet<Object>> makedashSet() {
+        return producer;        
     }
 }
 ```
@@ -377,3 +463,79 @@ public class TreeSetTest {
 With junit-contracts we can now run all the combinations of tests that are possible for each of the `@ContractImpl`, which would run in isolation:
 
 ![Screenshot of junit-contracts in Eclipse](docs/junit-contracts.png)
+
+Why The IProducer
+-----------------
+
+In the examples above the IProducer construct seems unnecessary, and in fact the tests can be written to inject an instance of the object under test.  However, the IProducer interface provides a mechanism for the contract test to ensure that any resources allocated when the object was created is released.  It also provides a mechanism whereby a test may use 2 or more instances of the object during the test.  In our simple examples above this is not evident.  If we were to have a database backed Set implementation then the cleanup could reset the database tables to a known state as is illustrated below.
+
+DBSet definition:
+
+```java
+package contracttests;
+import java.sql.Connection;
+import java.sql.Statement;
+
+public class DBSet<T> implements Set<T> {
+ 
+
+	Statement stmt;
+	
+	public DBSet( Connection conn )
+	{
+		this.stmt = conn.createStatement();
+	}
+	
+	public void close() {
+		this.stmt.close();
+		this.stmt = null;
+	}
+	
+	// implement let to reader	
+}
+```
+Contract Test for DBSet
+
+```java
+package contracttests;
+import java.sql.Connection;
+import org.junit.runner.RunWith;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractImpl;
+import org.xenei.junit.contract.ContractSuite;
+
+@RunWith(ContractSuite.class)
+@ContractImpl(DBSet.class)
+public class DBSetTest {
+ 
+ 	String URL = "jdbc:oracle:thin:@amrood:1521:EMP";
+    String USER = "username";
+	String PASS = "password"
+	Connection conn = DriverManager.getConnection(URL, USER, PASS);
+	List<DBSet<Object>> openedDbSets;
+
+    IProducer<DBSet<Object>> producer = new IProducer<DBSet<Object>>() {
+    	public DBSet<Object> newInstance() {
+    		DBSet<Object> dbSet = DBSet<Object>(connection);
+    		openedDbSets.add( dbSet );
+    		return dbSet;
+    	}
+    	
+    	public void cleanUp() {
+    		for (DBSet<Object> : openedDbsets )
+    		{
+    			// empty the database table
+    			dbSet.clear();
+    			// close the connection
+    			dbSet.close();
+    		}
+    	}
+    }
+    
+    @Contract.Inject
+    public Producer<TreeSet<Object>> makedashSet() {
+        return producer;        
+    }
+}
+```
+
