@@ -524,3 +524,35 @@ public class DBSetTest {
 }
 ```
 
+Annotations
+===========
+
+Contract
+--------
+
+Indicates that the class is a contract test.  The argument is the class that is being tested.
+
+Contract.Inject
+---------------
+
+Indicates that the method is a getter that provides the IProducer to inject or a setter that accepts the IProducer.
+
+ContractImpl
+------------
+
+Indentifies the implementation class that is being tested.  The argument is the class for which an instance will be created.  The __ignore__ property may specify contract tests that should not be executed.  
+
+ContractTest
+------------
+
+Like a JUnit Test annotation but requries that the test be run within the ContractSuite runner.
+
+Dynamic.Inject
+--------------
+
+Used with Dynamic implementation to specify the class to inject.  The Dyanamic suite is used to create a test suite from the return values of a class.  This provides a mechanism to test Factory and similar class types.
+
+NoContractTest
+--------------
+
+Indicates that an interface should not have a contract test.  This is used to remove interfaces from the reporting when a test is not expected or possible.
