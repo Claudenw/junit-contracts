@@ -95,7 +95,9 @@ public class BImplContractTest {
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "BImplContractTest.producer.newInstance()",
-				"bname", "BImplContractTest.producer.cleanUp()" };
+				"bname", "BImplContractTest.producer.cleanUp()",
+				"BImplContractTest.producer.newInstance()",
+				"BInt=1", "BImplContractTest.producer.cleanUp()" };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

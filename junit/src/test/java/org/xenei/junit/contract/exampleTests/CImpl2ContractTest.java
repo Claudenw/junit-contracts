@@ -106,7 +106,7 @@ public class CImpl2ContractTest {
 
 	private static void verifyTest( List<String> expectedTests, List<String> results) {
 		Assert.assertEquals( "CImpl2ContractTest.producer.newInstance()", results.get(0));
-		Assert.assertTrue( expectedTests.contains( results.get(1)));
+		Assert.assertTrue( "Missing "+results.get(1), expectedTests.contains( results.get(1)));
 		expectedTests.remove( results.get(1));
 		Assert.assertEquals( "CImpl2ContractTest.producer.cleanUp()", results.get(2));
 		
@@ -116,7 +116,7 @@ public class CImpl2ContractTest {
 	 */
 	@AfterClass
 	public static void afterClass() {
-		final String[] testNames = {"called Extra Method","cname", "cname version of aname", "cname version of bname" };
+		final String[] testNames = {"called Extra Method","cname", "cname version of aname", "BInt=3", "cname version of bname" };
 		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
 		
 		
@@ -127,7 +127,7 @@ public class CImpl2ContractTest {
 			int j = i*3;
 			verifyTest( expectedTests, l.subList(j, j+3));
 		}
-		
+		Assert.assertTrue( expectedTests.isEmpty());
 
 	}
 }

@@ -78,7 +78,9 @@ public class BImplTest extends BT<BImpl> {
 	@AfterClass
 	public static void afterClass() {
 		String[] expected = { "BImplTest.producer.newInstance()", "bname",
-				"BImplTest.producer.cleanUp()" };
+				"BImplTest.producer.cleanUp()",
+				"BImplTest.producer.newInstance()",
+				"BInt=1", "BImplTest.producer.cleanUp()"  };
 
 		List<String> l = Listener.get();
 		Assert.assertEquals(l, Arrays.asList(expected));

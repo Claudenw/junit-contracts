@@ -42,4 +42,11 @@ public class CImpl implements C {
 	public String toString() {
 		return "CImpl";
 	}
+	
+	@Override
+	public int getBInt()
+	{
+		return 2;
+	}
+
 }

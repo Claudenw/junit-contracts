@@ -42,6 +42,13 @@ public class CImpl2 implements C {
 	public String toString() {
 		return "CImpl2";
 	}
+	
+	@Override
+	public int getBInt()
+	{
+		return 3;
+	}
+
 
 	/**
 	 * An extra method in this implementation that is not defined in C.

@@ -28,4 +28,10 @@ public class CImpl3 implements C {
 		return null;
 	}
 
+	@Override
+	public int getBInt()
+	{
+		return 4;
+	}
+
 }

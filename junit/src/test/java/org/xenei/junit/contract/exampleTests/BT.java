@@ -69,6 +69,14 @@ public class BT<T extends B> {
 	}
 
 	/**
+	 * Test getBInt()
+	 */
+	@ContractTest
+	public void testGetBInt() {
+		Listener.add( "BInt="+getProducer().newInstance().getBInt());
+	}
+	
+	/**
 	 * Clean up the producer.
 	 */
 	@After

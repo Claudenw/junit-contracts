@@ -62,7 +62,7 @@ Release version
 contracts-cmdline
 -----------------
 
-<a href="./cmdLine/">contracts-cmdline</a> is the model that encompasses the command line tools that will generate reports equivalent ot the maven contracts plugin.
+<a href="./cmdLine/">contracts-cmdline</a> is the model that encompasses the command line tools that will generate reports equivalent to the maven contracts plugin.
 
 Release version
 
@@ -540,12 +540,28 @@ Indicates that the method is a getter that provides the IProducer to inject or a
 ContractImpl
 ------------
 
-Indentifies the implementation class that is being tested.  The argument is the class for which an instance will be created.  The __ignore__ property may specify contract tests that should not be executed.  
+Identifies the implementation class that is being tested.  
+
+ContractImpl has two attributes that can remove tests.
+
+* skip is an array of interface classes that should not be tested.  All contract tests for the interfaces will be skipped.
+
+* ignore list any @Contract annotated tests that should be ignored.  This allows removal of broken
+tests that are outside the control of the developer of the @ContractImpl test.
+
+ContractExclude
+---------------
+
+ContractExclude is intended to be used with @ContractImpl.  The annotation has 2 arguments
+1. value is the name of the class that contains the test to exclude.
+2. methods is a list of method names in the test class to exclude.
+
+This annotation will remove the tests only for the ContractImpl it is associated with.
 
 ContractTest
 ------------
 
-Like a JUnit Test annotation but requries that the test be run within the ContractSuite runner.
+Like a JUnit Test annotation but requires that the test be run within the ContractSuite runner.  Contract tests may be annotated with the standard JUnit @Ignore annotation to disable the test for all contract suites. 
 
 Dynamic.Inject
 --------------

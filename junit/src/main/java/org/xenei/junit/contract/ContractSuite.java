@@ -18,6 +18,7 @@
 
 package org.xenei.junit.contract;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,6 +52,7 @@ import org.xenei.junit.contract.info.DynamicTestInfo;
 import org.xenei.junit.contract.info.SuiteInfo;
 import org.xenei.junit.contract.info.TestInfo;
 import org.xenei.junit.contract.info.TestInfoErrorRunner;
+
 
 /**
  * Class that runs the Contract annotated tests.
@@ -146,8 +148,6 @@ public class ContractSuite extends ParentRunner<Runner> {
 	 *
 	 * @param cls
 	 *            The class to look on
-	 * @param errors
-	 *            The list of errors to add to if there is an error
 	 * @return ContractImpl or null if not found.
 	 * @throws InitializationError
 	 */
@@ -159,6 +159,38 @@ public class ContractSuite extends ParentRunner<Runner> {
 					+ "] must also be annotated with @ContractImpl");
 		}
 		return impl;
+	}
+
+	/**
+	 * Get the ContractExclude annotation and extract the list of methods from it.
+	 * 
+	 * logs error if method is not found on the class specified in the annotation.
+	 *
+	 * @param cls
+	 *            The class on which to for the annotation.
+	 * @param errors
+	 *            The list of errors to add to if there is an error
+	 * @return A list of methods.  May be empty.
+	 * @throws InitializationError
+	 */
+	private List<Method> getExcludedMethods(final Class<?> cls)  {
+		
+		List<Method> lst = new ArrayList<Method>();
+		for (ContractExclude exclude : cls.getAnnotationsByType(ContractExclude.class))
+		{
+			Class<?> clazz = exclude.value();
+			for (String mthdName : exclude.methods())
+			{
+				try
+				{
+					lst.add(clazz.getDeclaredMethod(mthdName));
+				} catch (NoSuchMethodException | SecurityException e)
+				{
+					LOG.warn( String.format( "ContractExclude annotation on %s incorrect", cls), e);
+				}
+			}
+		}
+		return lst;
 	}
 
 	/**
@@ -283,17 +315,20 @@ public class ContractSuite extends ParentRunner<Runner> {
 	private void addSpecifiedClasses(final List<Runner> runners, final Class<?> testClass, final RunnerBuilder builder,
 			final ContractTestMap contractTestMap, final Object baseObj, final TestInfo parentTestInfo)
 			throws InitializationError {
+		
+			
 		// this is the list of all the JUnit runners in the suite.
-
 		final Set<TestInfo> testClasses = new LinkedHashSet<TestInfo>();
+		
 		// we have a RunWith annotated class: Klass
 		// see if it is in the annotatedClasses
-
 		final BaseClassRunner bcr = new BaseClassRunner(testClass);
 		if (bcr.computeTestMethods().size() > 0) {
 			runners.add(bcr);
 		}
 
+		List<Method> excludeMethods = getExcludedMethods(getTestClass().getJavaClass());
+		
 		/*
 		 * get all the annotated classes that test the interfaces that
 		 * parentTestInfo implements and iterate over them
@@ -308,7 +343,7 @@ public class ContractSuite extends ParentRunner<Runner> {
 					runner.logErrors(LOG);
 					runners.add(runner);
 				} else {
-					runners.add(new ContractTestRunner(baseObj, parentTestInfo, testInfo));
+					runners.add(new ContractTestRunner(baseObj, parentTestInfo, testInfo, excludeMethods));
 				}
 			}
 		}
@@ -341,9 +376,9 @@ public class ContractSuite extends ParentRunner<Runner> {
 	private class BaseClassRunner extends BlockJUnit4ClassRunner {
 
 		private List<FrameworkMethod> testMethods = null;
-
+			
 		public BaseClassRunner(final Class<?> cls) throws InitializationError {
-			super(cls);
+			super(cls);			
 		}
 
 		@Override
@@ -367,8 +402,10 @@ public class ContractSuite extends ParentRunner<Runner> {
 		protected List<FrameworkMethod> computeTestMethods() {
 			if (testMethods == null) {
 				testMethods = new ArrayList<FrameworkMethod>();
+				List<Method> excludeMethods = getExcludedMethods(getTestClass().getJavaClass());
 				for (final FrameworkMethod mthd : super.getTestClass().getAnnotatedMethods(ContractTest.class)) {
-					if (mthd.getMethod().getDeclaringClass().getAnnotation(Contract.class) == null) {
+					if (mthd.getMethod().getDeclaringClass().getAnnotation(Contract.class) == null &&
+							! excludeMethods.contains(mthd.getMethod())) {
 						testMethods.add(mthd);
 					}
 				}

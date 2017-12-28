@@ -26,7 +26,9 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.xenei.junit.bad.BadNoInject;
 import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractExclude;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
@@ -49,8 +51,9 @@ import org.xenei.junit.contract.IProducer;
 // run as a contract test
 @RunWith(ContractSuite.class)
 // testing the CImpl class.
-@ContractImpl(value = CImpl.class, skip = { A.class })
-public class CImplContractTestWithSkip {
+@ContractImpl( value=CImpl.class,  ignore = { BadNoInject.class })
+@ContractExclude( value=BT.class, methods={"testGetBInt"})
+public class CImplContractTestWithExclude {
 	// the producer to use for all the tests
 	private IProducer<CImpl> producer = new IProducer<CImpl>() {
 		@Override
@@ -95,7 +98,7 @@ public class CImplContractTestWithSkip {
 	 */
 	@AfterClass
 	public static void afterClass() {
-		final String[] testNames = {"cname", "cname version of bname", "BInt=2" };
+		final String[] testNames = {"cname", "cname version of bname", "cname version of aname" };
 		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
 		
 		
@@ -106,7 +109,7 @@ public class CImplContractTestWithSkip {
 			int j = i*3;
 			verifyTest( expectedTests, l.subList(j, j+3));
 		}
-		Assert.assertTrue( expectedTests.isEmpty() );
+		Assert.assertTrue( expectedTests.isEmpty());
 
 	}
 }

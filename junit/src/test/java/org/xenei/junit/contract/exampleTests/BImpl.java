@@ -33,4 +33,12 @@ public class BImpl implements B {
 	public String toString() {
 		return "BImpl";
 	}
+
+	@Override
+	public int getBInt()
+	{
+		return 1;
+	}
+	
+	
 }

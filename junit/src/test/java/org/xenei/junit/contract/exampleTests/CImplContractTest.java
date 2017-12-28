@@ -87,7 +87,7 @@ public class CImplContractTest {
 	
 	private static void verifyTest( List<String> expectedTests, List<String> results) {
 		Assert.assertEquals( "CImplContractTest.producer.newInstance()", results.get(0));
-		Assert.assertTrue( expectedTests.contains( results.get(1)));
+		Assert.assertTrue( "Missing "+results.get(1), expectedTests.contains( results.get(1)));
 		expectedTests.remove( results.get(1));
 		Assert.assertEquals( "CImplContractTest.producer.cleanUp()", results.get(2));
 		
@@ -97,7 +97,7 @@ public class CImplContractTest {
 	 */
 	@AfterClass
 	public static void afterClass() {
-		final String[] testNames = {"cname", "cname version of aname", "cname version of bname" };
+		final String[] testNames = {"cname", "cname version of aname", "cname version of bname", "BInt=2" };
 		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
 		
 		
@@ -108,7 +108,8 @@ public class CImplContractTest {
 			int j = i*3;
 			verifyTest( expectedTests, l.subList(j, j+3));
 		}
-		
+		Assert.assertTrue( expectedTests.isEmpty() );
+
 
 	}
 	

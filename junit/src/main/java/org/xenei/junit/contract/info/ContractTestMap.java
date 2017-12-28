@@ -53,19 +53,6 @@ public class ContractTestMap {
 	private static final Log LOG = LogFactory.getLog(ContractTestMap.class);
 
 	/**
-	 * Create an instance of ContractTestMap using the specified class loader.
-	 * 
-	 * Contract tests must be annotated with @Contract and must not be annotated
-	 * with @Ignore
-	 * 
-	 * @param classLoader
-	 *            The class loader to use.
-	 * @param packages
-	 *            A list of package names to report
-	 * @return A ContractTestMap.
-	 */
-
-	/**
 	 * Constructor
 	 * 
 	 */

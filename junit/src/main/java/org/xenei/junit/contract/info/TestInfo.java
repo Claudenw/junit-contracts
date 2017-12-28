@@ -140,7 +140,7 @@ public class TestInfo implements Comparable<TestInfo> {
 	}
 
 	/**
-	 * Get the package name of the cla under test..
+	 * Get the package name of the class under test..
 	 *
 	 * @return The contract class package name.
 	 */

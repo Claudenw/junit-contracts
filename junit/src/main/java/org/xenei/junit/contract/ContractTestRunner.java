@@ -20,9 +20,13 @@ package org.xenei.junit.contract;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -43,6 +47,7 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	private final Object getterObj;
 	// the getter method to call.
 	private final Method getter;
+	private final List<Method> excludedMethods;
 
 	/**
 	 * Create a test runner within the ContractTestSuite.
@@ -54,24 +59,29 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 *            The test info for the parent.
 	 * @param testInfo
 	 *            The test info for this test.
+	 * @param excludedMethods
+	 * 			  A list of test methods that should not be executed.
 	 * 
 	 * @throws InitializationError
 	 *             on error.
 	 */
 	public ContractTestRunner(Object getterObj, TestInfo parentTestInfo,
-			TestInfo testInfo) throws InitializationError {
+			TestInfo testInfo, List<Method> excludedMethods) throws InitializationError {
 		super(testInfo.getContractTestClass());
 		this.parentTestInfo = parentTestInfo;
 		this.testInfo = testInfo;
 		this.getterObj = getterObj;
 		this.getter = parentTestInfo.getMethod();
+		this.excludedMethods = excludedMethods;
 	}
 
 	/**
 	 * Create a test runner for stand alone test
 	 * 
 	 * @param testClass
-	 *            The ContractTest annoated class.
+	 *            The ContractTest annotated class.
+	 * @param excludedMethods
+	 * 			  A list of test methods that should not be executed.
 	 * 
 	 * @throws InitializationError
 	 *             on error.
@@ -82,6 +92,7 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 		this.testInfo = null;
 		this.getterObj = null;
 		this.getter = null;
+		this.excludedMethods = Collections.emptyList();
 	}
 
 	/**
@@ -117,6 +128,16 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 		return retval;
 
 	}
+	
+	@Override
+    protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+        Description description = describeChild(method);
+        if (method.getAnnotation(Ignore.class) != null || excludedMethods.contains( method.getMethod())) {
+            notifier.fireTestIgnored(description);
+        } else {
+            runLeaf(methodBlock(method), description, notifier);
+        }
+    }
 
 	/**
 	 * Adds to {@code errors} if the test class has more than one constructor,
@@ -161,8 +182,13 @@ public class ContractTestRunner extends BlockJUnit4ClassRunner {
 	 */
 	@Override
 	protected List<FrameworkMethod> computeTestMethods() {
-		// this is call during construction. testInfo is not yet available.
+		// this is call during construction. testInfo and excludedMethods is not yet available.
 		return getTestClass().getAnnotatedMethods(ContractTest.class);
+	}
+	
+	@Override
+	public String toString() {
+		return "ContractTest"+testInfo==null?"":testInfo.toString();
 	}
 
 }

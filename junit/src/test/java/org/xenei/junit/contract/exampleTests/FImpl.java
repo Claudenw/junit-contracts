@@ -32,4 +32,10 @@ public class FImpl implements F {
 		return null;
 	}
 
+	@Override
+	public int getBInt()
+	{
+		return 5;
+	}
+
 }

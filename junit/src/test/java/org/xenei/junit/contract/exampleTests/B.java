@@ -26,8 +26,12 @@ public interface B {
 
 	/**
 	 * 
-	 * @return the B Bane
+	 * @return the B name;
 	 */
 	public String getBName();
 
+	/**
+	 * @return the B int
+	 */
+	public int getBInt();
 }
