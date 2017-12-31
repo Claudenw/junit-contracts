@@ -12,14 +12,14 @@
 		<name>XENEI.com</name>
 	</organization>
 	<scm>
-		<url>git@github.com:Claudenw/junit-contracts.git</url>
+		<url>https://github.comClaudenw/junit-contracts</url>
 		<connection>scm:git:git@github.com:Claudenw/junit-contracts.git</connection>
 		<developerConnection>scm:git:git@github.com:Claudenw/junit-contracts.git</developerConnection>
 	</scm>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -254,4 +254,8 @@
             </dependency>
 		</dependencies>
 	</dependencyManagement>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/Claudenw/junit-contracts/issues</url>
+	</issueManagement>
 </project>
