@@ -24,21 +24,19 @@ package org.xenei.junit.contract.exampleTests;
  */
 public class BImpl implements B {
 
-	@Override
-	public String getBName() {
-		return "bname";
-	}
+    @Override
+    public String getBName() {
+        return "bname";
+    }
 
-	@Override
-	public String toString() {
-		return "BImpl";
-	}
+    @Override
+    public String toString() {
+        return "BImpl";
+    }
 
-	@Override
-	public int getBInt()
-	{
-		return 1;
-	}
-	
-	
+    @Override
+    public int getBInt() {
+        return 1;
+    }
+
 }

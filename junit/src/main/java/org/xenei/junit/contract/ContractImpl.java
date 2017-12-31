@@ -55,30 +55,30 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ContractImpl {
-	/**
-	 * The Implementation class that should be scanned for interfaces that have
-	 * Contract tests defined.
-	 * 
-	 * @return The class the implementation class.
-	 */
-	Class<?> value();
+    /**
+     * The Implementation class that should be scanned for interfaces that have
+     * Contract tests defined.
+     * 
+     * @return The class the implementation class.
+     */
+    Class<?> value();
 
-	/**
-	 * The list of interface classes for which tests should be skipped.
-	 * This list are interfaces that the class under tests implements but that should 
-	 * not be tested.
-	 * 
-	 * @return The interfaces to skip testing.
-	 */
-	Class<?>[] skip() default {};
+    /**
+     * The list of interface classes for which tests should be skipped. This
+     * list are interfaces that the class under tests implements but that should
+     * not be tested.
+     * 
+     * @return The interfaces to skip testing.
+     */
+    Class<?>[] skip() default {};
 
-	/**
-	 * The list of implementations to skip. 
-	 * This list is a list of test implementations that apply to the class under test
-	 * but that should not be executed.  This is often 
-	 * because the tests are not applicable to this implementation. 
-	 * 
-	 * @return the list of interface test implementations to skip.
-	 */
-	Class<?>[] ignore() default {};
+    /**
+     * The list of implementations to skip. This list is a list of test
+     * implementations that apply to the class under test but that should not be
+     * executed. This is often because the tests are not applicable to this
+     * implementation.
+     * 
+     * @return the list of interface test implementations to skip.
+     */
+    Class<?>[] ignore() default {};
 }

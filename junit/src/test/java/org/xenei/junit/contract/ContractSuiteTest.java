@@ -17,7 +17,9 @@
 
 package org.xenei.junit.contract;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -36,154 +38,138 @@ import org.xenei.junit.bad.BadNoInject;
  */
 public class ContractSuiteTest {
 
-	/**
-	 * Test that @Contract annotated classes may not be abstract.
-	 * 
-	 * @throws Throwable
-	 *             on error
-	 */
-	@Test
-	public void testBadAbstract() throws Throwable {
-		final RunnerBuilder builder = mock(RunnerBuilder.class);
-		final ContractSuite cs = new ContractSuite(BadAbstractTest.class,
-				builder);
-		final RunNotifier notifier = mock(RunNotifier.class);
-		cs.run(notifier);
+    /**
+     * Test that @Contract annotated classes may not be abstract.
+     * 
+     * @throws Throwable
+     *             on error
+     */
+    @Test
+    public void testBadAbstract() throws Throwable {
+        final RunnerBuilder builder = mock( RunnerBuilder.class );
+        final ContractSuite cs = new ContractSuite( BadAbstractTest.class, builder );
+        final RunNotifier notifier = mock( RunNotifier.class );
+        cs.run( notifier );
 
-		final ArgumentCaptor<Description> description = ArgumentCaptor
-				.forClass(Description.class);
-		verify(notifier).fireTestStarted(description.capture());
-		assertEquals(BadAbstractTest.class.getName(), description.getValue()
-				.getClassName());
+        final ArgumentCaptor<Description> description = ArgumentCaptor.forClass( Description.class );
+        verify( notifier ).fireTestStarted( description.capture() );
+        assertEquals( BadAbstractTest.class.getName(), description.getValue().getClassName() );
 
-		final ArgumentCaptor<Failure> failure = ArgumentCaptor
-				.forClass(Failure.class);
-		verify(notifier).fireTestFailure(failure.capture());
-		final Throwable throwable = failure.getValue().getException();
-		assertTrue("Should be illegal state exception",
-				throwable instanceof IllegalStateException);
-		assertEquals(
-				"Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract",
-				throwable.getMessage());
+        final ArgumentCaptor<Failure> failure = ArgumentCaptor.forClass( Failure.class );
+        verify( notifier ).fireTestFailure( failure.capture() );
+        final Throwable throwable = failure.getValue().getException();
+        assertTrue( "Should be illegal state exception", throwable instanceof IllegalStateException );
+        assertEquals( "Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract",
+                throwable.getMessage() );
 
-		verify(notifier).fireTestFinished(description.capture());
-		assertEquals(BadAbstractTest.class.getName(), description.getValue()
-				.getClassName());
+        verify( notifier ).fireTestFinished( description.capture() );
+        assertEquals( BadAbstractTest.class.getName(), description.getValue().getClassName() );
 
-	}
+    }
 
-	/**
-	 * Test that @Contract classes must have a @Contract.Inject annotation on a
-	 * public non-abstract declared setter method.
-	 * 
-	 * @throws Throwable
-	 *             on error.
-	 */
-	@Test
-	public void testBadNoInject() throws Throwable {
-		final RunnerBuilder builder = mock(RunnerBuilder.class);
-		final ContractSuite cs = new ContractSuite(BadNoInjectTest.class,
-				builder);
-		final RunNotifier notifier = mock(RunNotifier.class);
-		cs.run(notifier);
+    /**
+     * Test that @Contract classes must have a @Contract.Inject annotation on a
+     * public non-abstract declared setter method.
+     * 
+     * @throws Throwable
+     *             on error.
+     */
+    @Test
+    public void testBadNoInject() throws Throwable {
+        final RunnerBuilder builder = mock( RunnerBuilder.class );
+        final ContractSuite cs = new ContractSuite( BadNoInjectTest.class, builder );
+        final RunNotifier notifier = mock( RunNotifier.class );
+        cs.run( notifier );
 
-		final ArgumentCaptor<Description> description = ArgumentCaptor
-				.forClass(Description.class);
-		verify(notifier).fireTestStarted(description.capture());
+        final ArgumentCaptor<Description> description = ArgumentCaptor.forClass( Description.class );
+        verify( notifier ).fireTestStarted( description.capture() );
 
-		if (BadNoInject.class.getName().equals(
-				description.getValue().getClassName())) {
+        if (BadNoInject.class.getName().equals( description.getValue().getClassName() )) {
 
-			final ArgumentCaptor<Failure> failure = ArgumentCaptor
-					.forClass(Failure.class);
-			verify(notifier).fireTestFailure(failure.capture());
-			final Throwable throwable = failure.getValue().getException();
-			assertTrue("Should be illegal state exception",
-					throwable instanceof IllegalStateException);
-			assertEquals(
-					"Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
-					throwable.getMessage());
-			verify(notifier).fireTestFinished(description.capture());
-			assertEquals(BadNoInject.class.getName(), description.getValue()
-					.getClassName());
-		} else if (BadNoInjectTest.class.getName().equals(
-				description.getValue().getClassName())) {
-			verify(notifier).fireTestFinished(description.capture());
-			assertEquals(BadNoInjectTest.class.getName(), description
-					.getValue().getClassName());
-		} else {
-			fail("Unexpected description class name: "
-					+ description.getValue().getClassName());
-		}
-	}
+            final ArgumentCaptor<Failure> failure = ArgumentCaptor.forClass( Failure.class );
+            verify( notifier ).fireTestFailure( failure.capture() );
+            final Throwable throwable = failure.getValue().getException();
+            assertTrue( "Should be illegal state exception", throwable instanceof IllegalStateException );
+            assertEquals(
+                    "Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
+                    throwable.getMessage() );
+            verify( notifier ).fireTestFinished( description.capture() );
+            assertEquals( BadNoInject.class.getName(), description.getValue().getClassName() );
+        } else if (BadNoInjectTest.class.getName().equals( description.getValue().getClassName() )) {
+            verify( notifier ).fireTestFinished( description.capture() );
+            assertEquals( BadNoInjectTest.class.getName(), description.getValue().getClassName() );
+        } else {
+            fail( "Unexpected description class name: " + description.getValue().getClassName() );
+        }
+    }
 
-	/**
-	 * A contract implementation for BadNoInject class.
-	 *
-	 */
-	@ContractImpl(value = BadNoInject.class)
-	public static class BadNoInjectTest {
-		// the producer to use for all the tests
-		private final IProducer<BadNoInject> producer = new IProducer<BadNoInject>() {
-			@Override
-			public BadNoInject newInstance() {
-				return new BadNoInject();
-			}
+    /**
+     * A contract implementation for BadNoInject class.
+     *
+     */
+    @ContractImpl(value = BadNoInject.class)
+    public static class BadNoInjectTest {
+        // the producer to use for all the tests
+        private final IProducer<BadNoInject> producer = new IProducer<BadNoInject>() {
+            @Override
+            public BadNoInject newInstance() {
+                return new BadNoInject();
+            }
 
-			@Override
-			public void cleanUp() {
+            @Override
+            public void cleanUp() {
 
-			}
-		};
+            }
+        };
 
-		/**
-		 * The method to inject the producer into the test classes.
-		 * 
-		 * @return the BadNoInject implementation.
-		 */
-		@Contract.Inject
-		public IProducer<BadNoInject> getProducer() {
-			return producer;
-		}
+        /**
+         * The method to inject the producer into the test classes.
+         * 
+         * @return the BadNoInject implementation.
+         */
+        @Contract.Inject
+        public IProducer<BadNoInject> getProducer() {
+            return producer;
+        }
 
-		/**
-		 * A contract test to meet the test requirements.
-		 */
-		@ContractTest
-		public void forceTest() {
-			// just a test to meet the requirements.
-		}
+        /**
+         * A contract test to meet the test requirements.
+         */
+        @ContractTest
+        public void forceTest() {
+            // just a test to meet the requirements.
+        }
 
-	}
+    }
 
-	/**
-	 * A Contract test for the BadAbstract class
-	 */
-	@ContractImpl(value = BadAbstract.class)
-	public static class BadAbstractTest {
-		// the producer to use for all the tests
-		private final IProducer<BadAbstract> producer = new IProducer<BadAbstract>() {
-			@Override
-			public BadAbstract newInstance() {
-				return new BadAbstract() {
-				};
-			}
+    /**
+     * A Contract test for the BadAbstract class
+     */
+    @ContractImpl(value = BadAbstract.class)
+    public static class BadAbstractTest {
+        // the producer to use for all the tests
+        private final IProducer<BadAbstract> producer = new IProducer<BadAbstract>() {
+            @Override
+            public BadAbstract newInstance() {
+                return new BadAbstract() {
+                };
+            }
 
-			@Override
-			public void cleanUp() {
+            @Override
+            public void cleanUp() {
 
-			}
-		};
+            }
+        };
 
-		/**
-		 * The method to inject the producer into the test classes.
-		 * 
-		 * @return The BadAbstract class to inject.
-		 */
-		@Contract.Inject
-		public IProducer<BadAbstract> getProducer() {
-			return producer;
-		}
+        /**
+         * The method to inject the producer into the test classes.
+         * 
+         * @return The BadAbstract class to inject.
+         */
+        @Contract.Inject
+        public IProducer<BadAbstract> getProducer() {
+            return producer;
+        }
 
-	}
+    }
 }

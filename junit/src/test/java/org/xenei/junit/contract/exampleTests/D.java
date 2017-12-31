@@ -7,10 +7,10 @@ package org.xenei.junit.contract.exampleTests;
  * 
  */
 interface D {
-	public String getDName();
+    public String getDName();
 
-	public A getA();
+    public A getA();
 
-	public B getB();
+    public B getB();
 
 }

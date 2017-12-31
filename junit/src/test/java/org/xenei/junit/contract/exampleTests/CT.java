@@ -42,37 +42,37 @@ import org.xenei.junit.contract.IProducer;
 @Contract(C.class)
 public class CT<T extends C> {
 
-	private IProducer<T> producer;
+    private IProducer<T> producer;
 
-	/**
-	 * The method used to inject the producer into the test.
-	 * 
-	 * @param producer
-	 *            The producer that will be used for this test.
-	 */
-	@Contract.Inject
-	public final void setProducer(IProducer<T> producer) {
-		this.producer = producer;
-	}
+    /**
+     * The method used to inject the producer into the test.
+     * 
+     * @param producer
+     *            The producer that will be used for this test.
+     */
+    @Contract.Inject
+    public final void setProducer(IProducer<T> producer) {
+        this.producer = producer;
+    }
 
-	protected final IProducer<T> getProducer() {
-		return producer;
-	}
+    protected final IProducer<T> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * Clean up the producer.
-	 */
-	@After
-	public final void cleanupCT() {
-		producer.cleanUp();
-	}
+    /**
+     * Clean up the producer.
+     */
+    @After
+    public final void cleanupCT() {
+        producer.cleanUp();
+    }
 
-	/**
-	 * test getCName()
-	 */
-	@ContractTest
-	public void testGetCName() {
-		Listener.add(getProducer().newInstance().getCName());
-	}
+    /**
+     * test getCName()
+     */
+    @ContractTest
+    public void testGetCName() {
+        Listener.add( getProducer().newInstance().getCName() );
+    }
 
 }

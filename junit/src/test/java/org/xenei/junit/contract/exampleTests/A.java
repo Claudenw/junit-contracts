@@ -24,10 +24,10 @@ package org.xenei.junit.contract.exampleTests;
  */
 public interface A {
 
-	/**
-	 * 
-	 * @return The A name
-	 */
-	public String getAName();
+    /**
+     * 
+     * @return The A name
+     */
+    public String getAName();
 
 }

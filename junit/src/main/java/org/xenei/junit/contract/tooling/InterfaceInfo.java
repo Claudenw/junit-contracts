@@ -27,47 +27,47 @@ import java.util.Set;
  *
  */
 public class InterfaceInfo {
-	// the interface class
-	private final Class<?> name;
-	// the tests that apply to the interface
-	private final Set<Class<?>> tests;
+    // the interface class
+    private final Class<?> name;
+    // the tests that apply to the interface
+    private final Set<Class<?>> tests;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            The interface class.
-	 */
-	public InterfaceInfo(final Class<?> name) {
-		this.name = name;
-		this.tests = new HashSet<Class<?>>();
-	}
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            The interface class.
+     */
+    public InterfaceInfo(final Class<?> name) {
+        this.name = name;
+        this.tests = new HashSet<Class<?>>();
+    }
 
-	/**
-	 * Add a test to the list of tests that apply to the interface.
-	 * 
-	 * @param test
-	 *            The test to add.
-	 */
-	public void add(final Class<?> test) {
-		tests.add(test);
-	}
+    /**
+     * Add a test to the list of tests that apply to the interface.
+     * 
+     * @param test
+     *            The test to add.
+     */
+    public void add(final Class<?> test) {
+        tests.add( test );
+    }
 
-	/**
-	 * Get the set of tests for the interface.
-	 * 
-	 * @return the set of Class object representing the tests.
-	 */
-	public Set<Class<?>> getTests() {
-		return tests;
-	}
+    /**
+     * Get the set of tests for the interface.
+     * 
+     * @return the set of Class object representing the tests.
+     */
+    public Set<Class<?>> getTests() {
+        return tests;
+    }
 
-	/**
-	 * Get the interface class
-	 * 
-	 * @return The interface class.
-	 */
-	public Class<?> getName() {
-		return name;
-	}
+    /**
+     * Get the interface class
+     * 
+     * @return The interface class.
+     */
+    public Class<?> getName() {
+        return name;
+    }
 }

@@ -6,19 +6,19 @@ package org.xenei.junit.contract.exampleTests;
  */
 class DImpl implements D {
 
-	@Override
-	public String getDName() {
-		return "dname";
-	}
+    @Override
+    public String getDName() {
+        return "dname";
+    }
 
-	@Override
-	public A getA() {
-		return new AImpl();
-	}
+    @Override
+    public A getA() {
+        return new AImpl();
+    }
 
-	@Override
-	public B getB() {
-		return new BImpl();
-	}
+    @Override
+    public B getB() {
+        return new BImpl();
+    }
 
 }

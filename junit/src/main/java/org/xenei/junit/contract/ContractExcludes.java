@@ -12,11 +12,10 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ContractExcludes
-{
-	/**
-	 * 
-	 * The list of ContractExclude annotations.
-	 */
-	ContractExclude[] value();
+public @interface ContractExcludes {
+    /**
+     * 
+     * The list of ContractExclude annotations.
+     */
+    ContractExclude[] value();
 }

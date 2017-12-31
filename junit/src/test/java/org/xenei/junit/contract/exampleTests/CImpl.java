@@ -23,30 +23,29 @@ package org.xenei.junit.contract.exampleTests;
  * 
  */
 public class CImpl implements C {
-	@Override
-	public String getCName() {
-		return "cname";
-	}
+    @Override
+    public String getCName() {
+        return "cname";
+    }
 
-	@Override
-	public String getAName() {
-		return "cname version of aname";
-	}
+    @Override
+    public String getAName() {
+        return "cname version of aname";
+    }
 
-	@Override
-	public String getBName() {
-		return "cname version of bname";
-	}
+    @Override
+    public String getBName() {
+        return "cname version of bname";
+    }
 
-	@Override
-	public String toString() {
-		return "CImpl";
-	}
-	
-	@Override
-	public int getBInt()
-	{
-		return 2;
-	}
+    @Override
+    public String toString() {
+        return "CImpl";
+    }
+
+    @Override
+    public int getBInt() {
+        return 2;
+    }
 
 }

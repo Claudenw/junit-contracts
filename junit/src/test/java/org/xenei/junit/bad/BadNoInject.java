@@ -34,10 +34,10 @@ import org.xenei.junit.contract.exampleTests.A;
 @Contract(A.class)
 public class BadNoInject {
 
-	/**
-	 * Constructor.
-	 */
-	public BadNoInject() {
-	}
+    /**
+     * Constructor.
+     */
+    public BadNoInject() {
+    }
 
 }

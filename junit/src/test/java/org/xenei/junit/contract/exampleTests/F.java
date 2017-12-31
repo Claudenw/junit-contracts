@@ -5,10 +5,10 @@ package org.xenei.junit.contract.exampleTests;
  *
  */
 public interface F extends C {
-	/**
-	 * Get the F name.
-	 * 
-	 * @return the F Name.
-	 */
-	public String getFName();
+    /**
+     * Get the F name.
+     * 
+     * @return the F Name.
+     */
+    public String getFName();
 }

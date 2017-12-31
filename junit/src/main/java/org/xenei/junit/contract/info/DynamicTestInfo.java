@@ -33,78 +33,72 @@ import org.xenei.junit.contract.MethodUtils;
  *
  */
 public class DynamicTestInfo extends TestInfo {
-	private final Method dynamicInjector;
-	private final Method getter;
+    private final Method dynamicInjector;
+    private final Method getter;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param testClass
-	 *            The test class.
-	 * @param impl
-	 *            The ContractImpl annotation.
-	 * @param suite
-	 *            The dynamic suite this belongs to.
-	 */
-	public DynamicTestInfo(final Class<?> testClass, final ContractImpl impl,
-			final DynamicSuiteInfo suite) {
-		super(testClass, impl, MethodUtils.findAnnotatedSetter(testClass,
-				Contract.Inject.class));
-		if (this.getMethod() == null) {
-			addError(new IllegalStateException(
-					"Dynamic tests annotated with @RunWith(ContractSuite.class) ("
-							+ getContractTestClass()
-							+ ") must include a @Contract.Inject annotation on a concrete declared setter method"));
+    /**
+     * Constructor.
+     * 
+     * @param testClass
+     *            The test class.
+     * @param impl
+     *            The ContractImpl annotation.
+     * @param suite
+     *            The dynamic suite this belongs to.
+     */
+    public DynamicTestInfo(final Class<?> testClass, final ContractImpl impl, final DynamicSuiteInfo suite) {
+        super( testClass, impl, MethodUtils.findAnnotatedSetter( testClass, Contract.Inject.class ) );
+        if (this.getMethod() == null) {
+            addError( new IllegalStateException(
+                    "Dynamic tests annotated with @RunWith(ContractSuite.class) (" + getContractTestClass()
+                    + ") must include a @Contract.Inject annotation on a concrete declared setter method" ) );
 
-		}
-		getter = MethodUtils.findAnnotatedGetter(testClass,
-				Contract.Inject.class);
-		if (getter == null) {
-			addError(new IllegalStateException(
-					"Dynamic tests annotated with @RunWith(ContractSuite.class) ("
-							+ getContractTestClass()
-							+ ") must include a @Contract.Inject annotation on a concrete declared getter method"));
+        }
+        getter = MethodUtils.findAnnotatedGetter( testClass, Contract.Inject.class );
+        if (getter == null) {
+            addError( new IllegalStateException(
+                    "Dynamic tests annotated with @RunWith(ContractSuite.class) (" + getContractTestClass()
+                    + ") must include a @Contract.Inject annotation on a concrete declared getter method" ) );
 
-		}
-		dynamicInjector = suite.getDynamicInjector();
-	}
+        }
+        dynamicInjector = suite.getDynamicInjector();
+    }
 
-	/**
-	 * Get the method that returns the Dynamic IProducer.
-	 * 
-	 * This is derived from the suite in the constructor.
-	 * 
-	 * @return the method that returns the Dynamic IProducer.
-	 */
-	public Method getDynamicInjector() {
-		return dynamicInjector;
-	}
+    /**
+     * Get the method that returns the Dynamic IProducer.
+     * 
+     * This is derived from the suite in the constructor.
+     * 
+     * @return the method that returns the Dynamic IProducer.
+     */
+    public Method getDynamicInjector() {
+        return dynamicInjector;
+    }
 
-	/**
-	 * Get a producer that is to be injected in to the test.
-	 *
-	 * @param baseProducer
-	 *            the producer for the suite as designated by the Dynamic.Inject
-	 *            annotation
-	 * @return The producer object
-	 * @throws IllegalAccessException
-	 *             if invoked methods can not be executed or contract test class
-	 *             can not be instantiated.
-	 * @throws IllegalArgumentException
-	 *             if invoked methods can not be executed or contract test class
-	 *             can not be instantiated.
-	 * @throws InvocationTargetException
-	 *             if invoked methods can not be executed or contract test class
-	 *             can not be instantiated.
-	 * @throws InstantiationException
-	 *             if invoked methods can not be executed or contract test class
-	 *             can not be instantiated.
-	 */
-	public Object getProducer(final Object baseProducer)
-			throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, InstantiationException {
-		final Object suiteTest = getContractTestClass().newInstance();
-		getMethod().invoke(suiteTest, baseProducer);
-		return getter.invoke(suiteTest);
-	}
+    /**
+     * Get a producer that is to be injected in to the test.
+     *
+     * @param baseProducer
+     *            the producer for the suite as designated by the Dynamic.Inject
+     *            annotation
+     * @return The producer object
+     * @throws IllegalAccessException
+     *             if invoked methods can not be executed or contract test class
+     *             can not be instantiated.
+     * @throws IllegalArgumentException
+     *             if invoked methods can not be executed or contract test class
+     *             can not be instantiated.
+     * @throws InvocationTargetException
+     *             if invoked methods can not be executed or contract test class
+     *             can not be instantiated.
+     * @throws InstantiationException
+     *             if invoked methods can not be executed or contract test class
+     *             can not be instantiated.
+     */
+    public Object getProducer(final Object baseProducer)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+        final Object suiteTest = getContractTestClass().newInstance();
+        getMethod().invoke( suiteTest, baseProducer );
+        return getter.invoke( suiteTest );
+    }
 }

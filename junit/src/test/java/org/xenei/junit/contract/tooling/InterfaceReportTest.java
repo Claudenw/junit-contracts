@@ -17,7 +17,8 @@
 
 package org.xenei.junit.contract.tooling;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,175 +44,175 @@ import org.xenei.log4j.recording.RecordingAppender;
  */
 public class InterfaceReportTest {
 
-	private InterfaceReport interfaceReport;
+    private InterfaceReport interfaceReport;
 
-	private String[] packages = { "org.xenei.junit.contract.exampleTests" };
+    private final String[] packages = { "org.xenei.junit.contract.exampleTests" };
 
-	private String[] badPackages = { "org.xenei.junit.contract.exampleTests", "org.xenei.junit.bad" };
+    private final String[] badPackages = { "org.xenei.junit.contract.exampleTests", "org.xenei.junit.bad" };
 
-	private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    private final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-	private static RecordingAppender appender;
+    private static RecordingAppender appender;
 
-	private Set<String> getClassNames(Set<Class<?>> classes) {
-		TreeSet<String> retval = new TreeSet<String>();
-		for (Class<?> c : classes) {
-			retval.add(c.getName());
-		}
-		return retval;
-	}
+    private Set<String> getClassNames(Set<Class<?>> classes) {
+        final TreeSet<String> retval = new TreeSet<String>();
+        for (final Class<?> c : classes) {
+            retval.add( c.getName() );
+        }
+        return retval;
+    }
 
-	/**
-	 * setup for the test. Create an appending recorder so we can verify
-	 * logging.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		appender = new RecordingAppender();
-		Logger root = Logger.getRootLogger();
-		root.addAppender(appender);
-	}
+    /**
+     * setup for the test. Create an appending recorder so we can verify
+     * logging.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        appender = new RecordingAppender();
+        final Logger root = Logger.getRootLogger();
+        root.addAppender( appender );
+    }
 
-	/**
-	 * Clear the recording appender after tests.
-	 */
-	@After
-	public void afterTest() {
-		appender.clear();
-	}
+    /**
+     * Clear the recording appender after tests.
+     */
+    @After
+    public void afterTest() {
+        appender.clear();
+    }
 
-	/**
-	 * Clean up after all test by removing the recording appender.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		Logger root = Logger.getRootLogger();
-		root.removeAppender(appender);
-		appender.close();
-	}
+    /**
+     * Clean up after all test by removing the recording appender.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final Logger root = Logger.getRootLogger();
+        root.removeAppender( appender );
+        appender.close();
+    }
 
-	/**
-	 * Test that all the expected unimplemented tests are found.
-	 */
-	@Test
-	public void testGetUnimplementedTests() {
-		interfaceReport = new InterfaceReport(packages, null, classLoader);
+    /**
+     * Test that all the expected unimplemented tests are found.
+     */
+    @Test
+    public void testGetUnimplementedTests() {
+        interfaceReport = new InterfaceReport( packages, null, classLoader );
 
-		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
-		Set<String> names = getClassNames(classes);
-		assertEquals(3, names.size());
-		assertTrue(names.contains("org.xenei.junit.contract.exampleTests.CImpl3"));
-		assertTrue(names.contains("org.xenei.junit.contract.exampleTests.EImpl"));
-		assertTrue(names.contains("org.xenei.junit.contract.exampleTests.FImpl"));
-	}
+        final Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
+        final Set<String> names = getClassNames( classes );
+        assertEquals( 3, names.size() );
+        assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.CImpl3" ) );
+        assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.EImpl" ) );
+        assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.FImpl" ) );
+    }
 
-	/**
-	 * Test that all the expected unimplemented tests are found.
-	 */
-	@Test
-	public void testGetUntestedInterfaces() {
-		interfaceReport = new InterfaceReport(packages, null, classLoader);
+    /**
+     * Test that all the expected unimplemented tests are found.
+     */
+    @Test
+    public void testGetUntestedInterfaces() {
+        interfaceReport = new InterfaceReport( packages, null, classLoader );
 
-		Set<Class<?>> classes = interfaceReport.getUntestedInterfaces();
-		Set<String> names = getClassNames(classes);
-		assertEquals(1, names.size());
-		assertTrue(names.contains("org.xenei.junit.contract.exampleTests.F"));
-	}
+        final Set<Class<?>> classes = interfaceReport.getUntestedInterfaces();
+        final Set<String> names = getClassNames( classes );
+        assertEquals( 1, names.size() );
+        assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.F" ) );
+    }
 
-	/**
-	 * test get errors when not filtered.
-	 */
-	@Test
-	public void testGetErrors() {
+    /**
+     * test get errors when not filtered.
+     */
+    @Test
+    public void testGetErrors() {
 
-		String[] expectedErrors = {
-				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
-				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract" };
+        final String[] expectedErrors = {
+                "java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method",
+        "java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadAbstract) must not be abstract" };
 
-		interfaceReport = new InterfaceReport(packages, null, classLoader);
+        interfaceReport = new InterfaceReport( packages, null, classLoader );
 
-		List<String> errors = new ArrayList<String>();
-		for (Throwable t : interfaceReport.getErrors()) {
-			errors.add(t.toString());
-		}
+        final List<String> errors = new ArrayList<String>();
+        for (final Throwable t : interfaceReport.getErrors()) {
+            errors.add( t.toString() );
+        }
 
-		for (int i = 0; i < expectedErrors.length; i++) {
-			assertTrue("missing: " + expectedErrors[i], errors.contains(expectedErrors[i]));
-		}
+        for (final String expectedError : expectedErrors) {
+            assertTrue( "missing: " + expectedError, errors.contains( expectedError ) );
+        }
 
-		Assert.assertEquals(2, errors.size());
+        Assert.assertEquals( 2, errors.size() );
 
-	}
+    }
 
-	/**
-	 * Test that unimplemented tests is correct
-	 * 
-	 */
-	@Test
-	public void getUnImplementedTests_Filtered() {
+    /**
+     * Test that unimplemented tests is correct
+     * 
+     */
+    @Test
+    public void getUnImplementedTests_Filtered() {
 
-		ClassPathFilter filter = new NotClassFilter(
-				new OrClassFilter(new NameClassFilter("org.xenei.junit.contract.exampleTests.CImpl3"),
-						new NameClassFilter("org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA")));
+        final ClassPathFilter filter = new NotClassFilter(
+                new OrClassFilter( new NameClassFilter( "org.xenei.junit.contract.exampleTests.CImpl3" ),
+                        new NameClassFilter( "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" ) ) );
 
-		interfaceReport = new InterfaceReport(badPackages, filter, classLoader);
+        interfaceReport = new InterfaceReport( badPackages, filter, classLoader );
 
-		Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
-		Set<String> names = getClassNames(classes);
-		assertTrue("Missing org.xenei.junit.contract.exampleTests.EImpl",
-				names.contains("org.xenei.junit.contract.exampleTests.EImpl"));
-		assertTrue("Missing org.xenei.junit.contract.exampleTests.FImpl",
-				names.contains("org.xenei.junit.contract.exampleTests.FImpl"));
-		assertEquals("Too many classes", 2, names.size());
-	}
+        final Set<Class<?>> classes = interfaceReport.getUnImplementedTests();
+        final Set<String> names = getClassNames( classes );
+        assertTrue( "Missing org.xenei.junit.contract.exampleTests.EImpl",
+                names.contains( "org.xenei.junit.contract.exampleTests.EImpl" ) );
+        assertTrue( "Missing org.xenei.junit.contract.exampleTests.FImpl",
+                names.contains( "org.xenei.junit.contract.exampleTests.FImpl" ) );
+        assertEquals( "Too many classes", 2, names.size() );
+    }
 
-	/**
-	 * Test that untested interfaces is correct
-	 * 
-	 */
-	@Test
-	public void getUntestedInterfacesTest_Filtered() {
+    /**
+     * Test that untested interfaces is correct
+     * 
+     */
+    @Test
+    public void getUntestedInterfacesTest_Filtered() {
 
-		ClassPathFilter filter = new NotClassFilter(
-				new OrClassFilter(new NameClassFilter("org.xenei.junit.contract.exampleTests.CImpl3"),
-						new NameClassFilter("org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA")));
+        final ClassPathFilter filter = new NotClassFilter(
+                new OrClassFilter( new NameClassFilter( "org.xenei.junit.contract.exampleTests.CImpl3" ),
+                        new NameClassFilter( "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" ) ) );
 
-		interfaceReport = new InterfaceReport(badPackages, filter, classLoader);
+        interfaceReport = new InterfaceReport( badPackages, filter, classLoader );
 
-		Set<Class<?>> classes = interfaceReport.getUntestedInterfaces();
-		Set<String> names = getClassNames(classes);
-		assertEquals(1, names.size());
-		assertTrue(names.contains("org.xenei.junit.contract.exampleTests.F"));
+        final Set<Class<?>> classes = interfaceReport.getUntestedInterfaces();
+        final Set<String> names = getClassNames( classes );
+        assertEquals( 1, names.size() );
+        assertTrue( names.contains( "org.xenei.junit.contract.exampleTests.F" ) );
 
-	}
+    }
 
-	/**
-	 * Test that error reporting reports bad classes.
-	 * 
-	 */
-	@Test
-	public void testGetErrors_Filtered() {
+    /**
+     * Test that error reporting reports bad classes.
+     * 
+     */
+    @Test
+    public void testGetErrors_Filtered() {
 
-		String[] expectedErrors = {
-				"java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method", };
+        final String[] expectedErrors = {
+                "java.lang.IllegalStateException: Classes annotated with @Contract (class org.xenei.junit.bad.BadNoInject) must include a @Contract.Inject annotation on a public non-abstract declared setter method", };
 
-		ClassPathFilter filter = new NotClassFilter(
-				new OrClassFilter(new NameClassFilter("org.xenei.junit.contract.exampleTests.CImpl3"),
-						new NameClassFilter("org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA"),
-						new NameClassFilter(BadAbstract.class.getName())));
+        final ClassPathFilter filter = new NotClassFilter(
+                new OrClassFilter( new NameClassFilter( "org.xenei.junit.contract.exampleTests.CImpl3" ),
+                        new NameClassFilter( "org.xenei.junit.contract.exampleTests.DTImplSuite$ForceA" ),
+                        new NameClassFilter( BadAbstract.class.getName() ) ) );
 
-		interfaceReport = new InterfaceReport(badPackages, filter, classLoader);
+        interfaceReport = new InterfaceReport( badPackages, filter, classLoader );
 
-		List<String> errors = new ArrayList<String>();
-		for (Throwable t : interfaceReport.getErrors()) {
-			errors.add(t.toString());
-		}
+        final List<String> errors = new ArrayList<String>();
+        for (final Throwable t : interfaceReport.getErrors()) {
+            errors.add( t.toString() );
+        }
 
-		for (int i = 0; i < expectedErrors.length; i++) {
-			assertTrue("missing: " + expectedErrors[i], errors.contains(expectedErrors[i]));
-		}
+        for (final String expectedError : expectedErrors) {
+            assertTrue( "missing: " + expectedError, errors.contains( expectedError ) );
+        }
 
-		Assert.assertEquals(2, errors.size());
-	}
+        Assert.assertEquals( 2, errors.size() );
+    }
 
 }

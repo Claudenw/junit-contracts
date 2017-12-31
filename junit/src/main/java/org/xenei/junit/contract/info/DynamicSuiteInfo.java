@@ -33,37 +33,32 @@ import org.xenei.junit.contract.MethodUtils;
  *
  */
 public class DynamicSuiteInfo extends SuiteInfo {
-	private final Method dynamicInjector;
+    private final Method dynamicInjector;
 
-	/**
-	 * Constructor
-	 *
-	 * @param dynamic
-	 *            The class under test.
-	 * @param impl
-	 *            The ContractImpl annotation for the class
-	 */
-	public DynamicSuiteInfo(final Class<? extends Dynamic> dynamic,
-			final ContractImpl impl) {
-		super(dynamic, impl, MethodUtils.findAnnotatedGetter(impl.value(),
-				Contract.Inject.class));
-		dynamicInjector = MethodUtils.findAnnotatedGetter(dynamic,
-				Dynamic.Inject.class);
-		if (getMethod() == null) {
-			addError(new IllegalArgumentException(
-					"Classes that extends Dynamic ["
-							+ dynamic
-							+ "] must contain a getter method annotated with @Dynamic.Inject"));
+    /**
+     * Constructor
+     *
+     * @param dynamic
+     *            The class under test.
+     * @param impl
+     *            The ContractImpl annotation for the class
+     */
+    public DynamicSuiteInfo(final Class<? extends Dynamic> dynamic, final ContractImpl impl) {
+        super( dynamic, impl, MethodUtils.findAnnotatedGetter( impl.value(), Contract.Inject.class ) );
+        dynamicInjector = MethodUtils.findAnnotatedGetter( dynamic, Dynamic.Inject.class );
+        if (getMethod() == null) {
+            addError( new IllegalArgumentException( "Classes that extends Dynamic [" + dynamic
+                    + "] must contain a getter method annotated with @Dynamic.Inject" ) );
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Get the method that returns the Dynamic IProducer.
-	 * 
-	 * @return the method that returns the Dynamic IProducer.
-	 */
-	public Method getDynamicInjector() {
-		return dynamicInjector;
-	}
+    /**
+     * Get the method that returns the Dynamic IProducer.
+     * 
+     * @return the method that returns the Dynamic IProducer.
+     */
+    public Method getDynamicInjector() {
+        return dynamicInjector;
+    }
 }

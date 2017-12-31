@@ -43,44 +43,43 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class CImplTest extends CT<CImpl> {
 
-	/**
-	 * Constructor.
-	 */
-	public CImplTest() {
-		setProducer(new IProducer<CImpl>() {
+    /**
+     * Constructor.
+     */
+    public CImplTest() {
+        setProducer( new IProducer<CImpl>() {
 
-			@Override
-			public CImpl newInstance() {
-				Listener.add("CImplTest.producer.newInstance()");
-				return new CImpl();
-			}
+            @Override
+            public CImpl newInstance() {
+                Listener.add( "CImplTest.producer.newInstance()" );
+                return new CImpl();
+            }
 
-			@Override
-			public void cleanUp() {
-				Listener.add("CImplTest.producer.cleanUp()");
-			}
+            @Override
+            public void cleanUp() {
+                Listener.add( "CImplTest.producer.cleanUp()" );
+            }
 
-		});
-	}
+        } );
+    }
 
-	/**
-	 * Clear the listener for tests.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * Clear the listener for tests.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	/**
-	 * Verify that the listener saw all the expected events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "CImplTest.producer.newInstance()", "cname",
-				"CImplTest.producer.cleanUp()" };
+    /**
+     * Verify that the listener saw all the expected events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] expected = { "CImplTest.producer.newInstance()", "cname", "CImplTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+        final List<String> l = Listener.get();
+        Assert.assertEquals( l, Arrays.asList( expected ) );
 
-	}
+    }
 }

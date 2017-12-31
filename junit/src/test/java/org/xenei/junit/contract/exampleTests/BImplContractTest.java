@@ -48,60 +48,59 @@ import org.xenei.junit.contract.IProducer;
 @ContractImpl(BImpl.class)
 public class BImplContractTest {
 
-	/**
-	 * the producer we will inject into contract tests
-	 */
-	private IProducer<BImpl> producer = new IProducer<BImpl>() {
+    /**
+     * the producer we will inject into contract tests
+     */
+    private final IProducer<BImpl> producer = new IProducer<BImpl>() {
 
-		@Override
-		public BImpl newInstance() {
-			Listener.add("BImplContractTest.producer.newInstance()");
-			return new BImpl();
-		}
+        @Override
+        public BImpl newInstance() {
+            Listener.add( "BImplContractTest.producer.newInstance()" );
+            return new BImpl();
+        }
 
-		@Override
-		public void cleanUp() {
-			Listener.add("BImplContractTest.producer.cleanUp()");
-		}
-	};
+        @Override
+        public void cleanUp() {
+            Listener.add( "BImplContractTest.producer.cleanUp()" );
+        }
+    };
 
-	/**
-	 * Constructor
-	 */
-	public BImplContractTest() {
-	}
+    /**
+     * Constructor
+     */
+    public BImplContractTest() {
+    }
 
-	/**
-	 * The method to get the producer and inject it in the tests
-	 * 
-	 * @return Our producer to inject into contract tests.
-	 */
-	@Contract.Inject
-	public IProducer<BImpl> getProducer() {
-		return producer;
-	}
+    /**
+     * The method to get the producer and inject it in the tests
+     * 
+     * @return Our producer to inject into contract tests.
+     */
+    @Contract.Inject
+    public IProducer<BImpl> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * reset the listener for the test.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * reset the listener for the test.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	/**
-	 * Ensure that the listener detected all the events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "BImplContractTest.producer.newInstance()",
-				"bname", "BImplContractTest.producer.cleanUp()",
-				"BImplContractTest.producer.newInstance()",
-				"BInt=1", "BImplContractTest.producer.cleanUp()" };
+    /**
+     * Ensure that the listener detected all the events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] expected = { "BImplContractTest.producer.newInstance()", "bname",
+                "BImplContractTest.producer.cleanUp()", "BImplContractTest.producer.newInstance()", "BInt=1",
+        "BImplContractTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+        final List<String> l = Listener.get();
+        Assert.assertEquals( l, Arrays.asList( expected ) );
 
-	}
+    }
 
 }

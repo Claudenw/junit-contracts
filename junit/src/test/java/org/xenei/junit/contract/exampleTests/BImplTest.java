@@ -43,47 +43,45 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class BImplTest extends BT<BImpl> {
 
-	/**
-	 * Constructor.
-	 */
-	public BImplTest() {
-		// set the producer
-		setProducer(new IProducer<BImpl>() {
+    /**
+     * Constructor.
+     */
+    public BImplTest() {
+        // set the producer
+        setProducer( new IProducer<BImpl>() {
 
-			@Override
-			public BImpl newInstance() {
-				Listener.add("BImplTest.producer.newInstance()");
-				return new BImpl();
-			}
+            @Override
+            public BImpl newInstance() {
+                Listener.add( "BImplTest.producer.newInstance()" );
+                return new BImpl();
+            }
 
-			@Override
-			public void cleanUp() {
-				Listener.add("BImplTest.producer.cleanUp()");
-			}
+            @Override
+            public void cleanUp() {
+                Listener.add( "BImplTest.producer.cleanUp()" );
+            }
 
-		});
-	}
+        } );
+    }
 
-	/**
-	 * Clear the listener before the test.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * Clear the listener before the test.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	/**
-	 * Verify that the listener detected all the events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "BImplTest.producer.newInstance()", "bname",
-				"BImplTest.producer.cleanUp()",
-				"BImplTest.producer.newInstance()",
-				"BInt=1", "BImplTest.producer.cleanUp()"  };
+    /**
+     * Verify that the listener detected all the events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] expected = { "BImplTest.producer.newInstance()", "bname", "BImplTest.producer.cleanUp()",
+                "BImplTest.producer.newInstance()", "BInt=1", "BImplTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+        final List<String> l = Listener.get();
+        Assert.assertEquals( l, Arrays.asList( expected ) );
 
-	}
+    }
 }

@@ -6,36 +6,35 @@ package org.xenei.junit.contract.exampleTests;
  */
 public class FImpl implements F {
 
-	/**
-	 * Constructor.
-	 */
-	public FImpl() {
-	}
+    /**
+     * Constructor.
+     */
+    public FImpl() {
+    }
 
-	@Override
-	public String getCName() {
-		return null;
-	}
+    @Override
+    public String getCName() {
+        return null;
+    }
 
-	@Override
-	public String getAName() {
-		return null;
-	}
+    @Override
+    public String getAName() {
+        return null;
+    }
 
-	@Override
-	public String getBName() {
-		return null;
-	}
+    @Override
+    public String getBName() {
+        return null;
+    }
 
-	@Override
-	public String getFName() {
-		return null;
-	}
+    @Override
+    public String getFName() {
+        return null;
+    }
 
-	@Override
-	public int getBInt()
-	{
-		return 5;
-	}
+    @Override
+    public int getBInt() {
+        return 5;
+    }
 
 }

@@ -43,45 +43,44 @@ import org.xenei.junit.contract.IProducer;
 @RunWith(ContractTestRunner.class)
 public class AImplTest extends AT<AImpl> {
 
-	/**
-	 * Constructor
-	 */
-	public AImplTest() {
-		// set the producer
-		setProducer(new IProducer<AImpl>() {
+    /**
+     * Constructor
+     */
+    public AImplTest() {
+        // set the producer
+        setProducer( new IProducer<AImpl>() {
 
-			@Override
-			public AImpl newInstance() {
-				Listener.add("AImplTest.producer.newInstance()");
-				return new AImpl();
-			}
+            @Override
+            public AImpl newInstance() {
+                Listener.add( "AImplTest.producer.newInstance()" );
+                return new AImpl();
+            }
 
-			@Override
-			public void cleanUp() {
-				Listener.add("AImplTest.producer.cleanUp()");
-			}
+            @Override
+            public void cleanUp() {
+                Listener.add( "AImplTest.producer.cleanUp()" );
+            }
 
-		});
-	}
+        } );
+    }
 
-	/**
-	 * Clear the listener so we can start again
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * Clear the listener so we can start again
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	/**
-	 * Verify the listener detected all the expected events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "AImplTest.producer.newInstance()", "aname",
-				"AImplTest.producer.cleanUp()" };
+    /**
+     * Verify the listener detected all the expected events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] expected = { "AImplTest.producer.newInstance()", "aname", "AImplTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(l, Arrays.asList(expected));
+        final List<String> l = Listener.get();
+        Assert.assertEquals( l, Arrays.asList( expected ) );
 
-	}
+    }
 }

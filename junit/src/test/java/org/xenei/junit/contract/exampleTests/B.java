@@ -24,14 +24,14 @@ package org.xenei.junit.contract.exampleTests;
  */
 public interface B {
 
-	/**
-	 * 
-	 * @return the B name;
-	 */
-	public String getBName();
+    /**
+     * 
+     * @return the B name;
+     */
+    public String getBName();
 
-	/**
-	 * @return the B int
-	 */
-	public int getBInt();
+    /**
+     * @return the B int
+     */
+    public int getBInt();
 }

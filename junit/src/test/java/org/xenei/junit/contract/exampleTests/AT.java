@@ -41,38 +41,38 @@ import org.xenei.junit.contract.IProducer;
 @Contract(A.class)
 public class AT<T extends A> {
 
-	// the producer we will user
-	private IProducer<T> producer;
+    // the producer we will user
+    private IProducer<T> producer;
 
-	/**
-	 * Method to set the producerthat this test will use.
-	 * 
-	 * @param producer
-	 *            The producer to use.
-	 */
-	@Contract.Inject
-	public final void setProducer(IProducer<T> producer) {
-		this.producer = producer;
-	}
+    /**
+     * Method to set the producerthat this test will use.
+     * 
+     * @param producer
+     *            The producer to use.
+     */
+    @Contract.Inject
+    public final void setProducer(IProducer<T> producer) {
+        this.producer = producer;
+    }
 
-	protected final IProducer<T> getProducer() {
-		return producer;
-	}
+    protected final IProducer<T> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * Clean up the producer for the next run
-	 */
-	@After
-	public final void cleanupAT() {
-		getProducer().cleanUp();
-	}
+    /**
+     * Clean up the producer for the next run
+     */
+    @After
+    public final void cleanupAT() {
+        getProducer().cleanUp();
+    }
 
-	/**
-	 * test the getAName() method.
-	 */
-	@ContractTest
-	public void testGetAName() {
-		Listener.add(getProducer().newInstance().getAName());
-	}
+    /**
+     * test the getAName() method.
+     */
+    @ContractTest
+    public void testGetAName() {
+        Listener.add( getProducer().newInstance().getAName() );
+    }
 
 }

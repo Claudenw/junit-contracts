@@ -6,11 +6,11 @@ package org.xenei.junit.contract.exampleTests;
  */
 public class EImpl extends CImpl {
 
-	/**
-	 * The constructor.
-	 */
-	public EImpl() {
+    /**
+     * The constructor.
+     */
+    public EImpl() {
 
-	}
+    }
 
 }

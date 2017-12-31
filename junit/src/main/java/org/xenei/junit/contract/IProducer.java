@@ -33,18 +33,18 @@ package org.xenei.junit.contract;
 @NoContractTest
 public interface IProducer<T> {
 
-	/**
-	 * Return a new instance of T. May be called more than once.
-	 * 
-	 * @return The instance of T
-	 */
-	public T newInstance();
+    /**
+     * Return a new instance of T. May be called more than once.
+     * 
+     * @return The instance of T
+     */
+    public T newInstance();
 
-	/**
-	 * All allocated instances may now be cleaned up. May be called more than
-	 * once. Tells the producer implementation that allocated resources may be
-	 * freed.
-	 */
-	public void cleanUp();
+    /**
+     * All allocated instances may now be cleaned up. May be called more than
+     * once. Tells the producer implementation that allocated resources may be
+     * freed.
+     */
+    public void cleanUp();
 
 }

@@ -49,56 +49,56 @@ import org.xenei.junit.contract.IProducer;
 @ContractImpl(value = AImpl.class, ignore = { BadNoInject.class })
 public class AImplContractTest {
 
-	// create the producer to inject
-	private IProducer<AImpl> producer = new IProducer<AImpl>() {
+    // create the producer to inject
+    private final IProducer<AImpl> producer = new IProducer<AImpl>() {
 
-		@Override
-		public AImpl newInstance() {
-			Listener.add("AImplContractTest.producer.newInstance()");
-			return new AImpl();
-		}
+        @Override
+        public AImpl newInstance() {
+            Listener.add( "AImplContractTest.producer.newInstance()" );
+            return new AImpl();
+        }
 
-		@Override
-		public void cleanUp() {
-			Listener.add("AImplContractTest.producer.cleanUp()");
-		}
+        @Override
+        public void cleanUp() {
+            Listener.add( "AImplContractTest.producer.cleanUp()" );
+        }
 
-	};
+    };
 
-	/**
-	 * Constructor
-	 */
-	public AImplContractTest() {
-	}
+    /**
+     * Constructor
+     */
+    public AImplContractTest() {
+    }
 
-	/**
-	 * The method to get the producer to inject it into tests
-	 * 
-	 * @return The producer of AImpl objects
-	 */
-	@Contract.Inject
-	public IProducer<AImpl> getProducer() {
-		return producer;
-	}
+    /**
+     * The method to get the producer to inject it into tests
+     * 
+     * @return The producer of AImpl objects
+     */
+    @Contract.Inject
+    public IProducer<AImpl> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * clear the listener so we can start afresh.
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * clear the listener so we can start afresh.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	/**
-	 * Test thet the listener found the proper events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		String[] expected = { "AImplContractTest.producer.newInstance()",
-				"aname", "AImplContractTest.producer.cleanUp()" };
+    /**
+     * Test thet the listener found the proper events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] expected = { "AImplContractTest.producer.newInstance()", "aname",
+        "AImplContractTest.producer.cleanUp()" };
 
-		List<String> l = Listener.get();
-		Assert.assertEquals(Arrays.asList(expected), l);
+        final List<String> l = Listener.get();
+        Assert.assertEquals( Arrays.asList( expected ), l );
 
-	}
+    }
 }

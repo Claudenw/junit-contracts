@@ -24,14 +24,14 @@ package org.xenei.junit.contract.exampleTests;
  */
 public class AImpl implements A {
 
-	@Override
-	public String getAName() {
-		return "aname";
-	}
+    @Override
+    public String getAName() {
+        return "aname";
+    }
 
-	@Override
-	public String toString() {
-		return "AImpl";
-	}
+    @Override
+    public String toString() {
+        return "AImpl";
+    }
 
 }

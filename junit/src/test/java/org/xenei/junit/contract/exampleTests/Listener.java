@@ -13,42 +13,42 @@ import java.util.List;
  */
 public class Listener {
 
-	private static final ThreadLocal<List<String>> history = new ThreadLocal<List<String>>() {
-		@Override
-		protected List<String> initialValue() {
-			return new ArrayList<String>();
-		}
-	};
+    private static final ThreadLocal<List<String>> history = new ThreadLocal<List<String>>() {
+        @Override
+        protected List<String> initialValue() {
+            return new ArrayList<String>();
+        }
+    };
 
-	/**
-	 * Add a string to the list of strings.
-	 * 
-	 * <b>SIDE EFFECT</b> Prints the string to standard out.
-	 * 
-	 * @param o
-	 *            the string to add
-	 */
-	public static void add(String o) {
-		System.out.println(o);
-		List<String> l = history.get();
-		l.add(o);
-		history.set(l);
-	}
+    /**
+     * Add a string to the list of strings.
+     * 
+     * <b>SIDE EFFECT</b> Prints the string to standard out.
+     * 
+     * @param o
+     *            the string to add
+     */
+    public static void add(String o) {
+        System.out.println( o );
+        final List<String> l = history.get();
+        l.add( o );
+        history.set( l );
+    }
 
-	/**
-	 * Get the the list of strings.
-	 * 
-	 * @return The list of strings added.
-	 */
-	public static List<String> get() {
-		return history.get();
-	}
+    /**
+     * Get the the list of strings.
+     * 
+     * @return The list of strings added.
+     */
+    public static List<String> get() {
+        return history.get();
+    }
 
-	/**
-	 * Clear the list of strings.
-	 */
-	public static void clear() {
-		history.set(new ArrayList<String>());
-	}
+    /**
+     * Clear the list of strings.
+     */
+    public static void clear() {
+        history.set( new ArrayList<String>() );
+    }
 
 }

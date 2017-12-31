@@ -39,20 +39,20 @@ import org.xenei.junit.contract.exampleTests.A;
 @Ignore
 public abstract class BadAbstract {
 
-	/**
-	 * Constructor
-	 */
-	public BadAbstract() {
-	}
+    /**
+     * Constructor
+     */
+    public BadAbstract() {
+    }
 
-	/**
-	 * set the producer
-	 * 
-	 * @param producer
-	 *            The producer we are testing.
-	 */
-	@Contract.Inject
-	public final void setProducer(IProducer<A> producer) {
-	}
+    /**
+     * set the producer
+     * 
+     * @param producer
+     *            The producer we are testing.
+     */
+    @Contract.Inject
+    public final void setProducer(IProducer<A> producer) {
+    }
 
 }

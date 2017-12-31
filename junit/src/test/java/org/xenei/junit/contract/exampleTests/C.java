@@ -27,11 +27,11 @@ package org.xenei.junit.contract.exampleTests;
  */
 public interface C extends A, B {
 
-	/**
-	 * Ge the C Name.
-	 * 
-	 * @return the C Name
-	 */
-	public String getCName();
+    /**
+     * Ge the C Name.
+     * 
+     * @return the C Name
+     */
+    public String getCName();
 
 }

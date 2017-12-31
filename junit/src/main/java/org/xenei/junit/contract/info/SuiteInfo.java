@@ -31,27 +31,24 @@ import org.xenei.junit.contract.MethodUtils;
  */
 public class SuiteInfo extends TestInfo {
 
-	/**
-	 * Constructor
-	 *
-	 * @param testSuite
-	 *            the test suite definition class.
-	 * @param impl
-	 *            The ContractImpl annotation.
-	 */
-	public SuiteInfo(final Class<?> testSuite, final ContractImpl impl) {
-		super(testSuite, impl, MethodUtils.findAnnotatedGetter(testSuite,
-				Contract.Inject.class));
-		if (this.getMethod() == null) {
-			addError(new IllegalStateException(
-					"Classes annotated with @RunWith(ContractSuite.class) ("
-							+ getContractTestClass()
-							+ ") must include a @Contract.Inject annotation on a concrete declared getter method"));
-		}
-	}
+    /**
+     * Constructor
+     *
+     * @param testSuite
+     *            the test suite definition class.
+     * @param impl
+     *            The ContractImpl annotation.
+     */
+    public SuiteInfo(final Class<?> testSuite, final ContractImpl impl) {
+        super( testSuite, impl, MethodUtils.findAnnotatedGetter( testSuite, Contract.Inject.class ) );
+        if (this.getMethod() == null) {
+            addError( new IllegalStateException(
+                    "Classes annotated with @RunWith(ContractSuite.class) (" + getContractTestClass()
+                    + ") must include a @Contract.Inject annotation on a concrete declared getter method" ) );
+        }
+    }
 
-	protected SuiteInfo(final Class<?> testSuite, final ContractImpl impl,
-			final Method m) {
-		super(testSuite, impl, m);
-	}
+    protected SuiteInfo(final Class<?> testSuite, final ContractImpl impl, final Method m) {
+        super( testSuite, impl, m );
+    }
 }

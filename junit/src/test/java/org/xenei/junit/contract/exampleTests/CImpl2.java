@@ -23,39 +23,37 @@ package org.xenei.junit.contract.exampleTests;
  * 
  */
 public class CImpl2 implements C {
-	@Override
-	public String getCName() {
-		return "cname";
-	}
+    @Override
+    public String getCName() {
+        return "cname";
+    }
 
-	@Override
-	public String getAName() {
-		return "cname version of aname";
-	}
+    @Override
+    public String getAName() {
+        return "cname version of aname";
+    }
 
-	@Override
-	public String getBName() {
-		return "cname version of bname";
-	}
+    @Override
+    public String getBName() {
+        return "cname version of bname";
+    }
 
-	@Override
-	public String toString() {
-		return "CImpl2";
-	}
-	
-	@Override
-	public int getBInt()
-	{
-		return 3;
-	}
+    @Override
+    public String toString() {
+        return "CImpl2";
+    }
 
+    @Override
+    public int getBInt() {
+        return 3;
+    }
 
-	/**
-	 * An extra method in this implementation that is not defined in C.
-	 * 
-	 * @return the string "called Extra Method";
-	 */
-	public String extraMethod() {
-		return "called Extra Method";
-	}
+    /**
+     * An extra method in this implementation that is not defined in C.
+     * 
+     * @return the string "called Extra Method";
+     */
+    public String extraMethod() {
+        return "called Extra Method";
+    }
 }

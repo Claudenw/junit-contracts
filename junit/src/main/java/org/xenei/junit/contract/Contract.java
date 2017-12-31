@@ -39,24 +39,24 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Contract {
-	/**
-	 * The class that the annotated class is the contract test for.
-	 * 
-	 * @return The class this is a contract test for.
-	 */
-	Class<?> value();
+    /**
+     * The class that the annotated class is the contract test for.
+     * 
+     * @return The class this is a contract test for.
+     */
+    Class<?> value();
 
-	/**
-	 * The <code>Contract.Inject</code> annotation specifies the method to be
-	 * called to retrieve an instance of a producer for the class under test.
-	 * 
-	 * The method must produce an instance of IProducer.
-	 * 
-	 * instance of the Producer interface (@see IProducer} that will generate
-	 * and instance the object under test.
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.METHOD)
-	public @interface Inject {
-	}
+    /**
+     * The <code>Contract.Inject</code> annotation specifies the method to be
+     * called to retrieve an instance of a producer for the class under test.
+     * 
+     * The method must produce an instance of IProducer.
+     * 
+     * instance of the Producer interface (@see IProducer} that will generate
+     * and instance the object under test.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Inject {
+    }
 }

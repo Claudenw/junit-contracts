@@ -55,79 +55,79 @@ import org.xenei.junit.contract.IProducer;
 // testing the CImpl2 class.
 @ContractImpl(value = CImpl2.class, ignore = { BadNoInject.class })
 public class CImpl2ContractTest {
-	// the producer to use for all the tests
-	private final IProducer<CImpl2> producer = new IProducer<CImpl2>() {
-		@Override
-		public CImpl2 newInstance() {
-			Listener.add("CImpl2ContractTest.producer.newInstance()");
-			return new CImpl2();
-		}
+    // the producer to use for all the tests
+    private final IProducer<CImpl2> producer = new IProducer<CImpl2>() {
+        @Override
+        public CImpl2 newInstance() {
+            Listener.add( "CImpl2ContractTest.producer.newInstance()" );
+            return new CImpl2();
+        }
 
-		@Override
-		public void cleanUp() {
-			Listener.add("CImpl2ContractTest.producer.cleanUp()");
-		}
-	};
+        @Override
+        public void cleanUp() {
+            Listener.add( "CImpl2ContractTest.producer.cleanUp()" );
+        }
+    };
 
-	/**
-	 * Test to test the extra method of the CImpl2 class not defined by the C
-	 * interface.
-	 */
-	@ContractTest
-	public void testExtraMethod() {
-		Listener.add(producer.newInstance().extraMethod());
-	}
+    /**
+     * Test to test the extra method of the CImpl2 class not defined by the C
+     * interface.
+     */
+    @ContractTest
+    public void testExtraMethod() {
+        Listener.add( producer.newInstance().extraMethod() );
+    }
 
-	/**
-	 * Method to cleanup after the above test.
-	 */
-	@After
-	public final void afterCImpl2ContractTest() {
-		producer.cleanUp();
-	}
+    /**
+     * Method to cleanup after the above test.
+     */
+    @After
+    public final void afterCImpl2ContractTest() {
+        producer.cleanUp();
+    }
 
-	/**
-	 * The method to inject the producer into the test classes.
-	 * 
-	 * @return The producer we are injecting into the test classes.
-	 */
-	@Contract.Inject
-	public IProducer<CImpl2> getProducer() {
-		return producer;
-	}
+    /**
+     * The method to inject the producer into the test classes.
+     * 
+     * @return The producer we are injecting into the test classes.
+     */
+    @Contract.Inject
+    public IProducer<CImpl2> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * Clear the listener before the test
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		Listener.clear();
-	}
+    /**
+     * Clear the listener before the test
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Listener.clear();
+    }
 
-	private static void verifyTest( List<String> expectedTests, List<String> results) {
-		Assert.assertEquals( "CImpl2ContractTest.producer.newInstance()", results.get(0));
-		Assert.assertTrue( "Missing "+results.get(1), expectedTests.contains( results.get(1)));
-		expectedTests.remove( results.get(1));
-		Assert.assertEquals( "CImpl2ContractTest.producer.cleanUp()", results.get(2));
-		
-	}
-	/**
-	 * Verify that the Listener recorded all the expected events.
-	 */
-	@AfterClass
-	public static void afterClass() {
-		final String[] testNames = {"called Extra Method","cname", "cname version of aname", "BInt=3", "cname version of bname" };
-		final List<String> expectedTests = new ArrayList<String>(Arrays.asList(testNames));
-		
-		
-		final List<String> l = Listener.get();
-		
-		for (int i=0;i<testNames.length;i++)
-		{
-			int j = i*3;
-			verifyTest( expectedTests, l.subList(j, j+3));
-		}
-		Assert.assertTrue( expectedTests.isEmpty());
+    private static void verifyTest(List<String> expectedTests, List<String> results) {
+        Assert.assertEquals( "CImpl2ContractTest.producer.newInstance()", results.get( 0 ) );
+        Assert.assertTrue( "Missing " + results.get( 1 ), expectedTests.contains( results.get( 1 ) ) );
+        expectedTests.remove( results.get( 1 ) );
+        Assert.assertEquals( "CImpl2ContractTest.producer.cleanUp()", results.get( 2 ) );
 
-	}
+    }
+
+    /**
+     * Verify that the Listener recorded all the expected events.
+     */
+    @AfterClass
+    public static void afterClass() {
+        final String[] testNames = { "called Extra Method", "cname", "cname version of aname", "BInt=3",
+        "cname version of bname" };
+        final List<String> expectedTests = new ArrayList<String>( Arrays.asList( testNames ) );
+
+        final List<String> l = Listener.get();
+
+        for (int i = 0; i < testNames.length; i++) {
+            final int j = i * 3;
+            verifyTest( expectedTests, l.subList( j, j + 3 ) );
+        }
+        Assert.assertTrue( expectedTests.isEmpty() );
+
+    }
 }

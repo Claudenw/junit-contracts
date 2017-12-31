@@ -38,110 +38,95 @@ import org.xenei.junit.contract.tooling.InterfaceReport;
  */
 public class CmdLine {
 
-	/**
-	 * Run the interface report generation.
-	 *
-	 * use -h argument for help and argument list.
-	 *
-	 * @param args
-	 *            the command line arguments.
-	 * @throws ParseException
-	 *             if command line can not be parse.
-	 * @throws MalformedURLException
-	 *             if the directories are not specified properly.
-	 */
-	public static void main(final String[] args) throws ParseException,
-			MalformedURLException {
-		final CommandLine commands = new BasicParser()
-				.parse(getOptions(), args);
+    /**
+     * Run the interface report generation.
+     *
+     * use -h argument for help and argument list.
+     *
+     * @param args
+     *            the command line arguments.
+     * @throws ParseException
+     *             if command line can not be parse.
+     * @throws MalformedURLException
+     *             if the directories are not specified properly.
+     */
+    public static void main(final String[] args) throws ParseException, MalformedURLException {
+        final CommandLine commands = new BasicParser().parse( getOptions(), args );
 
-		if (commands.hasOption("h")) {
-			final HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("CmdLine", getOptions());
-			System.exit(0);
-		}
+        if (commands.hasOption( "h" )) {
+            final HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( "CmdLine", getOptions() );
+            System.exit( 0 );
+        }
 
-		if (!commands.hasOption("p")) {
-			System.out.println("At least on package must be specified");
-			final HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("CmdLine", getOptions());
-			System.exit(1);
-		}
+        if (!commands.hasOption( "p" )) {
+            System.out.println( "At least on package must be specified" );
+            final HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( "CmdLine", getOptions() );
+            System.exit( 1 );
+        }
 
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		if (commands.hasOption("d")) {
-			final String[] dirs = commands.getOptionValues("d");
-			URL[] urls = null;
-			urls = new URL[dirs.length];
-			for (int i = 0; i < dirs.length; i++) {
-				urls[i] = new File(dirs[i]).toURI().toURL();
-			}
-			classLoader = new URLClassLoader(urls, classLoader);
-		}
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (commands.hasOption( "d" )) {
+            final String[] dirs = commands.getOptionValues( "d" );
+            URL[] urls = null;
+            urls = new URL[dirs.length];
+            for (int i = 0; i < dirs.length; i++) {
+                urls[i] = new File( dirs[i] ).toURI().toURL();
+            }
+            classLoader = new URLClassLoader( urls, classLoader );
+        }
 
-		ClassPathFilter filter = null;
-		if (commands.hasOption("c")) {
-			filter = new Parser().parse(commands.getOptionValue("c"));
-		}
-		final InterfaceReport ifReport = new InterfaceReport(
-				commands.getOptionValues("p"), filter, classLoader);
+        ClassPathFilter filter = null;
+        if (commands.hasOption( "c" )) {
+            filter = new Parser().parse( commands.getOptionValue( "c" ) );
+        }
+        final InterfaceReport ifReport = new InterfaceReport( commands.getOptionValues( "p" ), filter, classLoader );
 
-		if (commands.hasOption("u")) {
-			System.out.println("Untested Interfaces");
+        if (commands.hasOption( "u" )) {
+            System.out.println( "Untested Interfaces" );
 
-			ClassPathFilter f = new Parser().parse(commands.getOptionValue("u"));
-			for (final Class<?> c : f.filterClasses(ifReport.getUntestedInterfaces())) {
-				System.out.println(c.getCanonicalName());
-			}
-			System.out.println("End of Report");
-		}
+            final ClassPathFilter f = new Parser().parse( commands.getOptionValue( "u" ) );
+            for (final Class<?> c : f.filterClasses( ifReport.getUntestedInterfaces() )) {
+                System.out.println( c.getCanonicalName() );
+            }
+            System.out.println( "End of Report" );
+        }
 
-		if (commands.hasOption("i")) {
-			System.out.println("Missing contract test implementations");
-			ClassPathFilter f = new Parser().parse(commands.getOptionValue("i"));
-			for (final Class<?> c : f.filterClasses(ifReport.getUnImplementedTests())) {
-				System.out.println(c.getName());
-			}
-			System.out.println("End of Report");
-		}
+        if (commands.hasOption( "i" )) {
+            System.out.println( "Missing contract test implementations" );
+            final ClassPathFilter f = new Parser().parse( commands.getOptionValue( "i" ) );
+            for (final Class<?> c : f.filterClasses( ifReport.getUnImplementedTests() )) {
+                System.out.println( c.getName() );
+            }
+            System.out.println( "End of Report" );
+        }
 
-		if (commands.hasOption("e")) {
-			System.out.println("Misconfigured contract test report");
-			for (final Throwable t : ifReport.getErrors()) {
-				System.out.println(t.toString());
-			}
-			System.out.println("End of Report");
-		}
-	}
+        if (commands.hasOption( "e" )) {
+            System.out.println( "Misconfigured contract test report" );
+            for (final Throwable t : ifReport.getErrors()) {
+                System.out.println( t.toString() );
+            }
+            System.out.println( "End of Report" );
+        }
+    }
 
-	// the loptions
-	private static Options getOptions() {
-		final Options retval = new Options();
+    // the loptions
+    private static Options getOptions() {
+        final Options retval = new Options();
 
-		retval.addOption("h", "help", false, "Display this help page");
-		retval.addOption("p", "package", true, "Package to be scanned");
-		retval.addOption("d", "directory", true,
-				"Directory to be scanned for classes");
-		retval.addOption(
-				"u",
-				"untested",
-				true,
-				"Filter for classes to include in the untested class report.  If not set no untested class report is generated.  Suggest: true()");
-		retval.addOption(
-				"i",
-				"implementation",
-				false,
-				"Filter for classes to include in the missing implementation class report.  If not set no missing implementation class report is generated.  Suggest: true()");
-		retval.addOption("e", "errors", false,
-				"Produce contract test configuration error report");
-		retval.addOption(
-				"c",
-				"classFilter",
-				true,
-				"A class filter function. Classes that pass the filter will be included.  Default to true() ");
+        retval.addOption( "h", "help", false, "Display this help page" );
+        retval.addOption( "p", "package", true, "Package to be scanned" );
+        retval.addOption( "d", "directory", true, "Directory to be scanned for classes" );
+        retval.addOption( "u", "untested", true,
+                "Filter for classes to include in the untested class report.  If not set no untested class report is generated.  Suggest: true()" );
+        retval.addOption( "i", "implementation", false,
+                "Filter for classes to include in the missing implementation class report.  If not set no missing implementation class report is generated.  Suggest: true()" );
+        retval.addOption( "e", "errors", false, "Produce contract test configuration error report" );
+        retval.addOption( "c", "classFilter", true,
+                "A class filter function. Classes that pass the filter will be included.  Default to true() " );
 
-		return retval;
-	}
+        return retval;
+    }
 
 }

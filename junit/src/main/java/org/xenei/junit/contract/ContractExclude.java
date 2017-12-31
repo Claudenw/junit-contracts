@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to exclude specific test methods from the contract suite.
- * May be used multiple times.
+ * Annotation to exclude specific test methods from the contract suite. May be
+ * used multiple times.
  * <p>
  * For example
  * 
@@ -20,31 +20,30 @@ import java.lang.annotation.Target;
  * public class Foo_Test {...}
  * </pre>
  * <p>
- * Declares that in the <code>ExpertFooTests</code> class the 
- * <code>barTest</code>, and <code>bazTest</code> methods should not
- * be executed.
+ * Declares that in the <code>ExpertFooTests</code> class the
+ * <code>barTest</code>, and <code>bazTest</code> methods should not be
+ * executed.
  * </p>
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(ContractExcludes.class)
-public @interface ContractExclude
-{
-	/**
-	 * The Contract test implementation (annotated with 
-	 * &#64;Contract) that declares the methods that should not be executed.
-	 * 
-	 * @return The Contract test class.
-	 */
-	Class<?> value();
+public @interface ContractExclude {
+    /**
+     * The Contract test implementation (annotated with &#64;Contract) that
+     * declares the methods that should not be executed.
+     * 
+     * @return The Contract test class.
+     */
+    Class<?> value();
 
-	/**
-	 * The list of interface classes for which tests should be skipped.
-	 * This list are interfaces that the class under tests implements but that should 
-	 * not be tested.
-	 * 
-	 * @return The interfaces to skip testing.
-	 */
-	String[] methods();
+    /**
+     * The list of interface classes for which tests should be skipped. This
+     * list are interfaces that the class under tests implements but that should
+     * not be tested.
+     * 
+     * @return The interfaces to skip testing.
+     */
+    String[] methods();
 
 }

@@ -26,15 +26,15 @@ import org.junit.runner.JUnitCore;
  */
 public class TestRun extends JUnitCore {
 
-	/**
-	 * Constructor.
-	 */
-	public TestRun() {
+    /**
+     * Constructor.
+     */
+    public TestRun() {
 
-	}
+    }
 
-	public static void main(final String... args) {
-		JUnitCore.main("org.xenei.junit.contract.CImplContractTest");
-	}
+    public static void main(final String... args) {
+        JUnitCore.main( "org.xenei.junit.contract.CImplContractTest" );
+    }
 
 }

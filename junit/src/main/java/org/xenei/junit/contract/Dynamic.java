@@ -65,25 +65,25 @@ import java.util.Collection;
 @NoContractTest
 public interface Dynamic {
 
-	/**
-	 * Get the set of set of classes in the test suite.
-	 * 
-	 * @return The set of classes in the test suite.
-	 */
-	public Collection<Class<?>> getSuiteClasses();
+    /**
+     * Get the set of set of classes in the test suite.
+     * 
+     * @return The set of classes in the test suite.
+     */
+    public Collection<Class<?>> getSuiteClasses();
 
-	/**
-	 * The <code>Dynamic.Inject</code> annotation specifies the getter to be
-	 * called to retrieve an instance of a producer for the suite under test.
-	 * 
-	 * The classes included in the suite must have a Contract.Inject setter that
-	 * accepts the type returned by this method. That method must then set the
-	 * internals of the test so that the Contract.Inject annotated getter will
-	 * produce the proper object for the specific test.
-	 * 
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.METHOD)
-	public @interface Inject {
-	}
+    /**
+     * The <code>Dynamic.Inject</code> annotation specifies the getter to be
+     * called to retrieve an instance of a producer for the suite under test.
+     * 
+     * The classes included in the suite must have a Contract.Inject setter that
+     * accepts the type returned by this method. That method must then set the
+     * internals of the test so that the Contract.Inject annotated getter will
+     * produce the proper object for the specific test.
+     * 
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Inject {
+    }
 }

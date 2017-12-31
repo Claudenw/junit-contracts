@@ -43,45 +43,45 @@ import org.xenei.junit.contract.IProducer;
 @Contract(B.class)
 public class BT<T extends B> {
 
-	private IProducer<T> producer;
+    private IProducer<T> producer;
 
-	/**
-	 * Set the producer that is used in this test.
-	 * 
-	 * @param producer
-	 *            The producer to use for this test.
-	 */
-	@Contract.Inject
-	public final void setProducer(IProducer<T> producer) {
-		this.producer = producer;
-	}
+    /**
+     * Set the producer that is used in this test.
+     * 
+     * @param producer
+     *            The producer to use for this test.
+     */
+    @Contract.Inject
+    public final void setProducer(IProducer<T> producer) {
+        this.producer = producer;
+    }
 
-	protected final IProducer<T> getProducer() {
-		return producer;
-	}
+    protected final IProducer<T> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * Test getBName()
-	 */
-	@ContractTest
-	public void testGetBName() {
-		Listener.add(getProducer().newInstance().getBName());
-	}
+    /**
+     * Test getBName()
+     */
+    @ContractTest
+    public void testGetBName() {
+        Listener.add( getProducer().newInstance().getBName() );
+    }
 
-	/**
-	 * Test getBInt()
-	 */
-	@ContractTest
-	public void testGetBInt() {
-		Listener.add( "BInt="+getProducer().newInstance().getBInt());
-	}
-	
-	/**
-	 * Clean up the producer.
-	 */
-	@After
-	public final void cleanupBT() {
-		getProducer().cleanUp();
-	}
+    /**
+     * Test getBInt()
+     */
+    @ContractTest
+    public void testGetBInt() {
+        Listener.add( "BInt=" + getProducer().newInstance().getBInt() );
+    }
+
+    /**
+     * Clean up the producer.
+     */
+    @After
+    public final void cleanupBT() {
+        getProducer().cleanUp();
+    }
 
 }

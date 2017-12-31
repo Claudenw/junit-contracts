@@ -42,53 +42,53 @@ import org.xenei.junit.contract.IProducer;
 @Contract(D.class)
 public class DT<T extends D> {
 
-	// the producer for the tests
-	private IProducer<T> producer;
+    // the producer for the tests
+    private IProducer<T> producer;
 
-	/**
-	 * Set the producer we will use for this test.
-	 * 
-	 * @param producer
-	 *            The producer we will use for this test.
-	 */
-	@Contract.Inject
-	public final void setProducer(IProducer<T> producer) {
-		this.producer = producer;
-	}
+    /**
+     * Set the producer we will use for this test.
+     * 
+     * @param producer
+     *            The producer we will use for this test.
+     */
+    @Contract.Inject
+    public final void setProducer(IProducer<T> producer) {
+        this.producer = producer;
+    }
 
-	protected final IProducer<T> getProducer() {
-		return producer;
-	}
+    protected final IProducer<T> getProducer() {
+        return producer;
+    }
 
-	/**
-	 * Cleanup the producer.
-	 */
-	@After
-	public final void cleanupCT() {
-		producer.cleanUp();
-	}
+    /**
+     * Cleanup the producer.
+     */
+    @After
+    public final void cleanupCT() {
+        producer.cleanUp();
+    }
 
-	/**
-	 * Test getDName()
-	 */
-	@ContractTest
-	public void testGetDName() {
-		Listener.add(getProducer().newInstance().getDName());
-	}
+    /**
+     * Test getDName()
+     */
+    @ContractTest
+    public void testGetDName() {
+        Listener.add( getProducer().newInstance().getDName() );
+    }
 
-	/**
-	 * Test getA()
-	 */
-	@ContractTest
-	public void testGetA() {
-		Listener.add(getProducer().newInstance().getA().toString());
-	}
+    /**
+     * Test getA()
+     */
+    @ContractTest
+    public void testGetA() {
+        Listener.add( getProducer().newInstance().getA().toString() );
+    }
 
-	/**
-	 * Test getB()
-	 */
-	@ContractTest
-	public void testGetB() {
-		Listener.add(getProducer().newInstance().getB().toString());
-	}
+    /**
+     * Test getB()
+     */
+    @ContractTest
+    public void testGetB() {
+        Listener.add( getProducer().newInstance().getB().toString() );
+    }
 }
