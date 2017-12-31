@@ -552,7 +552,7 @@ tests that are outside the control of the developer of the @ContractImpl test.
 ContractExclude
 ---------------
 
-ContractExclude is intended to be used with @ContractImpl.  The annotation has 2 arguments
+ContractExclude was added in version 0.2.0 and is intended to be used with @ContractImpl.  The annotation has 2 arguments
 1. value is the name of the class that contains the test to exclude.
 2. methods is a list of method names in the test class to exclude.
 
